@@ -1,253 +1,253 @@
-# CLAUDE.md Templates
+# CLAUDE.md 템플릿
 
-## Key Principles
+## 핵심 원칙
 
-- **Concise**: Dense, human-readable content; one line per concept when possible
-- **Actionable**: Commands should be copy-paste ready
-- **Project-specific**: Document patterns unique to this project, not generic advice
-- **Current**: All info should reflect actual codebase state
+- **간결성**: 밀도 높고 사람이 읽기 편한 콘텐츠. 가능하면 한 개념당 한 줄로 구성
+- **조치 가능성**: 복사-붙여넣기가 즉시 가능한 명령어 형태
+- **프로젝트 특화**: 일반적인 조언이 아닌 이 프로젝트만의 고유한 패턴 문서화
+- **최신성**: 모든 정보는 실제 코드베이스 상태를 반영해야 함
 
 ---
 
-## Recommended Sections
+## 권장 섹션
 
-Use only the sections relevant to the project. Not all sections are needed.
+프로젝트와 관련된 섹션만 사용하십시오. 모든 섹션이 다 필요한 것은 아닙니다.
 
-### Commands
+### 명령어 (Commands)
 
-Document the essential commands for working with the project.
+프로젝트 작업에 필수적인 명령어를 문서화합니다.
 
 ```markdown
-## Commands
+## 명령어
 
-| Command | Description |
+| 명령어 | 설명 |
 |---------|-------------|
-| `<install command>` | Install dependencies |
-| `<dev command>` | Start development server |
-| `<build command>` | Production build |
-| `<test command>` | Run tests |
-| `<lint command>` | Lint/format code |
+| `<설치 명령어>` | 종속성 설치 |
+| `<개발 서버 실행 명령어>` | 개발 서버 시작 |
+| `<빌드 명령어>` | 프로덕션 빌드 |
+| `<테스트 실행 명령어>` | 테스트 실행 |
+| `<린트/포맷 명령어>` | 코드 린트/포맷 |
 ```
 
-### Architecture
+### 아키텍처 (Architecture)
 
-Describe the project structure so Claude understands where things live.
+Claude가 구성 요소들의 위치를 이해할 수 있도록 프로젝트 구조를 설명합니다.
 
 ```markdown
-## Architecture
+## 아키텍처
 
 ```
 <root>/
-  <dir>/    # <purpose>
-  <dir>/    # <purpose>
-  <dir>/    # <purpose>
+  <dir>/    # <용도/목적>
+  <dir>/    # <용도/목적>
+  <dir>/    # <용도/목적>
 ```
 ```
 
-### Key Files
+### 주요 파일 (Key Files)
 
-List important files that Claude should know about.
+Claude가 알고 있어야 하는 중요 파일 목록을 작성합니다.
 
 ```markdown
-## Key Files
+## 주요 파일
 
-- `<path>` - <purpose>
-- `<path>` - <purpose>
+- `<경로>` - <용도/목적>
+- `<경로>` - <용도/목적>
 ```
 
-### Code Style
+### 코드 스타일 (Code Style)
 
-Document project-specific coding conventions.
+프로젝트 특화 코딩 컨벤션을 문서화합니다.
 
 ```markdown
-## Code Style
+## 코드 스타일
 
-- <convention>
-- <convention>
-- <preference over alternative>
+- <컨벤션/규칙>
+- <컨벤션/규칙>
+- <특정 대안보다 선호하는 방식>
 ```
 
-### Environment
+### 환경 설정 (Environment)
 
-Document required environment variables and setup.
+필요한 환경 변수와 설정 단계를 문서화합니다.
 
 ```markdown
-## Environment
+## 환경 설정
 
-Required:
-- `<VAR_NAME>` - <purpose>
-- `<VAR_NAME>` - <purpose>
+필수:
+- `<변수명>` - <용도/목적>
+- `<변수명>` - <용도/목적>
 
-Setup:
-- <setup step>
+설정:
+- <설정 단계>
 ```
 
-### Testing
+### 테스트 (Testing)
 
-Document testing approach and commands.
+테스트 접근 방식과 명령어를 문서화합니다.
 
 ```markdown
-## Testing
+## 테스트
 
-- `<test command>` - <what it tests>
-- <testing convention or pattern>
+- `<테스트 명령어>` - <테스트 대상>
+- <테스트 규칙 또는 패턴>
 ```
 
-### Gotchas
+### 주의 사항 (Gotchas)
 
-Document non-obvious patterns, quirks, and warnings.
+직관적이지 않은 패턴, 특이 사항 및 경고를 문서화합니다.
 
 ```markdown
-## Gotchas
+## 주의 사항
 
-- <non-obvious thing that causes issues>
-- <ordering dependency or prerequisite>
-- <common mistake to avoid>
+- <문제를 유발할 수 있는 직관적이지 않은 요소>
+- <순서 의존성 또는 선수 조건>
+- <피해야 할 흔한 실수>
 ```
 
-### Workflow
+### 워크플로우 (Workflow)
 
-Document development workflow patterns.
+개발 워크플로우 패턴을 문서화합니다.
 
 ```markdown
-## Workflow
+## 워크플로우
 
-- <when to do X>
-- <preferred approach for Y>
+- <X를 해야 하는 시점>
+- <Y에 대해 선호하는 접근 방식>
 ```
 
 ---
 
-## Template: Project Root (Minimal)
+## 템플릿: 프로젝트 루트 (최소 구성)
 
 ```markdown
-# <Project Name>
+# <프로젝트 이름>
 
-<One-line description>
+<한 줄 설명>
 
-## Commands
+## 명령어
 
-| Command | Description |
+| 명령어 | 설명 |
 |---------|-------------|
-| `<command>` | <description> |
+| `<명령어>` | <설명> |
 
-## Architecture
+## 아키텍처
 
 ```
-<structure>
+<구조>
 ```
 
-## Gotchas
+## 주의 사항
 
-- <gotcha>
+- <주의 사항>
 ```
 
 ---
 
-## Template: Project Root (Comprehensive)
+## 템플릿: 프로젝트 루트 (종합 구성)
 
 ```markdown
-# <Project Name>
+# <프로젝트 이름>
 
-<One-line description>
+<한 줄 설명>
 
-## Commands
+## 명령어
 
-| Command | Description |
+| 명령어 | 설명 |
 |---------|-------------|
-| `<command>` | <description> |
+| `<명령어>` | <설명> |
 
-## Architecture
-
-```
-<structure with descriptions>
-```
-
-## Key Files
-
-- `<path>` - <purpose>
-
-## Code Style
-
-- <convention>
-
-## Environment
-
-- `<VAR>` - <purpose>
-
-## Testing
-
-- `<command>` - <scope>
-
-## Gotchas
-
-- <gotcha>
-```
-
----
-
-## Template: Package/Module
-
-For packages within a monorepo or distinct modules.
-
-```markdown
-# <Package Name>
-
-<Purpose of this package>
-
-## Usage
+## 아키텍처
 
 ```
-<import/usage example>
+<설명이 포함된 구조>
 ```
 
-## Key Exports
+## 주요 파일
 
-- `<export>` - <purpose>
+- `<경로>` - <용도/목적>
 
-## Dependencies
+## 코드 스타일
 
-- `<dependency>` - <why needed>
+- <컨벤션/규칙>
 
-## Notes
+## 환경 설정
 
-- <important note>
+- `<환경 변수>` - <용도/목적>
+
+## 테스트
+
+- `<명령어>` - <범위>
+
+## 주의 사항
+
+- <주의 사항>
 ```
 
 ---
 
-## Template: Monorepo Root
+## 템플릿: 패키지/모듈 (Package/Module)
+
+모노레포 내의 패키지나 독립된 모듈에 사용합니다.
 
 ```markdown
-# <Monorepo Name>
+# <패키지 이름>
 
-<Description>
+<이 패키지의 용도>
 
-## Packages
+## 사용법
 
-| Package | Description | Path |
+```
+<임포트/사용 예시>
+```
+
+## 주요 익스포트
+
+- `<익스포트 대상>` - <용도/목적>
+
+## 의존성
+
+- `<의존성>` - <필요한 이유>
+
+## 참고 사항
+
+- <중요 참고 사항>
+```
+
+---
+
+## 템플릿: 모노레포 루트 (Monorepo Root)
+
+```markdown
+# <모노레포 이름>
+
+<설명>
+
+## 패키지
+
+| 패키지 | 설명 | 경로 |
 |---------|-------------|------|
-| `<name>` | <purpose> | `<path>` |
+| `<이름>` | <용도/목적> | `<경로>` |
 
-## Commands
+## 명령어
 
-| Command | Description |
+| 명령어 | 설명 |
 |---------|-------------|
-| `<command>` | <description> |
+| `<명령어>` | <설명> |
 
-## Cross-Package Patterns
+## 패키지 교차 패턴 (Cross-Package Patterns)
 
-- <shared pattern>
-- <generation/sync pattern>
+- <공유 패턴>
+- <생성/동기화 패턴>
 ```
 
 ---
 
-## Update Principles
+## 업데이트 원칙
 
-When updating any CLAUDE.md:
+CLAUDE.md를 업데이트할 때:
 
-1. **Be specific**: Use actual file paths, real commands from this project
-2. **Be current**: Verify info against the actual codebase
-3. **Be brief**: One line per concept when possible
-4. **Be useful**: Would this help a new Claude session understand the project?
+1. **구체적으로 작성**: 실제 파일 경로와 이 프로젝트의 실제 명령어를 사용하십시오.
+2. **최신 정보 반영**: 실제 코드베이스를 바탕으로 정보를 확인하십시오.
+3. **간결하게 작성**: 가능하면 개념당 한 줄로 작성하십시오.
+4. **유용성 고려**: 이 내용이 새로운 Claude 세션에서 프로젝트를 이해하는 데 도움이 될까요?

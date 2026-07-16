@@ -1,10 +1,10 @@
-# Advanced Hook Use Cases
+# 고급 훅 사용 사례 (Advanced Hook Use Cases)
 
-This reference covers advanced hook patterns and techniques for sophisticated automation workflows.
+이 참조 문서는 고도화된 자동화 워크플로우를 위한 고급 훅 패턴 및 기법을 다룹니다.
 
-## Multi-Stage Validation
+## 다단계 검증 (Multi-Stage Validation)
 
-Combine command and prompt hooks for layered validation:
+명령어 훅과 프롬프트 훅을 결합하여 계층적 검증을 구현합니다:
 
 ```json
 {
@@ -28,9 +28,9 @@ Combine command and prompt hooks for layered validation:
 }
 ```
 
-**Use case:** Fast deterministic checks followed by intelligent analysis
+**사용 사례:** 신속한 결정론적 확인 후 지능적 분석 수행
 
-**Example quick-check.sh:**
+**예시 quick-check.sh:**
 ```bash
 #!/bin/bash
 input=$(cat)
@@ -45,11 +45,11 @@ fi
 exit 0
 ```
 
-The command hook quickly approves obviously safe commands, while the prompt hook analyzes everything else.
+명령어 훅은 명백히 안전한 명령어를 빠르게 승인하고, 프롬프트 훅은 그 외의 모든 명령어를 상세히 분석합니다.
 
-## Conditional Hook Execution
+## 조건부 훅 실행 (Conditional Hook Execution)
 
-Execute hooks based on environment or context:
+환경 또는 컨텍스트에 따라 조건부로 훅을 실행합니다:
 
 ```bash
 #!/bin/bash
@@ -64,12 +64,12 @@ input=$(cat)
 # ... validation code ...
 ```
 
-**Use cases:**
-- Different behavior in CI vs local development
-- Project-specific validation
-- User-specific rules
+**사용 사례:**
+- CI 환경과 로컬 개발 환경에서의 서로 다른 동작 정의
+- 프로젝트 전용 검증 규칙 설정
+- 특정 사용자 전용 규칙 설정
 
-**Example: Skip certain checks for trusted users:**
+**예시: 신뢰할 수 있는 사용자에 대한 특정 검증 건너뛰기:**
 ```bash
 #!/bin/bash
 # Skip detailed checks for admin users
@@ -82,9 +82,9 @@ input=$(cat)
 # ... validation code ...
 ```
 
-## Hook Chaining via State
+## 상태를 통한 훅 체이닝 (Hook Chaining via State)
 
-Share state between hooks using temporary files:
+임시 파일을 사용하여 훅 간에 상태를 공유합니다:
 
 ```bash
 # Hook 1: Analyze and save state
@@ -110,11 +110,11 @@ if [ "$risk_level" = "high" ]; then
 fi
 ```
 
-**Important:** This only works for sequential hook events (e.g., PreToolUse then PostToolUse), not parallel hooks.
+**중요:** 이 방식은 순차적으로 발생히는 훅 이벤트(예: PreToolUse 실행 후 PostToolUse)에 대해서만 작동하며, 병렬로 실행되는 훅에서는 정상 동작하지 않습니다.
 
-## Dynamic Hook Configuration
+## 동적 훅 구성 (Dynamic Hook Configuration)
 
-Modify hook behavior based on project configuration:
+프로젝트별 구성 정보에 따라 훅의 동작을 동적으로 수정합니다:
 
 ```bash
 #!/bin/bash
@@ -134,7 +134,7 @@ if [ -f ".claude-hooks-config.json" ]; then
 fi
 ```
 
-**Example .claude-hooks-config.json:**
+**예시 .claude-hooks-config.json:**
 ```json
 {
   "strict_mode": true,
@@ -143,9 +143,9 @@ fi
 }
 ```
 
-## Context-Aware Prompt Hooks
+## 컨텍스트 인식 프롬프트 훅 (Context-Aware Prompt Hooks)
 
-Use transcript and session context for intelligent decisions:
+대화 내용(transcript) 및 세션 컨텍스트를 활용하여 지능적인 결정을 내립니다:
 
 ```json
 {
@@ -163,11 +163,11 @@ Use transcript and session context for intelligent decisions:
 }
 ```
 
-The LLM can read the transcript file and make context-aware decisions.
+LLM은 대화 내용 파일을 읽어서 컨텍스트를 파악하고 지능적인 결정을 내릴 수 있습니다.
 
-## Performance Optimization
+## 성능 최적화 (Performance Optimization)
 
-### Caching Validation Results
+### 검증 결과 캐싱 (Caching Validation Results)
 
 ```bash
 #!/bin/bash
@@ -193,9 +193,9 @@ echo "$result" > "$cache_file"
 echo "$result"
 ```
 
-### Parallel Execution Optimization
+### 병렬 실행 최적화 (Parallel Execution Optimization)
 
-Since hooks run in parallel, design them to be independent:
+훅은 병렬로 동시 실행되므로, 각 훅이 독립적으로 작동하도록 설계해야 합니다:
 
 ```json
 {
@@ -224,13 +224,13 @@ Since hooks run in parallel, design them to be independent:
 }
 ```
 
-All three hooks run simultaneously, reducing total latency.
+세 개의 훅이 동시에 병렬로 동작하므로 전체 대기 시간이 크게 단축됩니다.
 
-## Cross-Event Workflows
+## 교차 이벤트 워크플로우 (Cross-Event Workflows)
 
-Coordinate hooks across different events:
+서로 다른 훅 이벤트를 연계하여 작동하도록 구성합니다:
 
-**SessionStart - Set up tracking:**
+**SessionStart - 추적 환경 구성:**
 ```bash
 #!/bin/bash
 # Initialize session tracking
@@ -238,7 +238,7 @@ echo "0" > /tmp/test-count-$$
 echo "0" > /tmp/build-count-$$
 ```
 
-**PostToolUse - Track events:**
+**PostToolUse - 이벤트 추적 및 로깅:**
 ```bash
 #!/bin/bash
 input=$(cat)
@@ -253,7 +253,7 @@ if [ "$tool_name" = "Bash" ]; then
 fi
 ```
 
-**Stop - Verify based on tracking:**
+**Stop - 추적 상태에 따른 최종 검증:**
 ```bash
 #!/bin/bash
 test_count=$(cat /tmp/test-count-$$ 2>/dev/null || echo "0")
@@ -264,9 +264,9 @@ if [ "$test_count" -eq 0 ]; then
 fi
 ```
 
-## Integration with External Systems
+## 외부 시스템과의 통합 (Integration with External Systems)
 
-### Slack Notifications
+### Slack 알림 (Slack Notifications)
 
 ```bash
 #!/bin/bash
@@ -284,7 +284,7 @@ echo '{"decision": "deny"}' >&2
 exit 2
 ```
 
-### Database Logging
+### 데이터베이스 로깅 (Database Logging)
 
 ```bash
 #!/bin/bash
@@ -297,7 +297,7 @@ psql "$DATABASE_URL" -c "INSERT INTO hook_logs (event, data) VALUES ('PreToolUse
 exit 0
 ```
 
-### Metrics Collection
+### 메트릭 수집 (Metrics Collection)
 
 ```bash
 #!/bin/bash
@@ -310,9 +310,9 @@ echo "hook.pretooluse.${tool_name}:1|c" | nc -u -w1 statsd.local 8125
 exit 0
 ```
 
-## Security Patterns
+## 보안 패턴 (Security Patterns)
 
-### Rate Limiting
+### 속도 제한 (Rate Limiting)
 
 ```bash
 #!/bin/bash
@@ -346,7 +346,7 @@ echo "$count" >> "$rate_file"
 exit 0
 ```
 
-### Audit Logging
+### 감사 로그 (Audit Logging)
 
 ```bash
 #!/bin/bash
@@ -360,7 +360,7 @@ echo "$timestamp | $USER | $tool_name | $input" >> ~/.claude/audit.log
 exit 0
 ```
 
-### Secret Detection
+### 비밀값 감지 (Secret Detection)
 
 ```bash
 #!/bin/bash
@@ -376,9 +376,9 @@ fi
 exit 0
 ```
 
-## Testing Advanced Hooks
+## 고급 훅 테스트 (Testing Advanced Hooks)
 
-### Unit Testing Hook Scripts
+### 훅 스크립트 단위 테스트 (Unit Testing Hook Scripts)
 
 ```bash
 # test-hook.sh
@@ -401,9 +401,9 @@ else
 fi
 ```
 
-### Integration Testing
+### 통합 테스트 (Integration Testing)
 
-Create test scenarios that exercise the full hook workflow:
+전체 훅 워크플로우를 동작시키는 통합 테스트 시나리오를 구성합니다:
 
 ```bash
 # integration-test.sh
@@ -426,47 +426,47 @@ fi
 rm -rf "$CLAUDE_PROJECT_DIR"
 ```
 
-## Best Practices for Advanced Hooks
+## 고급 훅을 위한 권장 사항 (Best Practices for Advanced Hooks)
 
-1. **Keep hooks independent**: Don't rely on execution order
-2. **Use timeouts**: Set appropriate limits for each hook type
-3. **Handle errors gracefully**: Provide clear error messages
-4. **Document complexity**: Explain advanced patterns in README
-5. **Test thoroughly**: Cover edge cases and failure modes
-6. **Monitor performance**: Track hook execution time
-7. **Version configuration**: Use version control for hook configs
-8. **Provide escape hatches**: Allow users to bypass hooks when needed
+1. **훅의 독립성 유지**: 각 훅은 서로 실행 순서에 연동되어 설계되어서는 안 됩니다.
+2. **제한 시간(Timeout) 적용**: 훅 유형별로 적절한 제한 임계치를 구성하십시오.
+3. **정상적인 에러 처리**: 검증 실패 시 사용자에게 직관적이고 친절한 거절 사유를 보여주어야 합니다.
+4. **복잡성 문서화**: 복잡한 작동 패턴은 README 등에 명확하게 기재합니다.
+5. **철저한 테스트**: 예외 조건과 실패 모드에 대해 꼼꼼하게 검증합니다.
+6. **성능 모니터링**: 훅의 런타임 지연 시간을 지속 추적하십시오.
+7. **구성 정보 버전 관리**: 훅 설정 내역을 Git 등 버전 관리 솔루션으로 안전하게 관리합니다.
+8. **비상 탈출구(Escape Hatches) 제공**: 필요한 경우 사용자가 훅을 우회(bypass)할 수 있는 수단을 마련합니다.
 
-## Common Pitfalls
+## 일반적인 실수 (Common Pitfalls)
 
-### ❌ Assuming Hook Order
+### ❌ 훅 실행 순서 가정 (Assuming Hook Order)
 
 ```bash
-# BAD: Assumes hooks run in specific order
-# Hook 1 saves state, Hook 2 reads it
-# This can fail because hooks run in parallel!
+# BAD: 훅이 순서대로 실행된다고 가정하는 경우
+# Hook 1이 상태를 저장하고 Hook 2가 이를 읽음
+# 훅은 병렬로 동시 실행되므로 이 방식은 실패할 수 있습니다!
 ```
 
-### ❌ Long-Running Hooks
+### ❌ 실행 시간이 긴 훅 (Long-Running Hooks)
 
 ```bash
-# BAD: Hook takes 2 minutes to run
+# BAD: 훅이 동작 완료되는 데 2분이 걸리는 경우
 sleep 120
-# This will timeout and block the workflow
+# 제한 시간이 초과되어 워크플로우 자체가 차단될 것입니다.
 ```
 
-### ❌ Uncaught Exceptions
+### ❌ 예외 처리 누락 (Uncaught Exceptions)
 
 ```bash
-# BAD: Script crashes on unexpected input
+# BAD: 예기치 않은 입력이 들어왔을 때 스크립트 자체가 크래시됨
 file_path=$(echo "$input" | jq -r '.tool_input.file_path')
-cat "$file_path"  # Fails if file doesn't exist
+cat "$file_path"  # 파일이 없는 경우 실패하여 에러 유발
 ```
 
-### ✅ Proper Error Handling
+### ✅ 적절한 에러 처리 (Proper Error Handling)
 
 ```bash
-# GOOD: Handles errors gracefully
+# GOOD: 에러가 발생해도 우아하게 복구하고 처리함
 file_path=$(echo "$input" | jq -r '.tool_input.file_path')
 if [ ! -f "$file_path" ]; then
   echo '{"continue": true, "systemMessage": "File not found, skipping check"}' >&2
@@ -474,6 +474,6 @@ if [ ! -f "$file_path" ]; then
 fi
 ```
 
-## Conclusion
+## 결론 (Conclusion)
 
-Advanced hook patterns enable sophisticated automation while maintaining reliability and performance. Use these techniques when basic hooks are insufficient, but always prioritize simplicity and maintainability.
+고급 훅 패턴을 이용하면 시스템의 반응 속도와 신뢰성을 훼손하지 않으면서도 고도로 자동화된 세부 제어를 구현할 수 있습니다. 기본 훅으로 원하는 비즈니스 정합성을 만족시키기 어려울 때 이러한 기법을 사용하되, 언제나 단순성과 유지보수 편의성을 우선순위에 두십시오.

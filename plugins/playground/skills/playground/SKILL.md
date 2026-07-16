@@ -1,41 +1,41 @@
 ---
 name: playground
-description: Creates interactive HTML playgrounds — self-contained single-file explorers that let users configure something visually through controls, see a live preview, and copy out a prompt. Use when the user asks to make a playground, explorer, or interactive tool for a topic.
+description: 대화형 HTML 플레이그라운드를 생성합니다. 이는 사용자가 컨트롤을 통해 시각적으로 무언가를 설정하고 실시간 미리보기를 확인하며 프롬프트를 복사할 수 있는 독립형 단일 파일 탐색기입니다. 사용자가 특정 주제에 대한 플레이그라운드, 탐색기 또는 대화형 도구 제작을 요청할 때 사용하십시오.
 ---
 
-# Playground Builder
+# 플레이그라운드 빌더 (Playground Builder)
 
-A playground is a self-contained HTML file with interactive controls on one side, a live preview on the other, and a prompt output at the bottom with a copy button. The user adjusts controls, explores visually, then copies the generated prompt back into Claude.
+플레이그라운드는 한쪽에 대화형 컨트롤, 다른 쪽에 실시간 미리보기, 그리고 복사 버튼이 있는 프롬프트 출력이 하단에 배치된 독립형 HTML 파일입니다. 사용자는 컨트롤을 조정하고 시각적으로 탐색한 뒤, 생성된 프롬프트를 복사하여 Claude에 다시 입력합니다.
 
-## When to use this skill
+## 이 스킬을 사용하는 시점
 
-When the user asks for an interactive playground, explorer, or visual tool for a topic — especially when the input space is large, visual, or structural and hard to express as plain text.
+사용자가 특정 주제에 대한 대화형 플레이그라운드, 탐색기 또는 시각적 도구를 요청할 때 사용하십시오. 특히 입력 공간이 방대하고 시각적이거나 구조적이어서 단순 텍스트로 표현하기 어려운 경우에 적합합니다.
 
-## How to use this skill
+## 이 스킬을 사용하는 방법
 
-1. **Identify the playground type** from the user's request
-2. **Load the matching template** from `templates/`:
-   - `templates/design-playground.md` — Visual design decisions (components, layouts, spacing, color, typography)
-   - `templates/data-explorer.md` — Data and query building (SQL, APIs, pipelines, regex)
-   - `templates/concept-map.md` — Learning and exploration (concept maps, knowledge gaps, scope mapping)
-   - `templates/document-critique.md` — Document review (suggestions with approve/reject/comment workflow)
-   - `templates/diff-review.md` — Code review (git diffs, commits, PRs with line-by-line commenting)
-   - `templates/code-map.md` — Codebase architecture (component relationships, data flow, layer diagrams)
-3. **Follow the template** to build the playground. If the topic doesn't fit any template cleanly, use the one closest and adapt.
-4. **Open in browser.** After writing the HTML file, run `open <filename>.html` to launch it in the user's default browser.
+1. 사용자의 요청에서 **플레이그라운드 유형**을 식별합니다.
+2. `templates/`에서 일치하는 템플릿을 로드합니다:
+   - `templates/design-playground.md` — 시각적 디자인 결정 (컴포넌트, 레이아웃, 여백, 색상, 타이포그래피)
+   - `templates/data-explorer.md` — 데이터 및 쿼리 빌딩 (SQL, API, 파이프라인, 정규표현식)
+   - `templates/concept-map.md` — 학습 및 탐색 (개념 맵, 지식 격차, 범위 매핑)
+   - `templates/document-critique.md` — 문서 검토 (승인/거부/의견 작성 워크플로우를 포함한 제안 사항)
+   - `templates/diff-review.md` — 코드 리뷰 (라인별 댓글 작성이 포함된 git diff, 커밋, PR)
+   - `templates/code-map.md` — 코드베이스 아키텍처 (컴포넌트 관계, 데이터 흐름, 계층 다이어그램)
+3. **템플릿을 따라** 플레이그라운드를 빌드합니다. 해당 주제가 어떠한 템플릿에도 딱 맞지 않는 경우, 가장 유사한 것을 골라 조정하여 사용하십시오.
+4. **브라우저에서 열기.** HTML 파일을 작성한 후, `open <filename>.html`을 실행하여 사용자의 기본 브라우저에서 실행하십시오.
 
-## Core requirements (every playground)
+## 핵심 요구 사항 (모든 플레이그라운드 공통)
 
-- **Single HTML file.** Inline all CSS and JS. No external dependencies.
-- **Live preview.** Updates instantly on every control change. No "Apply" button.
-- **Prompt output.** Natural language, not a value dump. Only mentions non-default choices. Includes enough context to act on without seeing the playground. Updates live.
-- **Copy button.** Clipboard copy with brief "Copied!" feedback.
-- **Sensible defaults + presets.** Looks good on first load. Include 3-5 named presets that snap all controls to a cohesive combination.
-- **Dark theme.** System font for UI, monospace for code/values. Minimal chrome.
+- **단일 HTML 파일.** 모든 CSS와 JS를 파일 내에 인라인으로 포함시킵니다. 외부 종속성은 허용되지 않습니다.
+- **실시간 미리보기.** 컨트롤이 변경될 때마다 즉시 업데이트되어야 합니다. "적용(Apply)" 버튼은 필요 없습니다.
+- **프롬프트 출력.** 단순 값 나열이 아닌 자연어 형태여야 합니다. 기본값이 아닌 선택 항목만 기재하십시오. 플레이그라운드를 보지 않고도 조치를 취할 수 있을 만큼 충분한 컨텍스트를 제공하며, 실시간으로 업데이트되어야 합니다.
+- **복사 버튼.** 클립보드 복사 기능 및 "복사됨(Copied!)"이라는 짤막한 피드백을 제공합니다.
+- **적절한 기본값 + 프리셋.** 처음 로드될 때부터 보기 좋아야 합니다. 모든 컨트롤을 유기적인 조합으로 한 번에 변경할 수 있는 이름 있는 프리셋 3~5개를 포함하십시오.
+- **다크 테마.** UI에는 시스템 글꼴을, 코드나 값에는 고정폭(monospace) 글꼴을 사용합니다. 프레임워크 요소(chrome)는 최소화합니다.
 
-## State management pattern
+## 상태 관리 패턴
 
-Keep a single state object. Every control writes to it, every render reads from it.
+단일 상태(state) 객체를 유지하십시오. 모든 컨트롤은 상태를 수정하고, 모든 렌더러는 상태를 조회합니다.
 
 ```javascript
 const state = { /* all configurable values */ };
@@ -47,7 +47,7 @@ function updateAll() {
 // Every control calls updateAll() on change
 ```
 
-## Prompt output pattern
+## 프롬프트 출력 패턴
 
 ```javascript
 function updatePrompt() {
@@ -66,11 +66,11 @@ function updatePrompt() {
 }
 ```
 
-## Common mistakes to avoid
+## 피해야 할 흔한 실수
 
-- Prompt output is just a value dump → write it as a natural instruction
-- Too many controls at once → group by concern, hide advanced in a collapsible section
-- Preview doesn't update instantly → every control change must trigger immediate re-render
-- No defaults or presets → starts empty or broken on load
-- External dependencies → if CDN is down, playground is dead
-- Prompt lacks context → include enough that it's actionable without the playground
+- 프롬프트 출력이 단순한 값 나열인 경우 → 자연스러운 명령문 형태로 작성하십시오.
+- 너무 많은 컨트롤이 한꺼번에 표시되는 경우 → 관심사별로 그룹화하고, 고급 설정은 접을 수 있는 섹션에 숨기십시오.
+- 미리보기가 즉각 업데이트되지 않는 경우 → 모든 컨트롤 변경 시 반드시 즉각적인 재렌더링이 발생해야 합니다.
+- 기본값이나 프리셋이 없는 경우 → 로드 시 빈 화면이 나타나거나 화면이 깨질 수 있습니다.
+- 외부 종속성이 있는 경우 → CDN이 다운되면 플레이그라운드가 정상 작동하지 않습니다.
+- 프롬프트에 컨텍스트가 부족한 경우 → 플레이그라운드 없이도 조치를 취할 수 있도록 충분한 정보를 포함하십시오.

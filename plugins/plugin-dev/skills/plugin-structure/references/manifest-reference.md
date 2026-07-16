@@ -1,93 +1,93 @@
-# Plugin Manifest Reference
+# 플러그인 매니페스트 참조 (Plugin Manifest Reference)
 
-Complete reference for `plugin.json` configuration.
+`plugin.json` 구성을 위한 전체 참조 가이드.
 
-## File Location
+## 파일 위치 (File Location)
 
-**Required path**: `.claude-plugin/plugin.json`
+**필수 경로**: `.claude-plugin/plugin.json`
 
-The manifest MUST be in the `.claude-plugin/` directory at the plugin root. Claude Code will not recognize plugins without this file in the correct location.
+매니페스트 파일은 반드시 플러그인 루트의 `.claude-plugin/` 디렉토리에 위치해야 합니다. Claude Code는 이 파일이 올바른 위치에 존재하지 않으면 플러그인을 인식하지 못합니다.
 
-## Complete Field Reference
+## 전체 필드 참조 (Complete Field Reference)
 
-### Core Fields
+### 핵심 필드 (Core Fields)
 
-#### name (required)
+#### name (필수)
 
-**Type**: String
-**Format**: kebab-case
-**Example**: `"test-automation-suite"`
+**타입**: String
+**형식**: kebab-case
+**예시**: `"test-automation-suite"`
 
-The unique identifier for the plugin. Used for:
-- Plugin identification in Claude Code
-- Conflict detection with other plugins
-- Command namespacing (optional)
+플러그인의 고유 식별자입니다. 다음 용도로 사용됩니다:
+- Claude Code에서 플러그인 식별
+- 다른 플러그인과의 이름 충돌 감지
+- 명령어 네임스페이스 지정 (선택 사항)
 
-**Requirements**:
-- Must be unique across all installed plugins
-- Use only lowercase letters, numbers, and hyphens
-- No spaces or special characters
-- Start with a letter
-- End with a letter or number
+**요구 사항**:
+- 설치된 모든 플러그인 중에서 유일해야 함
+- 영문 소문자, 숫자, 하이픈만 사용 가능
+- 공백이나 특수 문자 허용 안 됨
+- 문자로 시작해야 함
+- 문자나 숫자로 끝나야 함
 
-**Validation**:
+**정규식 검증**:
 ```javascript
 /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/
 ```
 
-**Examples**:
-- ✅ Good: `api-tester`, `code-review`, `git-workflow-automation`
-- ❌ Bad: `API Tester`, `code_review`, `-git-workflow`, `test-`
+**예시**:
+- ✅ 올바름: `api-tester`, `code-review`, `git-workflow-automation`
+- ❌ 잘못됨: `API Tester`, `code_review`, `-git-workflow`, `test-`
 
 #### version
 
-**Type**: String
-**Format**: Semantic versioning (MAJOR.MINOR.PATCH)
-**Example**: `"2.1.0"`
-**Default**: `"0.1.0"` if not specified
+**타입**: String
+**형식**: 시맨틱 버저닝 (MAJOR.MINOR.PATCH)
+**예시**: `"2.1.0"`
+**기본값**: 지정하지 않은 경우 `"0.1.0"`
 
-Semantic versioning guidelines:
-- **MAJOR**: Incompatible API changes, breaking changes
-- **MINOR**: New functionality, backward-compatible
-- **PATCH**: Bug fixes, backward-compatible
+시맨틱 버저닝 지침:
+- **MAJOR**: 호환되지 않는 API 변경, 주요 변경 사항
+- **MINOR**: 하위 호환되는 새로운 기능 추가
+- **PATCH**: 하위 호환되는 버그 수정
 
-**Pre-release versions**:
-- `"1.0.0-alpha.1"` - Alpha release
-- `"1.0.0-beta.2"` - Beta release
-- `"1.0.0-rc.1"` - Release candidate
+**프리릴리스 버전**:
+- `"1.0.0-alpha.1"` - 알파 릴리스
+- `"1.0.0-beta.2"` - 베타 릴리스
+- `"1.0.0-rc.1"` - 릴리스 후보(RC)
 
-**Examples**:
-- `"0.1.0"` - Initial development
-- `"1.0.0"` - First stable release
-- `"1.2.3"` - Patch update to 1.2
-- `"2.0.0"` - Major version with breaking changes
+**예시**:
+- `"0.1.0"` - 초기 개발 단계
+- `"1.0.0"` - 첫 번째 안정 버젼 릴리스
+- `"1.2.3"` - 1.2 버전의 패치 업데이트
+- `"2.0.0"` - 하위 호환성이 깨지는 변경 사항이 포함된 주 버전 업데이트
 
 #### description
 
-**Type**: String
-**Length**: 50-200 characters recommended
-**Example**: `"Automates code review workflows with style checks and automated feedback"`
+**타입**: String
+**길이**: 50~200자 권장
+**예시**: `"Automates code review workflows with style checks and automated feedback"`
 
-Brief explanation of plugin purpose and functionality.
+플러그인의 목적과 기능에 대한 간단한 설명입니다.
 
-**Best practices**:
-- Focus on what the plugin does, not how
-- Use active voice
-- Mention key features or benefits
-- Keep under 200 characters for marketplace display
+**권장 사항**:
+- 플러그인이 '어떻게'가 아닌 '무엇을' 하는지에 집중
+- 능동태 사용
+- 주요 기능이나 이점 언급
+- 마켓플레이스 화면에 맞추기 위해 200자 미만 유지
 
-**Examples**:
+**예시**:
 - ✅ "Generates comprehensive test suites from code analysis and coverage reports"
 - ✅ "Integrates with Jira for automatic issue tracking and sprint management"
 - ❌ "A plugin that helps you do testing stuff"
 - ❌ "This is a very long description that goes on and on about every single feature..."
 
-### Metadata Fields
+### 메타데이터 필드 (Metadata Fields)
 
 #### author
 
-**Type**: Object
-**Fields**: name (required), email (optional), url (optional)
+**타입**: Object
+**하위 필드**: name (필수), email (선택 사항), url (선택 사항)
 
 ```json
 {
@@ -99,52 +99,52 @@ Brief explanation of plugin purpose and functionality.
 }
 ```
 
-**Alternative format** (string only):
+**대체 형식** (문자열 전용):
 ```json
 {
   "author": "Jane Developer <jane@example.com> (https://janedeveloper.com)"
 }
 ```
 
-**Use cases**:
-- Credit and attribution
-- Contact for support or questions
-- Marketplace display
-- Community recognition
+**사용 사례**:
+- 크레딧 및 기여 표시
+- 지원 또는 문의용 연락처
+- 마켓플레이스 화면 표시
+- 커뮤니티 인정
 
 #### homepage
 
-**Type**: String (URL)
-**Example**: `"https://docs.example.com/plugins/my-plugin"`
+**타입**: String (URL)
+**예시**: `"https://docs.example.com/plugins/my-plugin"`
 
-Link to plugin documentation or landing page.
+플러그인 문서 또는 랜딩 페이지 링크입니다.
 
-**Should point to**:
-- Plugin documentation site
-- Project homepage
-- Detailed usage guide
-- Installation instructions
+**연결 대상 권장**:
+- 플러그인 문서 사이트
+- 프로젝트 홈페이지
+- 세부 사용 설명서
+- 설치 안내서
 
-**Not for**:
-- Source code (use `repository` field)
-- Issue tracker (include in documentation)
-- Personal websites (use `author.url`)
+**연결 대상 제외**:
+- 소스 코드 (대신 `repository` 필드 사용)
+- 이슈 트래커 (문서 내에 포함)
+- 개인 웹사이트 (대신 `author.url` 사용)
 
 #### repository
 
-**Type**: String (URL) or Object
-**Example**: `"https://github.com/user/plugin-name"`
+**타입**: String (URL) 또는 Object
+**예시**: `"https://github.com/user/plugin-name"`
 
-Source code repository location.
+소스 코드 저장소 위치입니다.
 
-**String format**:
+**문자열 형식**:
 ```json
 {
   "repository": "https://github.com/user/plugin-name"
 }
 ```
 
-**Object format** (detailed):
+**객체 형식** (세부 정보 포함):
 ```json
 {
   "repository": {
@@ -155,31 +155,31 @@ Source code repository location.
 }
 ```
 
-**Use cases**:
-- Source code access
-- Issue reporting
-- Community contributions
-- Transparency and trust
+**사용 사례**:
+- 소스 코드 접근
+- 이슈 보고
+- 커뮤니티 기여
+- 투명성 및 신뢰 확보
 
 #### license
 
-**Type**: String
-**Format**: SPDX identifier
-**Example**: `"MIT"`
+**타입**: String
+**형식**: SPDX 식별자
+**예시**: `"MIT"`
 
-Software license identifier.
+소프트웨어 라이선스 식별자입니다.
 
-**Common licenses**:
-- `"MIT"` - Permissive, popular choice
-- `"Apache-2.0"` - Permissive with patent grant
-- `"GPL-3.0"` - Copyleft
-- `"BSD-3-Clause"` - Permissive
-- `"ISC"` - Permissive, similar to MIT
-- `"UNLICENSED"` - Proprietary, not open source
+**자주 사용되는 라이선스**:
+- `"MIT"` - 허용 범위가 넓어 널리 쓰이는 라이선스
+- `"Apache-2.0"` - 특허권 부여가 포함된 라이선스
+- `"GPL-3.0"` - 카피레프트 라이선스
+- `"BSD-3-Clause"` - 허용 범위가 넓은 라이선스
+- `"ISC"` - MIT와 유사한 허용 라이선스
+- `"UNLICENSED"` - 비공개 독점 소프트웨어
 
-**Full list**: https://spdx.org/licenses/
+**전체 목록**: https://spdx.org/licenses/
 
-**Multiple licenses**:
+**듀얼 라이선스 구성**:
 ```json
 {
   "license": "(MIT OR Apache-2.0)"
@@ -188,42 +188,42 @@ Software license identifier.
 
 #### keywords
 
-**Type**: Array of strings
-**Example**: `["testing", "automation", "ci-cd", "quality-assurance"]`
+**타입**: 문자열 배열 (Array of strings)
+**예시**: `["testing", "automation", "ci-cd", "quality-assurance"]`
 
-Tags for plugin discovery and categorization.
+플러그인 검색 및 카테고리 분류를 위한 태그 목록입니다.
 
-**Best practices**:
-- Use 5-10 keywords
-- Include functionality categories
-- Add technology names
-- Use common search terms
-- Avoid duplicating plugin name
+**권장 사항**:
+- 5~10개의 키워드 지정
+- 기능별 카테고리 포함
+- 사용 기술 이름 추가
+- 일반적인 검색 용어 사용
+- 플러그인 이름과 동일한 단어는 생략
 
-**Categories to consider**:
-- Functionality: `testing`, `debugging`, `documentation`, `deployment`
-- Technologies: `typescript`, `python`, `docker`, `aws`
-- Workflows: `ci-cd`, `code-review`, `git-workflow`
-- Domains: `web-development`, `data-science`, `devops`
+**고려할 카테고리**:
+- 기능: `testing`, `debugging`, `documentation`, `deployment`
+- 기술: `typescript`, `python`, `docker`, `aws`
+- 워크플로우: `ci-cd`, `code-review`, `git-workflow`
+- 도메인: `web-development`, `data-science`, `devops`
 
-### Component Path Fields
+### 컴포넌트 경로 필드 (Component Path Fields)
 
 #### commands
 
-**Type**: String or Array of strings
-**Default**: `["./commands"]`
-**Example**: `"./cli-commands"`
+**타입**: String 또는 문자열 배열
+**기본값**: `["./commands"]`
+**예시**: `"./cli-commands"`
 
-Additional directories or files containing command definitions.
+명령어 정의가 포함된 추가 디렉토리 또는 파일입니다.
 
-**Single path**:
+**단일 경로**:
 ```json
 {
   "commands": "./custom-commands"
 }
 ```
 
-**Multiple paths**:
+**다중 경로**:
 ```json
 {
   "commands": [
@@ -234,43 +234,43 @@ Additional directories or files containing command definitions.
 }
 ```
 
-**Behavior**: Supplements default `commands/` directory (does not replace)
+**동작 방식**: 기본 `commands/` 디렉토리에 추가되며, 이를 대체하지 않습니다.
 
-**Use cases**:
-- Organizing commands by category
-- Separating stable from experimental commands
-- Loading commands from shared locations
+**사용 사례**:
+- 카테고리별 명령어 정리
+- 안정 버전과 실험용 명령어 분리
+- 공유 위치에서 명령어 로드
 
 #### agents
 
-**Type**: String or Array of strings
-**Default**: `["./agents"]`
-**Example**: `"./specialized-agents"`
+**타입**: String 또는 문자열 배열
+**기본값**: `["./agents"]`
+**예시**: `"./specialized-agents"`
 
-Additional directories or files containing agent definitions.
+에이전트 정의가 포함된 추가 디렉토리 또는 파일입니다.
 
-**Format**: Same as `commands` field
+**형식**: `commands` 필드와 동일
 
-**Use cases**:
-- Grouping agents by specialization
-- Separating general-purpose from task-specific agents
-- Loading agents from plugin dependencies
+**사용 사례**:
+- 전문 영역별 에이전트 그룹화
+- 범용 에이전트와 작업 전용 에이전트 분리
+- 플러그인 종속성에서 에이전트 로드
 
 #### hooks
 
-**Type**: String (path to JSON file) or Object (inline configuration)
-**Default**: `"./hooks/hooks.json"`
+**타입**: String (JSON 파일 경로) 또는 Object (인라인 구성)
+**기본값**: `"./hooks/hooks.json"`
 
-Hook configuration location or inline definition.
+훅 구성 파일의 위치 또는 인라인 정의입니다.
 
-**File path**:
+**파일 경로**:
 ```json
 {
   "hooks": "./config/hooks.json"
 }
 ```
 
-**Inline configuration**:
+**인라인 구성**:
 ```json
 {
   "hooks": {
@@ -290,26 +290,26 @@ Hook configuration location or inline definition.
 }
 ```
 
-**Use cases**:
-- Simple plugins: Inline configuration (< 50 lines)
-- Complex plugins: External JSON file
-- Multiple hook sets: Separate files for different contexts
+**사용 사례**:
+- 단순한 플러그인: 인라인 구성 방식 사용 (< 50행)
+- 복잡한 플러그인: 외부 JSON 파일 사용
+- 다중 훅 집합: 컨텍스트별로 별도의 파일 구성
 
 #### mcpServers
 
-**Type**: String (path to JSON file) or Object (inline configuration)
-**Default**: `./.mcp.json`
+**타입**: String (JSON 파일 경로) 또는 Object (인라인 구성)
+**기본값**: `./.mcp.json`
 
-MCP server configuration location or inline definition.
+MCP 서버 구성 파일의 위치 또는 인라인 정의입니다.
 
-**File path**:
+**파일 경로**:
 ```json
 {
   "mcpServers": "./.mcp.json"
 }
 ```
 
-**Inline configuration**:
+**인라인 구성**:
 ```json
 {
   "mcpServers": {
@@ -324,133 +324,133 @@ MCP server configuration location or inline definition.
 }
 ```
 
-**Use cases**:
-- Simple plugins: Single inline server (< 20 lines)
-- Complex plugins: External `.mcp.json` file
-- Multiple servers: Always use external file
+**사용 사례**:
+- 단순한 플러그인: 단일 인라인 서버 구성 (< 20행)
+- 복잡한 플러그인: 외부 `.mcp.json` 파일 사용
+- 다중 서버: 항상 외부 파일 사용 권장
 
-## Path Resolution
+## 경로 해석 (Path Resolution)
 
-### Relative Path Rules
+### 상대 경로 규칙 (Relative Path Rules)
 
-All paths in component fields must follow these rules:
+컴포넌트 필드에 작성되는 모든 경로는 다음 규칙을 따라야 합니다:
 
-1. **Must be relative**: No absolute paths
-2. **Must start with `./`**: Indicates relative to plugin root
-3. **Cannot use `../`**: No parent directory navigation
-4. **Forward slashes only**: Even on Windows
+1. **반드시 상대 경로**: 절대 경로 불가능
+2. **반드시 `./`로 시작**: 플러그인 루트에 대한 상대 경로임을 표시
+3. **`../` 사용 불가능**: 상위 디렉토리 탐색 불가
+4. **슬래시(`/`)만 사용**: Windows 환경에서도 슬래시 사용
 
-**Examples**:
-- ✅ `"./commands"`
-- ✅ `"./src/commands"`
-- ✅ `"./configs/hooks.json"`
-- ❌ `"/Users/name/plugin/commands"`
-- ❌ `"commands"` (missing `./`)
-- ❌ `"../shared/commands"`
-- ❌ `".\\commands"` (backslash)
+**예시**:
+- ✅ 올바름: `"./commands"`
+- ✅ 올바름: `"./src/commands"`
+- ✅ 올바름: `"./configs/hooks.json"`
+- ❌ 잘못됨: `"/Users/name/plugin/commands"`
+- ❌ 잘못됨: `"commands"` (`./`가 없음)
+- ❌ 잘못됨: `"../shared/commands"`
+- ❌ 잘못됨: `".\\commands"` (백슬래시 사용)
 
-### Resolution Order
+### 해석 순서 (Resolution Order)
 
-When Claude Code loads components:
+Claude Code가 컴포넌트를 로드할 때:
 
-1. **Default directories**: Scans standard locations first
+1. **기본 디렉토리**: 표준 위치를 먼저 스캔합니다.
    - `./commands/`
    - `./agents/`
    - `./skills/`
    - `./hooks/hooks.json`
    - `./.mcp.json`
 
-2. **Custom paths**: Scans paths specified in manifest
-   - Paths from `commands` field
-   - Paths from `agents` field
-   - Files from `hooks` and `mcpServers` fields
+2. **맞춤 경로**: 매니페스트에 지정된 경로를 스캔합니다.
+   - `commands` 필드에 지정된 경로
+   - `agents` field에 지정된 경로
+   - `hooks` 및 `mcpServers` 필드에 지정된 파일
 
-3. **Merge behavior**: Components from all locations load
-   - No overwriting
-   - All discovered components register
-   - Name conflicts cause errors
+3. **병합 동작**: 모든 위치에서 감지된 컴포넌트들을 로드합니다.
+   - 덮어쓰지 않음
+   - 발견된 모든 컴포넌트 등록
+   - 이름 충돌 시 에러 발생
 
-## Validation
+## 검증 (Validation)
 
-### Manifest Validation
+### 매니페스트 검증 (Manifest Validation)
 
-Claude Code validates the manifest on plugin load:
+Claude Code는 플러그인 로드 시 매니페스트를 검증합니다:
 
-**Syntax validation**:
-- Valid JSON format
-- No syntax errors
-- Correct field types
+**구문 검증**:
+- 유효한 JSON 형식
+- 구문 오류 없음
+- 필드별 올바른 데이터 타입 사용
 
-**Field validation**:
-- `name` field present and valid format
-- `version` follows semantic versioning (if present)
-- Paths are relative with `./` prefix
-- URLs are valid (if present)
+**필드 검증**:
+- `name` 필드가 존재하며 형식이 올바름
+- `version`이 시맨틱 버저닝 규격을 따름 (존재할 경우)
+- 경로는 `./` 접두사를 포함하는 상대 경로 형식을 갖춤
+- URL 형식이 유효함 (존재할 경우)
 
-**Component validation**:
-- Referenced paths exist
-- Hook and MCP configurations are valid
-- No circular dependencies
+**컴포넌트 검증**:
+- 참조된 경로가 실제로 존재함
+- 훅 및 MCP 구성이 유효함
+- 순환 종속성이 없음
 
-### Common Validation Errors
+### 일반적인 검증 오류 (Common Validation Errors)
 
-**Invalid name format**:
+**잘못된 이름 형식**:
 ```json
 {
-  "name": "My Plugin"  // ❌ Contains spaces
+  "name": "My Plugin"  // ❌ 공백 포함
 }
 ```
-Fix: Use kebab-case
+해결 방법: kebab-case 사용
 ```json
 {
   "name": "my-plugin"  // ✅
 }
 ```
 
-**Absolute path**:
+**절대 경로 사용**:
 ```json
 {
-  "commands": "/Users/name/commands"  // ❌ Absolute path
+  "commands": "/Users/name/commands"  // ❌ 절대 경로 사용
 }
 ```
-Fix: Use relative path
+해결 방법: 상대 경로 사용
 ```json
 {
   "commands": "./commands"  // ✅
 }
 ```
 
-**Missing ./ prefix**:
+**./ 접두사 누락**:
 ```json
 {
-  "hooks": "hooks/hooks.json"  // ❌ No ./
+  "hooks": "hooks/hooks.json"  // ❌ ./ 접두사 누락
 }
 ```
-Fix: Add ./ prefix
+해결 방법: `./` 접두사 추가
 ```json
 {
   "hooks": "./hooks/hooks.json"  // ✅
 }
 ```
 
-**Invalid version**:
+**잘못된 버전 표기**:
 ```json
 {
-  "version": "1.0"  // ❌ Not semantic versioning
+  "version": "1.0"  // ❌ 시맨틱 버저닝이 아님
 }
 ```
-Fix: Use MAJOR.MINOR.PATCH
+해결 방법: MAJOR.MINOR.PATCH 형식 사용
 ```json
 {
   "version": "1.0.0"  // ✅
 }
 ```
 
-## Minimal vs. Complete Examples
+## 최소 구성 vs. 전체 구성 예시 (Minimal vs. Complete Examples)
 
-### Minimal Plugin
+### 최소 구성 플러그인 (Minimal Plugin)
 
-Bare minimum for a working plugin:
+작동 가능한 최소한의 플러그인 매니페스트:
 
 ```json
 {
@@ -458,11 +458,11 @@ Bare minimum for a working plugin:
 }
 ```
 
-Relies entirely on default directory discovery.
+기본 디렉토리 검색 방식에 완전히 의존합니다.
 
-### Recommended Plugin
+### 권장 플러그인 (Recommended Plugin)
 
-Good metadata for distribution:
+배포 및 공유를 위해 권장되는 메타데이터 세트:
 
 ```json
 {
@@ -480,9 +480,9 @@ Good metadata for distribution:
 }
 ```
 
-### Complete Plugin
+### 전체 구성 플러그인 (Complete Plugin)
 
-Full configuration with all features:
+모든 기능을 포함하는 완전한 구성:
 
 ```json
 {
@@ -518,35 +518,35 @@ Full configuration with all features:
 }
 ```
 
-## Best Practices
+## 권장 사항 (Best Practices)
 
-### Metadata
+### 메타데이터 (Metadata)
 
-1. **Always include version**: Track changes and updates
-2. **Write clear descriptions**: Help users understand plugin purpose
-3. **Provide contact information**: Enable user support
-4. **Link to documentation**: Reduce support burden
-5. **Choose appropriate license**: Match project goals
+1. **항상 버전을 포함시킬 것**: 변경 및 업데이트 기록 추적
+2. **명확한 설명을 작성할 것**: 사용자가 플러그인의 목적을 이해하도록 도움
+3. **연락처 정보를 제공할 것**: 사용자 지원 활성화
+4. **문서 링크 제공**: 지원 부담 감소
+5. **적절한 라이선스 선택**: 프로젝트 목표와 일치시킴
 
-### Paths
+### 경로 (Paths)
 
-1. **Use defaults when possible**: Minimize configuration
-2. **Organize logically**: Group related components
-3. **Document custom paths**: Explain why non-standard layout used
-4. **Test path resolution**: Verify on multiple systems
+1. **가능하면 기본 경로 사용**: 불필요한 설정 최소화
+2. **논리적인 정리**: 관련된 컴포넌트끼리 그룹화
+3. **맞춤 경로 문서화**: 비표준 레이아웃을 사용한 이유 기술
+4. **경로 해석 테스트**: 다양한 운영체제에서 경로 해석을 검증
 
-### Maintenance
+### 유지보수 (Maintenance)
 
-1. **Bump version on changes**: Follow semantic versioning
-2. **Update keywords**: Reflect new functionality
-3. **Keep description current**: Match actual capabilities
-4. **Maintain changelog**: Track version history
-5. **Update repository links**: Keep URLs current
+1. **변경 시 버전 업데이트**: 시맨틱 버저닝 규칙 준수
+2. **키워드 최신화**: 새로운 기능을 반영하도록 태그 수정
+3. **설명 내용 최신화**: 실제 플러그인의 기능 수준과 매칭
+4. **변경 이력 관리**: 버전별 히스토리 기록
+5. **저장소 링크 최신화**: 저장소 URL을 현재 상태로 유지
 
-### Distribution
+### 배포 (Distribution)
 
-1. **Complete metadata before publishing**: All fields filled
-2. **Test on clean install**: Verify plugin works without dev environment
-3. **Validate manifest**: Use validation tools
-4. **Include README**: Document installation and usage
-5. **Specify license file**: Include LICENSE file in plugin root
+1. **배포 전 메타데이터 작성 완료**: 모든 필수/권장 필드를 채움
+2. **클린 설치 환경에서 테스트**: 개발 환경이 아닌 곳에서도 플러그인이 정상 작동하는지 검증
+3. **매니페스트 검증**: 검증 도구 활용
+4. **README 포함**: 설치 및 사용법 기술
+5. **라이선스 파일 명시**: 플러그인 루트에 LICENSE 파일 포함

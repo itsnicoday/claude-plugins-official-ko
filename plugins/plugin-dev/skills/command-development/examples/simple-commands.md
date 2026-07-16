@@ -1,12 +1,12 @@
-# Simple Command Examples
+# 간단한 명령어 예시 (Simple Command Examples)
 
-Basic slash command patterns for common use cases.
+일반적인 사용 사례를 위한 기본적인 슬래시 명령어 패턴입니다.
 
-**Important:** All examples below are written as instructions FOR Claude (agent consumption), not messages TO users. Commands tell Claude what to do, not tell users what will happen.
+**중요:** 아래의 모든 예시는 사용자를 위한 메시지가 아니라 Claude를 위한 지침(에이전트 소비용)으로 작성되었습니다. 명령어는 사용자에게 어떤 일이 일어날지 알려주는 것이 아니라 Claude에게 무엇을 해야 하는지 알려줍니다.
 
-## Example 1: Code Review Command
+## 예시 1: 코드 리뷰 명령어 (Code Review Command)
 
-**File:** `.claude/commands/review.md`
+**파일:** `.claude/commands/review.md`
 
 ```markdown
 ---
@@ -34,16 +34,16 @@ Review the code in this repository for:
 Provide specific feedback with file and line references.
 ```
 
-**Usage:**
+**사용법:**
 ```
 > /review
 ```
 
 ---
 
-## Example 2: Security Review Command
+## 예시 2: 보안 리뷰 명령어 (Security Review Command)
 
-**File:** `.claude/commands/security-review.md`
+**파일:** `.claude/commands/security-review.md`
 
 ```markdown
 ---
@@ -77,16 +77,16 @@ For each issue found:
 Prioritize issues by severity.
 ```
 
-**Usage:**
+**사용법:**
 ```
 > /security-review
 ```
 
 ---
 
-## Example 3: Test Command with File Argument
+## 예시 3: 파일 인수를 사용하는 테스트 명령어 (Test Command with File Argument)
 
-**File:** `.claude/commands/test-file.md`
+**파일:** `.claude/commands/test-file.md`
 
 ```markdown
 ---
@@ -108,16 +108,16 @@ Analyze results:
 If failures found, suggest fixes based on error messages.
 ```
 
-**Usage:**
+**사용법:**
 ```
 > /test-file src/utils/helpers.test.ts
 ```
 
 ---
 
-## Example 4: Documentation Generator
+## 예시 4: 문서 생성기 (Documentation Generator)
 
-**File:** `.claude/commands/document.md`
+**파일:** `.claude/commands/document.md`
 
 ```markdown
 ---
@@ -153,16 +153,16 @@ Include:
 Format as Markdown suitable for project documentation.
 ```
 
-**Usage:**
+**사용법:**
 ```
 > /document src/api/users.ts
 ```
 
 ---
 
-## Example 5: Git Status Summary
+## 예시 5: Git 상태 요약 (Git Status Summary)
 
-**File:** `.claude/commands/git-status.md`
+**파일:** `.claude/commands/git-status.md`
 
 ```markdown
 ---
@@ -186,16 +186,16 @@ Provide:
 - Any warnings or issues
 ```
 
-**Usage:**
+**사용법:**
 ```
 > /git-status
 ```
 
 ---
 
-## Example 6: Deployment Command
+## 예시 6: 배포 명령어 (Deployment Command)
 
-**File:** `.claude/commands/deploy.md`
+**파일:** `.claude/commands/deploy.md`
 
 ```markdown
 ---
@@ -224,16 +224,16 @@ Document current version for rollback if issues occur.
 Proceed with deployment? (yes/no)
 ```
 
-**Usage:**
+**사용법:**
 ```
 > /deploy staging v1.2.3
 ```
 
 ---
 
-## Example 7: Comparison Command
+## 예시 7: 비교 명령어 (Comparison Command)
 
-**File:** `.claude/commands/compare-files.md`
+**파일:** `.claude/commands/compare-files.md`
 
 ```markdown
 ---
@@ -269,16 +269,16 @@ Compare @$1 with @$2
 Present as structured comparison report.
 ```
 
-**Usage:**
+**사용법:**
 ```
 > /compare-files src/old-api.ts src/new-api.ts
 ```
 
 ---
 
-## Example 8: Quick Fix Command
+## 예시 8: 빠른 수정 명령어 (Quick Fix Command)
 
-**File:** `.claude/commands/quick-fix.md`
+**파일:** `.claude/commands/quick-fix.md`
 
 ```markdown
 ---
@@ -304,7 +304,7 @@ Focus on:
 Provide code changes with file paths and line numbers.
 ```
 
-**Usage:**
+**사용법:**
 ```
 > /quick-fix button not responding to clicks
 > /quick-fix typo in error message
@@ -312,9 +312,9 @@ Provide code changes with file paths and line numbers.
 
 ---
 
-## Example 9: Research Command
+## 예시 9: 연구 명령어 (Research Command)
 
-**File:** `.claude/commands/research.md`
+**파일:** `.claude/commands/research.md`
 
 ```markdown
 ---
@@ -349,7 +349,7 @@ Research best practices for: $ARGUMENTS
 Provide actionable guidance based on research.
 ```
 
-**Usage:**
+**사용법:**
 ```
 > /research error handling in async operations
 > /research API authentication patterns
@@ -357,9 +357,9 @@ Provide actionable guidance based on research.
 
 ---
 
-## Example 10: Explain Code Command
+## 예시 10: 코드 설명 명령어 (Explain Code Command)
 
-**File:** `.claude/commands/explain.md`
+**파일:** `.claude/commands/explain.md`
 
 ```markdown
 ---
@@ -399,7 +399,7 @@ Explain @$1 in detail
 Explain at level appropriate for junior engineer.
 ```
 
-**Usage:**
+**사용법:**
 ```
 > /explain src/utils/cache.ts
 > /explain AuthService.login
@@ -407,9 +407,9 @@ Explain at level appropriate for junior engineer.
 
 ---
 
-## Key Patterns
+## 주요 패턴 (Key Patterns)
 
-### Pattern 1: Read-Only Analysis
+### 패턴 1: 읽기 전용 분석 (Read-Only Analysis)
 
 ```markdown
 ---
@@ -419,9 +419,9 @@ allowed-tools: Read, Grep
 Analyze but don't modify...
 ```
 
-**Use for:** Code review, documentation, analysis
+**용도:** 코드 리뷰, 문서화, 분석
 
-### Pattern 2: Git Operations
+### 패턴 2: Git 작업 (Git Operations)
 
 ```markdown
 ---
@@ -432,9 +432,9 @@ allowed-tools: Bash(git:*)
 Analyze and suggest...
 ```
 
-**Use for:** Repository status, commit analysis
+**용도:** 저장소 상태, 커밋 분석
 
-### Pattern 3: Single Argument
+### 패턴 3: 단일 인수 (Single Argument)
 
 ```markdown
 ---
@@ -444,9 +444,9 @@ argument-hint: [target]
 Process $1...
 ```
 
-**Use for:** File operations, targeted actions
+**용도:** 파일 작업, 특정 대상 작업
 
-### Pattern 4: Multiple Arguments
+### 패턴 4: 다중 인수 (Multiple Arguments)
 
 ```markdown
 ---
@@ -456,9 +456,9 @@ argument-hint: [source] [target] [options]
 Process $1 to $2 with $3...
 ```
 
-**Use for:** Workflows, deployments, comparisons
+**용도:** 워크플로우, 배포, 비교
 
-### Pattern 5: Fast Execution
+### 패턴 5: 빠른 실행 (Fast Execution)
 
 ```markdown
 ---
@@ -468,17 +468,17 @@ model: haiku
 Quick simple task...
 ```
 
-**Use for:** Simple, repetitive commands
+**용도:** 간단하고 반복적인 명령어
 
-### Pattern 6: File Comparison
+### 패턴 6: 파일 비교 (File Comparison)
 
 ```markdown
 Compare @$1 with @$2...
 ```
 
-**Use for:** Diff analysis, migration planning
+**용도:** Diff 분석, 마이그레이션 계획
 
-### Pattern 7: Context Gathering
+### 패턴 7: 컨텍스트 수집 (Context Gathering)
 
 ```markdown
 ---
@@ -491,14 +491,14 @@ Files: @file1 @file2
 Analyze...
 ```
 
-**Use for:** Informed decision making
+**용도:** 정보에 기반한 의사 결정
 
-## Tips for Writing Simple Commands
+## 간단한 명령어를 작성하기 위한 팁 (Tips for Writing Simple Commands)
 
-1. **Start basic:** Single responsibility, clear purpose
-2. **Add complexity gradually:** Start without frontmatter
-3. **Test incrementally:** Verify each feature works
-4. **Use descriptive names:** Command name should indicate purpose
-5. **Document arguments:** Always use argument-hint
-6. **Provide examples:** Show usage in comments
-7. **Handle errors:** Consider missing arguments or files
+1. **기본부터 시작하기:** 단일 책임, 명확한 목적
+2. **점진적으로 복잡성 추가하기:** 프론트매터 없이 시작하기
+3. **점진적으로 테스트하기:** 각 기능이 작동하는지 확인
+4. **설명적인 이름 사용하기:** 명령어 이름은 목적을 나타내야 함
+5. **인수 문서화하기:** 항상 argument-hint 사용하기
+6. **예시 제공하기:** 주석에 사용법 표시하기
+7. **에러 처리하기:** 누락된 인수나 파일 고려하기

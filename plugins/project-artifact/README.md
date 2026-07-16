@@ -1,38 +1,25 @@
 # project-artifact
 
-Generate and publish a **living status page** for a project that's too big for one update —
-a migration, a launch, a research effort, anything with several workstreams tracked over
-time. The page is a single self-contained tabbed HTML file (overview & success criteria,
-the workstream sequence, an always-visible "Next steps" strip, plus background / plan /
-risks / FAQ tabs when they earn their place), published with Claude Code's built-in
-`Artifact` tool to a private `claude.ai/code/artifact/...` page that you can share with
-teammates.
+한 번의 업데이트로는 다루기 힘든 규모가 큰 프로젝트를 위한 **살아있는 상태 페이지(living status page)**를 생성하고 게시합니다 —
+마이그레이션, 출시, 연구 작업 또는 시간에 따라 추적되는 여러 워크스트림이 있는 모든 프로젝트가 해당됩니다. 이 페이지는 단일 독립형 탭 HTML 파일(개요 및 성공 기준,
+워크스트림 순서, 항상 표시되는 "다음 단계(Next steps)" 띠지, 그리고 필요할 때 추가되는 배경 / 계획 /
+위험 / FAQ 탭 등)로 구성되며, Claude Code의 내장
+`Artifact` 도구를 사용하여 팀원들과 공유할 수 있는 비공개 `claude.ai/code/artifact/...` 페이지로 게시됩니다.
 
-## Usage
+## 사용법
 
-- **Create one:** run `/project-artifact` (or just ask for a status page for your project)
-  and point it at the project's sources — the repo and its PRs, a tracker, a design doc.
-  It builds the page, publishes it, and tells you the URL.
-- **Share it:** the page is private to you until you share it from the claude.ai viewer.
-- **Keep it current:** say "refresh the artifact" in any later session. The plugin
-  remembers the project's sources and the published URL, re-gathers live state, redeploys
-  to the **same URL**, and replies with a short summary of what changed.
+- **페이지 생성:** `/project-artifact`를 실행하거나(또는 프로젝트의 상태 페이지를 요청) 프로젝트 소스(저장소 및 PR, 트래커, 설계 문서 등)를 지정합니다. 페이지를 빌드 및 게시하고 URL을 안내합니다.
+- **공유:** claude.ai 뷰어에서 공유하기 전까지는 본인에게만 비공개로 유지됩니다.
+- **최신 상태 유지:** 이후 세션에서 "refresh the artifact"라고 말합니다. 플러그인이 프로젝트의 소스와 게시된 URL을 기억하고, 실시간 상태를 다시 수집하여 **동일한 URL**로 재배포한 뒤, 변경된 사항의 간략한 요약을 회신합니다.
 
-For software projects whose workstreams are pull requests, the page numbers the PR
-sequence so the dependency order is obvious and pulls live PR/CI/review state via the
-`gh` CLI.
+워크스트림이 풀 리퀘스트(PR)인 소프트웨어 프로젝트의 경우, 페이지에서 PR 순서에 번호를 매겨 의존성 순서를 명확하게 보여주고, `gh` CLI를 통해 실시간 PR/CI/검토 상태를 가져옵니다.
 
-## Requirements
+## 요구사항
 
-- Claude Code's built-in `Artifact` tool, which requires a claude.ai login (sessions on an
-  API key, Bedrock, or Vertex don't have it). Claude Code Artifacts are available in beta
-  on Team and Enterprise plans.
-- Optional: the `gh` CLI, for PR-driven projects.
+- Claude Code의 내장 `Artifact` 도구 (claude.ai 로그인이 필요하며, API 키, Bedrock, Vertex 세션에서는 제공되지 않습니다). Claude Code Artifact는 Team 및 Enterprise 플랜에서 베타 버전으로 제공됩니다.
+- 선택사항: PR 기반 프로젝트의 경우 `gh` CLI.
 
-## Notes
+## 참고 사항
 
-- Per-project state (the config and the latest render) lives in the plugin's data
-  directory on your machine; the published artifact is the shareable copy.
-- Artifact URLs are minted by the server. The plugin records yours after the first publish
-  so refreshes land on the same address — bookmark it or add it to your team's hub so
-  others can find it.
+- 프로젝트별 상태(설정 및 최신 렌더링 결과)는 로컬 컴퓨터의 플러그인 데이터 디렉터리에 저장되며, 게시된 아티팩트는 공유 가능한 사본입니다.
+- 아티팩트 URL은 서버에서 발급됩니다. 플러그인은 첫 번째 게시 이후 URL을 기록하여 새로 고침 시 동일한 주소로 연동되도록 합니다. 북마크에 추가하거나 팀의 허브에 등록하여 다른 사람들이 쉽게 찾을 수 있도록 하세요.

@@ -4,40 +4,40 @@ description: This skill should be used when the user asks to "create a slash com
 version: 0.2.0
 ---
 
-# Command Development for Claude Code
+# Claude Code를 위한 명령어 개발 (Command Development for Claude Code)
 
-> **Note:** The `.claude/commands/` directory is a legacy format. For new skills, use the `.claude/skills/<name>/SKILL.md` directory format. Both are loaded identically — the only difference is file layout. See the `skill-development` skill for the preferred format.
+> **참고:** `.claude/commands/` 디렉토리는 레거시 형식입니다. 새로운 스킬의 경우 `.claude/skills/<name>/SKILL.md` 디렉토리 형식을 사용하세요. 두 형식 모두 동일하게 로드되며, 유일한 차이점은 파일 레이아웃입니다. 선호되는 형식은 `skill-development` 스킬을 참조하세요.
 
-## Overview
+## 개요 (Overview)
 
-Slash commands are frequently-used prompts defined as Markdown files that Claude executes during interactive sessions. Understanding command structure, frontmatter options, and dynamic features enables creating powerful, reusable workflows.
+슬래시 명령어는 Claude가 대화식 세션 중에 실행하는 마크다운 파일로 정의된 자주 사용되는 프롬프트입니다. 명령어 구조, 프론트매터 옵션 및 동적 기능을 이해하면 강력하고 재사용 가능한 워크플로우를 생성할 수 있습니다.
 
-**Key concepts:**
+**주요 개념:**
 
-- Markdown file format for commands
-- YAML frontmatter for configuration
-- Dynamic arguments and file references
-- Bash execution for context
-- Command organization and namespacing
+- 명령어를 위한 마크다운 파일 형식
+- 구성을 위한 YAML 프론트매터
+- 동적 인수 및 파일 참조
+- 컨텍스트를 위한 Bash 실행
+- 명령어 구성 및 네임스페이스 지정
 
-## Command Basics
+## 명령어 기초 (Command Basics)
 
-### What is a Slash Command?
+### 슬래시 명령어란 무엇인가요? (What is a Slash Command?)
 
-A slash command is a Markdown file containing a prompt that Claude executes when invoked. Commands provide:
+슬래시 명령어는 호출 시 Claude가 실행하는 프롬프트가 포함된 마크다운 파일입니다. 명령어는 다음을 제공합니다:
 
-- **Reusability**: Define once, use repeatedly
-- **Consistency**: Standardize common workflows
-- **Sharing**: Distribute across team or projects
-- **Efficiency**: Quick access to complex prompts
+- **재사용성**: 한 번 정의하고 반복해서 사용 가능
+- **일관성**: 공통 워크플로우 표준화
+- **공유**: 팀 또는 프로젝트 간에 배포
+- **효율성**: 복잡한 프롬프트에 신속하게 접근
 
-### Critical: Commands are Instructions FOR Claude
+### 중요: 명령어는 Claude를 위한 지침입니다 (Critical: Commands are Instructions FOR Claude)
 
-**Commands are written for agent consumption, not human consumption.**
+**명령어는 인간이 아닌 에이전트(Claude)가 읽을 목적으로 작성됩니다.**
 
-When a user invokes `/command-name`, the command content becomes Claude's instructions. Write commands as directives TO Claude about what to do, not as messages TO the user.
+사용자가 `/command-name`을 호출하면 명령어 내용이 Claude의 지침이 됩니다. 명령어를 사용자에게 전달할 메시지가 아니라, Claude가 수행해야 할 작업에 대한 지시 사항으로 작성하세요.
 
-**Correct approach (instructions for Claude):**
+**올바른 접근 방식 (Claude를 위한 지침):**
 
 ```markdown
 Review this code for security vulnerabilities including:
@@ -49,52 +49,52 @@ Review this code for security vulnerabilities including:
 Provide specific line numbers and severity ratings.
 ```
 
-**Incorrect approach (messages to user):**
+**잘못된 접근 방식 (사용자에게 전달하는 메시지):**
 
 ```markdown
 This command will review your code for security issues.
 You'll receive a report with vulnerability details.
 ```
 
-The first example tells Claude what to do. The second tells the user what will happen but doesn't instruct Claude. Always use the first approach.
+첫 번째 예시는 Claude에게 무엇을 해야 하는지 알려줍니다. 두 번째 예시는 사용자에게 어떤 일이 일어날지 알려주지만 Claude에게는 지시하지 않습니다. 항상 첫 번째 접근 방식을 사용하세요.
 
-### Command Locations
+### 명령어 위치 (Command Locations)
 
-**Project commands** (shared with team):
+**프로젝트 명령어** (팀과 공유):
 
-- Location: `.claude/commands/`
-- Scope: Available in specific project
-- Label: Shown as "(project)" in `/help`
-- Use for: Team workflows, project-specific tasks
+- 위치: `.claude/commands/`
+- 범위: 특정 프로젝트에서 사용 가능
+- 라벨: `/help`에서 "(project)"로 표시됨
+- 용도: 팀 워크플로우, 프로젝트 전용 작업
 
-**Personal commands** (available everywhere):
+**개인 명령어** (모든 곳에서 사용 가능):
 
-- Location: `~/.claude/commands/`
-- Scope: Available in all projects
-- Label: Shown as "(user)" in `/help`
-- Use for: Personal workflows, cross-project utilities
+- 위치: `~/.claude/commands/`
+- 범위: 모든 프로젝트에서 사용 가능
+- 라벨: `/help`에서 "(user)"로 표시됨
+- 용도: 개인 워크플로우, 크로스 프로젝트 유틸리티
 
-**Plugin commands** (bundled with plugins):
+**플러그인 명령어** (플러그인과 함께 번들로 제공):
 
-- Location: `plugin-name/commands/`
-- Scope: Available when plugin installed
-- Label: Shown as "(plugin-name)" in `/help`
-- Use for: Plugin-specific functionality
+- 위치: `plugin-name/commands/`
+- 범위: 플러그인이 설치되었을 때 사용 가능
+- 라벨: `/help`에서 "(plugin-name)"로 표시됨
+- 용도: 플러그인 전용 기능
 
-## File Format
+## 파일 형식 (File Format)
 
-### Basic Structure
+### 기본 구조 (Basic Structure)
 
-Commands are Markdown files with `.md` extension:
+명령어는 `.md` 확장자를 가진 마크다운 파일입니다:
 
 ```
 .claude/commands/
-├── review.md           # /review command
-├── test.md             # /test command
-└── deploy.md           # /deploy command
+├── review.md           # /review 명령어
+├── test.md             # /test 명령어
+└── deploy.md           # /deploy 명령어
 ```
 
-**Simple command:**
+**간단한 명령어:**
 
 ```markdown
 Review this code for security vulnerabilities including:
@@ -105,11 +105,11 @@ Review this code for security vulnerabilities including:
 - Insecure data handling
 ```
 
-No frontmatter needed for basic commands.
+기본 명령어에는 프론트매터가 필요하지 않습니다.
 
-### With YAML Frontmatter
+### YAML 프론트매터 사용 (With YAML Frontmatter)
 
-Add configuration using YAML frontmatter:
+YAML 프론트매터를 사용하여 구성을 추가합니다:
 
 ```markdown
 ---
@@ -121,13 +121,13 @@ model: sonnet
 Review this code for security vulnerabilities...
 ```
 
-## YAML Frontmatter Fields
+## YAML 프론트매터 필드 (YAML Frontmatter Fields)
 
 ### description
 
-**Purpose:** Brief description shown in `/help`
-**Type:** String
-**Default:** First line of command prompt
+**목적:** `/help`에 표시되는 간단한 설명
+**타입:** String
+**기본값:** 명령어 프롬프트의 첫 번째 줄
 
 ```yaml
 ---
@@ -135,13 +135,13 @@ description: Review pull request for code quality
 ---
 ```
 
-**Best practice:** Clear, actionable description (under 60 characters)
+**권장 사항:** 명확하고 실행 가능한 설명 (60자 미만)
 
 ### allowed-tools
 
-**Purpose:** Specify which tools command can use
-**Type:** String or Array
-**Default:** Inherits from conversation
+**목적:** 명령어가 사용할 수 있는 도구 지정
+**타입:** String 또는 Array
+**기본값:** 대화에서 상속됨
 
 ```yaml
 ---
@@ -149,19 +149,19 @@ allowed-tools: Read, Write, Edit, Bash(git:*)
 ---
 ```
 
-**Patterns:**
+**패턴:**
 
-- `Read, Write, Edit` - Specific tools
-- `Bash(git:*)` - Bash with git commands only
-- `*` - All tools (rarely needed)
+- `Read, Write, Edit` - 특정 도구
+- `Bash(git:*)` - git 명령어만 사용하는 Bash
+- `*` - 모든 도구 (거의 필요하지 않음)
 
-**Use when:** Command requires specific tool access
+**용도:** 명령어가 특정 도구에 대한 접근 권한을 필요로 할 때 사용
 
 ### model
 
-**Purpose:** Specify model for command execution
-**Type:** String (sonnet, opus, haiku)
-**Default:** Inherits from conversation
+**목적:** 명령어 실행을 위한 모델 지정
+**타입:** String (sonnet, opus, haiku)
+**기본값:** 대화에서 상속됨
 
 ```yaml
 ---
@@ -169,17 +169,17 @@ model: haiku
 ---
 ```
 
-**Use cases:**
+**사용 사례:**
 
-- `haiku` - Fast, simple commands
-- `sonnet` - Standard workflows
-- `opus` - Complex analysis
+- `haiku` - 빠르고 간단한 명령어
+- `sonnet` - 표준 워크플로우
+- `opus` - 복잡한 분석
 
 ### argument-hint
 
-**Purpose:** Document expected arguments for autocomplete
-**Type:** String
-**Default:** None
+**목적:** 자동 완성을 위해 예상되는 인수를 문서화
+**타입:** String
+**기본값:** 없음
 
 ```yaml
 ---
@@ -187,17 +187,17 @@ argument-hint: [pr-number] [priority] [assignee]
 ---
 ```
 
-**Benefits:**
+**장점:**
 
-- Helps users understand command arguments
-- Improves command discovery
-- Documents command interface
+- 사용자가 명령어 인수를 이해하는 데 도움을 줌
+- 명령어 검색 가능성 개선
+- 명령어 인터페이스 문서화
 
 ### disable-model-invocation
 
-**Purpose:** Prevent SlashCommand tool from programmatically calling command
-**Type:** Boolean
-**Default:** false
+**목적:** SlashCommand 도구가 프로그래밍 방식으로 명령어를 호출하지 못하도록 방지
+**타입:** Boolean
+**기본값:** false
 
 ```yaml
 ---
@@ -205,13 +205,13 @@ disable-model-invocation: true
 ---
 ```
 
-**Use when:** Command should only be manually invoked
+**용도:** 명령어가 수동으로만 호출되어야 할 때 사용
 
-## Dynamic Arguments
+## 동적 인수 (Dynamic Arguments)
 
-### Using $ARGUMENTS
+### $ARGUMENTS 사용하기 (Using $ARGUMENTS)
 
-Capture all arguments as single string:
+모든 인수를 단일 문자열로 캡처합니다:
 
 ```markdown
 ---
@@ -222,23 +222,23 @@ argument-hint: [issue-number]
 Fix issue #$ARGUMENTS following our coding standards and best practices.
 ```
 
-**Usage:**
+**사용법:**
 
 ```
 > /fix-issue 123
 > /fix-issue 456
 ```
 
-**Expands to:**
+**확장된 결과:**
 
 ```
 Fix issue #123 following our coding standards...
 Fix issue #456 following our coding standards...
 ```
 
-### Using Positional Arguments
+### 위치 인수 사용하기 (Using Positional Arguments)
 
-Capture individual arguments with `$1`, `$2`, `$3`, etc.:
+`$1`, `$2`, `$3` 등으로 개별 인수를 캡처합니다:
 
 ```markdown
 ---
@@ -250,44 +250,44 @@ Review pull request #$1 with priority level $2.
 After review, assign to $3 for follow-up.
 ```
 
-**Usage:**
+**사용법:**
 
 ```
 > /review-pr 123 high alice
 ```
 
-**Expands to:**
+**확장된 결과:**
 
 ```
 Review pull request #123 with priority level high.
 After review, assign to alice for follow-up.
 ```
 
-### Combining Arguments
+### 인수 결합하기 (Combining Arguments)
 
-Mix positional and remaining arguments:
+위치 인수와 나머지 인수를 혼합합니다:
 
 ```markdown
 Deploy $1 to $2 environment with options: $3
 ```
 
-**Usage:**
+**사용법:**
 
 ```
 > /deploy api staging --force --skip-tests
 ```
 
-**Expands to:**
+**확장된 결과:**
 
 ```
 Deploy api to staging environment with options: --force --skip-tests
 ```
 
-## File References
+## 파일 참조 (File References)
 
-### Using @ Syntax
+### @ 구문 사용하기 (Using @ Syntax)
 
-Include file contents in command:
+명령어에 파일 내용을 포함합니다:
 
 ```markdown
 ---
@@ -302,17 +302,17 @@ Review @$1 for:
 - Potential bugs
 ```
 
-**Usage:**
+**사용법:**
 
 ```
 > /review-file src/api/users.ts
 ```
 
-**Effect:** Claude reads `src/api/users.ts` before processing command
+**효과:** Claude는 명령어를 처리하기 전에 `src/api/users.ts`를 읽습니다.
 
-### Multiple File References
+### 다중 파일 참조 (Multiple File References)
 
-Reference multiple files:
+여러 파일을 참조합니다:
 
 ```markdown
 Compare @src/old-version.js with @src/new-version.js
@@ -324,9 +324,9 @@ Identify:
 - Bug fixes
 ```
 
-### Static File References
+### 정적 파일 참조 (Static File References)
 
-Reference known files without arguments:
+인수 없이 알려진 파일을 참조합니다:
 
 ```markdown
 Review @package.json and @tsconfig.json for consistency
@@ -338,24 +338,24 @@ Ensure:
 - Build configuration is correct
 ```
 
-## Bash Execution in Commands
+## 명령어 내 Bash 실행 (Bash Execution in Commands)
 
-Commands can execute bash commands inline to dynamically gather context before Claude processes the command. This is useful for including repository state, environment information, or project-specific context.
+명령어는 Claude가 명령어를 처리하기 전에 동적으로 컨텍스트를 수집하기 위해 인라인으로 bash 명령어를 실행할 수 있습니다. 이는 저장소 상태, 환경 정보 또는 프로젝트별 컨텍스트를 포함하는 데 유용합니다.
 
-**When to use:**
+**사용 시기:**
 
-- Include dynamic context (git status, environment vars, etc.)
-- Gather project/repository state
-- Build context-aware workflows
+- 동적 컨텍스트(git status, 환경 변수 등) 포함
+- 프로젝트/저장소 상태 수집
+- 컨텍스트 인식 워크플로우 빌드
 
-**Implementation details:**
-For complete syntax, examples, and best practices, see `references/plugin-features-reference.md` section on bash execution. The reference includes the exact syntax and multiple working examples to avoid execution issues
+**구현 세부 정보:**
+전체 구문, 예시 및 권장 사항은 `references/plugin-features-reference.md`에서 bash 실행 섹션을 참조하세요. 이 참조에는 실행 문제를 방지하기 위한 정확한 구문과 여러 작동 예시가 포함되어 있습니다.
 
-## Command Organization
+## 명령어 구성 (Command Organization)
 
-### Flat Structure
+### 플랫 구조 (Flat Structure)
 
-Simple organization for small command sets:
+소규모 명령어 세트를 위한 간단한 구성:
 
 ```
 .claude/commands/
@@ -366,11 +366,11 @@ Simple organization for small command sets:
 └── docs.md
 ```
 
-**Use when:** 5-15 commands, no clear categories
+**사용 시기:** 명령어 개수가 5~15개이며 명확한 카테고리가 없을 때
 
-### Namespaced Structure
+### 네임스페이스 구조 (Namespaced Structure)
 
-Organize commands in subdirectories:
+하위 디렉토리에 명령어를 구성합니다:
 
 ```
 .claude/commands/
@@ -386,30 +386,30 @@ Organize commands in subdirectories:
     └── publish.md      # /publish (project:docs)
 ```
 
-**Benefits:**
+**장점:**
 
-- Logical grouping by category
-- Namespace shown in `/help`
-- Easier to find related commands
+- 카테고리별 논리적 그룹화
+- `/help`에 네임스페이스 표시됨
+- 관련된 명령어 검색이 쉬워짐
 
-**Use when:** 15+ commands, clear categories
+**사용 시기:** 명령어 개수가 15개 이상이며 명확한 카테고리가 있을 때
 
-## Best Practices
+## 권장 사항 (Best Practices)
 
-### Command Design
+### 명령어 설계 (Command Design)
 
-1. **Single responsibility:** One command, one task
-2. **Clear descriptions:** Self-explanatory in `/help`
-3. **Explicit dependencies:** Use `allowed-tools` when needed
-4. **Document arguments:** Always provide `argument-hint`
-5. **Consistent naming:** Use verb-noun pattern (review-pr, fix-issue)
+1. **단일 책임:** 하나의 명령어는 하나의 작업만 수행
+2. **명확한 설명:** `/help`에서 직관적으로 이해할 수 있는 설명
+3. **명시적 의존성:** 필요한 경우 `allowed-tools` 사용
+4. **인수 문서화:** 항상 `argument-hint` 제공
+5. **일관된 네이밍:** 동사-명사 패턴 사용 (review-pr, fix-issue)
 
-### Argument Handling
+### 인수 처리 (Argument Handling)
 
-1. **Validate arguments:** Check for required arguments in prompt
-2. **Provide defaults:** Suggest defaults when arguments missing
-3. **Document format:** Explain expected argument format
-4. **Handle edge cases:** Consider missing or invalid arguments
+1. **인수 검증:** 프롬프트에서 필수 인수가 있는지 확인
+2. **기본값 제공:** 인수가 누락되었을 때 기본값 제안
+3. **문서 형식:** 예상되는 인수 형식 설명
+4. **예외 케이스 처리:** 누락되었거나 잘못된 인수 고려
 
 ```markdown
 ---
@@ -422,26 +422,26 @@ Please provide a PR number. Usage: /review-pr [number]
 )
 ```
 
-### File References
+### 파일 참조 (File References)
 
-1. **Explicit paths:** Use clear file paths
-2. **Check existence:** Handle missing files gracefully
-3. **Relative paths:** Use project-relative paths
-4. **Glob support:** Consider using Glob tool for patterns
+1. **명시적 경로:** 명확한 파일 경로 사용
+2. **존재 확인:** 누락된 파일을 정상적으로 처리
+3. **상대 경로:** 프로젝트 상대 경로 사용
+4. **Glob 지원:** 패턴에 Glob 도구 사용 고려
 
-### Bash Commands
+### Bash 명령어 (Bash Commands)
 
-1. **Limit scope:** Use `Bash(git:*)` not `Bash(*)`
-2. **Safe commands:** Avoid destructive operations
-3. **Handle errors:** Consider command failures
-4. **Keep fast:** Long-running commands slow invocation
+1. **범위 제한:** `Bash(*)` 대신 `Bash(git:*)` 사용
+2. **안전한 명령어:** 파괴적인 작업 방지
+3. **에러 처리:** 명령어 실패 고려
+4. **빠른 실행 유지:** 실행 시간이 긴 명령어는 호출을 지연시킴
 
-### Documentation
+### 문서화 (Documentation)
 
-1. **Add comments:** Explain complex logic
-2. **Provide examples:** Show usage in comments
-3. **List requirements:** Document dependencies
-4. **Version commands:** Note breaking changes
+1. **주석 추가:** 복잡한 로직 설명
+2. **예시 제공:** 주석에 사용법 표시
+3. **요구 사항 나열:** 종속성 문서화
+4. **명령어 버전 관리:** 주요 변경 사항 기록
 
 ```markdown
 ---
@@ -458,9 +458,9 @@ Example: /deploy staging v1.2.3
 Deploy application to $1 environment using version $2...
 ```
 
-## Common Patterns
+## 공통 패턴 (Common Patterns)
 
-### Review Pattern
+### 리뷰 패턴 (Review Pattern)
 
 ```markdown
 ---
@@ -480,7 +480,7 @@ Review each file for:
 Provide specific feedback for each file.
 ```
 
-### Testing Pattern
+### 테스트 패턴 (Testing Pattern)
 
 ```markdown
 ---
@@ -494,7 +494,7 @@ Run tests: !`npm test $1`
 Analyze results and suggest fixes for failures.
 ```
 
-### Documentation Pattern
+### 문서화 패턴 (Documentation Pattern)
 
 ```markdown
 ---
@@ -511,7 +511,7 @@ Generate comprehensive documentation for @$1 including:
 - Edge cases and errors
 ```
 
-### Workflow Pattern
+### 워크플로우 패턴 (Workflow Pattern)
 
 ```markdown
 ---
@@ -528,49 +528,49 @@ PR #$1 Workflow:
 4. Approve or request changes
 ```
 
-## Troubleshooting
+## 문제 해결 (Troubleshooting)
 
-**Command not appearing:**
+**명령어가 나타나지 않음:**
 
-- Check file is in correct directory
-- Verify `.md` extension present
-- Ensure valid Markdown format
-- Restart Claude Code
+- 파일이 올바른 디렉토리에 있는지 확인
+- `.md` 확장자가 있는지 검증
+- 유효한 마크다운 형식인지 확인
+- Claude Code 재시작
 
-**Arguments not working:**
+**인수가 작동하지 않음:**
 
-- Verify `$1`, `$2` syntax correct
-- Check `argument-hint` matches usage
-- Ensure no extra spaces
+- `$1`, `$2` 구문이 올바른지 검증
+- `argument-hint`가 사용법과 일치하는지 확인
+- 불필요한 공백이 없는지 확인
 
-**Bash execution failing:**
+**Bash 실행 실패:**
 
-- Check `allowed-tools` includes Bash
-- Verify command syntax in backticks
-- Test command in terminal first
-- Check for required permissions
+- `allowed-tools`에 Bash가 포함되어 있는지 확인
+- 백틱 안의 명령어 구문 확인
+- 터미널에서 명령어를 먼저 테스트
+- 필요한 권한 확인
 
-**File references not working:**
+**파일 참조가 작동하지 않음:**
 
-- Verify `@` syntax correct
-- Check file path is valid
-- Ensure Read tool allowed
-- Use absolute or project-relative paths
+- `@` 구문이 올바른지 검증
+- 파일 경로가 유효한지 확인
+- Read 도구가 허용되었는지 확인
+- 절대 경로 또는 프로젝트 상대 경로 사용
 
-## Plugin-Specific Features
+## 플러그인 전용 기능 (Plugin-Specific Features)
 
-### CLAUDE_PLUGIN_ROOT Variable
+### CLAUDE_PLUGIN_ROOT 변수 (CLAUDE_PLUGIN_ROOT Variable)
 
-Plugin commands have access to `${CLAUDE_PLUGIN_ROOT}`, an environment variable that resolves to the plugin's absolute path.
+플러그인 명령어는 플러그인의 절대 경로로 해석되는 환경 변수인 `${CLAUDE_PLUGIN_ROOT}`에 접근할 수 있습니다.
 
-**Purpose:**
+**목적:**
 
-- Reference plugin files portably
-- Execute plugin scripts
-- Load plugin configuration
-- Access plugin templates
+- 이식 가능한 방식으로 플러그인 파일 참조
+- 플러그인 스크립트 실행
+- 플러그인 구성 로드
+- 플러그인 템플릿 사용
 
-**Basic usage:**
+**기본 사용법:**
 
 ```markdown
 ---
@@ -583,7 +583,7 @@ Run analysis: !`node ${CLAUDE_PLUGIN_ROOT}/scripts/analyze.js $1`
 Review results and report findings.
 ```
 
-**Common patterns:**
+**공통 패턴:**
 
 ```markdown
 # Execute plugin script
@@ -603,16 +603,16 @@ Review results and report findings.
 @${CLAUDE_PLUGIN_ROOT}/docs/reference.md
 ```
 
-**Why use it:**
+**사용해야 하는 이유:**
 
-- Works across all installations
-- Portable between systems
-- No hardcoded paths needed
-- Essential for multi-file plugins
+- 모든 설치 환경에서 작동
+- 시스템 간 이식성 보장
+- 하드코딩된 경로가 필요 없음
+- 다중 파일 플러그인에 필수적
 
-### Plugin Command Organization
+### 플러그인 명령어 구성 (Plugin Command Organization)
 
-Plugin commands discovered automatically from `commands/` directory:
+플러그인 명령어는 `commands/` 디렉토리에서 자동으로 검색됩니다:
 
 ```
 plugin-name/
@@ -624,23 +624,23 @@ plugin-name/
 └── plugin.json
 ```
 
-**Namespace benefits:**
+**네임스페이스 장점:**
 
-- Logical command grouping
-- Shown in `/help` output
-- Avoid name conflicts
-- Organize related commands
+- 논리적 명령어 그룹화
+- `/help` 출력에 표시됨
+- 이름 충돌 방지
+- 관련된 명령어 구성
 
-**Naming conventions:**
+**명명 규칙:**
 
-- Use descriptive action names
-- Avoid generic names (test, run)
-- Consider plugin-specific prefix
-- Use hyphens for multi-word names
+- 설명적인 동작 이름 사용
+- 제네릭 이름(test, run) 피하기
+- 플러그인 전용 접두사 고려
+- 단어가 여러 개인 경우 하이픈 사용
 
-### Plugin Command Patterns
+### 플러그인 명령어 패턴 (Plugin Command Patterns)
 
-**Configuration-based pattern:**
+**구성 기반 패턴:**
 
 ```markdown
 ---
@@ -655,7 +655,7 @@ Deploy to $1 using configuration settings.
 Monitor deployment and report status.
 ```
 
-**Template-based pattern:**
+**템플릿 기반 패턴:**
 
 ```markdown
 ---
@@ -668,7 +668,7 @@ Template: @${CLAUDE_PLUGIN_ROOT}/templates/docs.md
 Generate documentation for $1 following template structure.
 ```
 
-**Multi-script pattern:**
+**다중 스크립트 패턴:**
 
 ```markdown
 ---
@@ -683,15 +683,15 @@ Package: !`bash ${CLAUDE_PLUGIN_ROOT}/scripts/package.sh`
 Review outputs and report workflow status.
 ```
 
-**See `references/plugin-features-reference.md` for detailed patterns.**
+**자세한 패턴은 `references/plugin-features-reference.md`를 참조하세요.**
 
-## Integration with Plugin Components
+## 플러그인 컴포넌트와의 통합 (Integration with Plugin Components)
 
-Commands can integrate with other plugin components for powerful workflows.
+명령어는 강력한 워크플로우를 위해 다른 플러그인 컴포넌트와 통합할 수 있습니다.
 
-### Agent Integration
+### 에이전트 통합 (Agent Integration)
 
-Launch plugin agents for complex tasks:
+복잡한 작업을 위해 플러그인 에이전트를 시작합니다:
 
 ```markdown
 ---
@@ -714,16 +714,16 @@ Agent uses plugin resources:
 - ${CLAUDE_PLUGIN_ROOT}/checklists/review.md
 ```
 
-**Key points:**
+**주요 사항:**
 
-- Agent must exist in `plugin/agents/` directory
-- Claude uses Task tool to launch agent
-- Document agent capabilities
-- Reference plugin resources agent uses
+- 에이전트는 `plugin/agents/` 디렉토리에 존재해야 합니다.
+- Claude는 Task 도구를 사용하여 에이전트를 실행합니다.
+- 에이전트 기능 문서화
+- 에이전트가 사용하는 플러그인 리소스 참조
 
-### Skill Integration
+### 스킬 통합 (Skill Integration)
 
-Leverage plugin skills for specialized knowledge:
+전문 지식을 위해 플러그인 스킬을 활용합니다:
 
 ```markdown
 ---
@@ -743,27 +743,27 @@ Use the api-docs-standards skill to ensure:
 Generate production-ready API docs.
 ```
 
-**Key points:**
+**주요 사항:**
 
-- Skill must exist in `plugin/skills/` directory
-- Mention skill name to trigger invocation
-- Document skill purpose
-- Explain what skill provides
+- 스킬은 `plugin/skills/` 디렉토리에 존재해야 합니다.
+- 호출을 트리거하기 위해 스킬 이름 언급
+- 스킬 목적 문서화
+- 스킬이 제공하는 기능 설명
 
-### Hook Coordination
+### 훅 조정 (Hook Coordination)
 
-Design commands that work with plugin hooks:
+플러그인 훅과 함께 작동하는 명령어를 설계합니다:
 
-- Commands can prepare state for hooks to process
-- Hooks execute automatically on tool events
-- Commands should document expected hook behavior
-- Guide Claude on interpreting hook output
+- 명령어는 훅이 처리할 수 있는 상태를 준비할 수 있습니다.
+- 훅은 도구 이벤트 시 자동으로 실행됩니다.
+- 명령어는 예상되는 훅의 동작을 문서화해야 합니다.
+- Claude에게 훅 출력의 해석 방법을 안내합니다.
 
-See `references/plugin-features-reference.md` for examples of commands that coordinate with hooks
+훅과 조정하는 명령어 예시는 `references/plugin-features-reference.md`를 참조하세요.
 
-### Multi-Component Workflows
+### 다중 컴포넌트 워크플로우 (Multi-Component Workflows)
 
-Combine agents, skills, and scripts:
+에이전트, 스킬 및 스크립트를 결합합니다:
 
 ```markdown
 ---
@@ -789,18 +789,18 @@ Template: @${CLAUDE_PLUGIN_ROOT}/templates/review.md
 Compile findings into report following template.
 ```
 
-**When to use:**
+**사용 시기:**
 
-- Complex multi-step workflows
-- Leverage multiple plugin capabilities
-- Require specialized analysis
-- Need structured outputs
+- 복잡한 다단계 워크플로우
+- 여러 플러그인 기능 활용
+- 세분화된 분석 요구
+- 구조화된 출력 필요
 
-## Validation Patterns
+## 검증 패턴 (Validation Patterns)
 
-Commands should validate inputs and resources before processing.
+명령어는 처리하기 전에 입력 및 리소스를 검증해야 합니다.
 
-### Argument Validation
+### 인수 검증 (Argument Validation)
 
 ```markdown
 ---
@@ -817,7 +817,7 @@ Explain valid environments: dev, staging, prod
 Show usage: /deploy [environment]
 ```
 
-### File Existence Checks
+### 파일 존재 여부 확인 (File Existence Checks)
 
 ```markdown
 ---
@@ -835,7 +835,7 @@ Show expected format
 Provide example configuration
 ```
 
-### Plugin Resource Validation
+### 플러그인 리소스 검증 (Plugin Resource Validation)
 
 ```markdown
 ---
@@ -852,7 +852,7 @@ If all checks pass, run analysis.
 Otherwise, report missing components.
 ```
 
-### Error Handling
+### 에러 처리 (Error Handling)
 
 ```markdown
 ---
@@ -870,15 +870,15 @@ Suggest likely causes
 Provide troubleshooting steps
 ```
 
-**Best practices:**
+**권장 사항:**
 
-- Validate early in command
-- Provide helpful error messages
-- Suggest corrective actions
-- Handle edge cases gracefully
+- 명령어 초기에 유효성 검사 수행
+- 유용한 에러 메시지 제공
+- 조치 사항 제안
+- 에러 상황을 우아하게 처리
 
 ---
 
-For detailed frontmatter field specifications, see `references/frontmatter-reference.md`.
-For plugin-specific features and patterns, see `references/plugin-features-reference.md`.
-For command pattern examples, see `examples/` directory.
+자세한 프론트매터 필드 사양은 `references/frontmatter-reference.md`를 참조하세요.
+플러그인 전용 기능 및 패턴은 `references/plugin-features-reference.md`를 참조하세요.
+명령어 패턴 예시는 `examples/` 디렉토리를 참조하세요.

@@ -1,68 +1,38 @@
-# Presentation Pass — Prompts and Templates
+# 프레젠테이션 단계 — 프롬프트 및 템플릿 (Presentation Pass)
 
-**Premise**: Aletheia's PDFs are beautiful; raw IMO output is not. The
-difference is a _presentation pass_: after a proof is **verified correct**, a
-fresh agent — one who didn't sweat through the discovery — finds the cleanest
-way to say it. The discoverer is too attached to the scaffolding.
+**전제**: Aletheia의 PDF는 아름답지만, 가공되지 않은 raw IMO 출력 결과물은 그렇지 못합니다. 그 차이는 *프레젠테이션 단계(presentation pass)*에 있습니다. 증명이 **검증 완료(correct)**된 후, 문제 해결을 위해 씨름하지 않았던 새로운 에이전트가 이를 가장 깔끔하게 표현하는 방식을 찾아냅니다. 문제를 직접 푼 에이전트는 이미 본인이 구축한 논리 전개 골격에 지나치게 얽매여 있기 마련입니다.
 
-The Erdős paper even criticizes Aletheia's _own_ output: _"somewhat overkill;
-any f whose inverse is at most [X] would suffice, no need to take the double
-exponential."_ The presentation pass is where overkill goes to die.
+에르되시(Erdős) 논문은 심지어 Aletheia의 *자체* 출력에 대해서도 비판한 바 있습니다: *"다소 지나친 비약(overkill)이다. 역함수가 기껏해야 [X]인 어떤 f로도 충분한데, 이중 지수를 가져올 필요가 없다."* 프레젠테이션 단계는 이러한 지나친 비약(overkill)을 걷어내는 과정입니다.
 
 ---
 
-## 1. The Presentation Pass Prompt
+## 1. 프레젠테이션 단계 프롬프트 (The Presentation Pass Prompt)
 
-Paste this to a **fresh subagent** along with the verified proof. The agent must
-not have discovery-context; that's the point.
+검증된 증명과 함께 이 프롬프트를 **새로운 서브에이전트**에 입력하십시오. 에이전트가 문제를 푸는 과정의 맥락(discovery-context)을 모르는 상태여야 한다는 점이 핵심입니다.
 
-> You are given a **verified, correct proof**. Your job is not to check it — it
-> is correct. Your job is to find the **cleanest presentation**. The order it
-> was discovered in is almost never the order it should be read in.
+> 귀하에게는 **검증을 통과한 올바른 증명**이 주어집니다. 귀하가 할 일은 이를 검증하는 것이 아닙니다 — 증명은 이미 올바릅니다. 귀하의 임무는 이를 **가장 깔끔하게 표현하는 방식**을 설계하는 것입니다. 문제를 발견하고 해결해 나간 순서가 독자가 읽어야 할 순서와 일치하는 경우는 거의 없습니다.
 >
-> Work through these questions in order:
+> 다음 질문들을 순서대로 고민해 보십시오:
 >
-> **Hindsight shortcuts.** Now that you know the answer, is there a 3-line
-> argument? The discoverer built machinery to _find_ the key step; you already
-> _have_ the key step. Can the machinery be discarded? (Classic: a long
-> case-bash that, in hindsight, collapses once you spot the invariant.)
+> **사후적 지름길 (Hindsight shortcuts).** 이제 답을 알고 있는 상태에서, 혹시 3줄 만에 끝낼 수 있는 더 간결한 논증이 있습니까? 문제를 직접 해결한 에이전트는 핵심 단계를 *찾아내기 위해* 복잡한 수식을 동원했습니다. 귀하는 이미 그 핵심 단계를 *가지고* 있습니다. 그 복잡한 도구들을 이제 걷어낼 수 있습니까? (전형적인 예: 나중에 돌이켜보면 핵심 불변량을 깨닫는 순간 무너져 내릴 복잡한 케이스 분류 작업들)
 >
-> **Overkill.** Is any bound stronger than needed? Any construction more general
-> than the problem requires? If a double exponential works but a linear function
-> also works, use the linear one — the reader will wonder what the double
-> exponential is hiding. Match the strength of each tool to the strength of what
-> it's proving.
+> **지나친 비약 걷어내기 (Overkill).** 증명에서 요구하는 것보다 필요 이상으로 강한 경계값(bound)을 사용하고 있습니까? 문제에 필요한 것보다 지나치게 일반적인 구조를 사용하고 있지는 않습니까? 이중 지수식이 작동하더라도 일차식으로 충분하다면 일차식을 사용하십시오 — 그렇지 않으면 독자는 이중 지수식 뒤에 도대체 무엇이 숨겨져 있는지 의아해할 것입니다. 도구의 강력함은 증명하려는 내용의 난이도와 균형을 맞추어야 합니다.
 >
-> **What to cut.** Which steps _verify_ without _illuminating_? Discovery leaves
-> a debris field: sanity checks, dead ends backed out of, "note that X (we won't
-> use this)". Delete them. If a paragraph can be removed and the proof still
-> compiles in the reader's head, remove it.
+> **잘라낼 부분 (What to cut).** 증명을 *보여주기는* 하지만 이해하는 데는 *아무런 통찰도 주지 못하는* 단계가 있습니까? 문제를 해결하는 과정은 항상 지저분한 흔적들을 남깁니다: 임시 확인 식, 다시 빠져나온 막다른 길의 식, "X에 주의하라 (물론 사용하진 않겠지만)" 같은 문장들. 이것들을 삭제하십시오. 한 단락을 통째로 지우더라도 독자의 머릿속에서 증명이 완결된다면 지우십시오.
 >
-> **Lemma granularity.** Inline a lemma if it's used once and the proof is ≤3
-> lines. Keep it standalone if it's used twice, or if its _statement alone_
-> clarifies the structure (even with a 1-line proof). Name standalone lemmas
-> descriptively — "Combinatorial dimension bound", not "Lemma 2".
+> **보조정리의 크기 조절 (Lemma granularity).** 보조정리가 딱 한 번 사용되고 그 증명이 3줄 이하인 경우 본문 안으로 병합(inline)시키십시오. 두 번 이상 사용되거나, 혹은 그 *명제 자체만으로도* 전체 구조를 명확히 만들어 주는 유용한 정보라면 별도의 보조정리로 남겨두십시오 (증명이 한 줄짜리여도 무방합니다). 독립된 보조정리에는 직관적인 이름을 부여하십시오 — "Lemma 2" 같은 이름 대신 "Combinatorial dimension bound(조합론적 차원 경계값)" 처럼 명명하십시오.
 >
-> **Order.** Lead with the main statement. Then the one idea that makes it work.
-> Then the details. Isolate the one genuinely clever step — there's almost
-> always exactly one — and let everything else be obviously routine _by
-> contrast_.
+> **순서 배정 (Order).** 메인 정리(Theorem)의 진술을 먼저 배치하십시오. 그 다음, 명제를 성립하게 만드는 가장 핵심적인 아이디어 한 가지를 제시하십시오. 그 뒤에 구체적인 세부 사항들을 전개하십시오. 진정으로 기발한 단계 하나를 분리해 내고(대개 정확히 딱 하나 존재합니다), *이와 대조적으로* 다른 모든 세부 절차들은 지극히 평범한 단계들로 흐르도록 배치하십시오.
 >
-> **Step names.** Number steps _and_ name them: "**Step 3: Fourier inversion and
-> translation invariance.**" The name is a promise to the reader about what this
-> block accomplishes. Signpost reductions explicitly: "We are reduced to showing
-> that…"
+> **단계별 이름 지정 (Step names).** 각 단계에 번호를 붙이고 이름도 명시하십시오: "**Step 3: Fourier inversion and translation invariance.**" 이 이름은 이 블록이 무엇을 완수해 낼 것인지 독자에게 건네는 약속과도 같습니다. 단순화 단계를 유도할 때는 이정표를 명확히 하십시오: "우리는 ~를 보여주는 것으로 충분하다..."
 >
-> Output clean LaTeX using the template below. Aim for: a strong grad student
-> could reconstruct every suppressed detail, a professor could skim the step
-> names alone and nod.
+> 아래 템플릿을 사용하여 깔끔한 LaTeX 문서를 출력하십시오. 목표: 실력 있는 대학원생이라면 과감히 생략된 세부 사항들을 스스로 재구성해 낼 수 있고, 대학 교수가 단계별 이름만 쓱 훑어보아도 고개를 끄덕일 수 있는 구조.
 
 ---
 
-## 2. LaTeX Output Template
+## 2. LaTeX 출력 템플릿 (LaTeX Output Template)
 
-Minimal preamble — Aletheia's environments, none of its ornament. No
-`tcolorbox`, no custom colors.
+최소한의 preamble — Aletheia의 환경을 적용하되, 장식은 배제합니다. `tcolorbox`나 사용자 지정 색상은 사용하지 않습니다.
 
 ```latex
 \documentclass[11pt]{article}
@@ -84,17 +54,17 @@ Minimal preamble — Aletheia's environments, none of its ornament. No
 \begin{document}
 
 \section*{Problem}
-% Restate the problem exactly. No paraphrase.
+% 문제를 있는 그대로 기재하십시오. 다른 말로 풀어쓰지 마십시오.
 
 \section*{Solution}
 
 \begin{theorem}
-% State what you will prove, in full. If the answer is "yes" or "no"
-% or a specific value, state it here so the reader isn't kept in suspense.
+% 증명하려는 바를 완전하게 기술하십시오. 만약 답이 "예" 혹은 "아니오"
+% 이거나 특정 값이라면, 독자가 긴장하며 기다리지 않도록 여기에 명시하십시오.
 \end{theorem}
 
-% If a lemma is reused or structurally load-bearing, state it before
-% the main proof. One-shot verifications get inlined below.
+% 보조정리가 재사용되거나 구조적으로 중요한 축 역할을 한다면,
+% 메인 증명 앞에 기술하십시오. 단발성 검증은 아래에 인라인으로 기재합니다.
 % \begin{lemma}\label{lem:key}
 %   ...
 % \end{lemma}
@@ -102,52 +72,39 @@ Minimal preamble — Aletheia's environments, none of its ornament. No
 
 \begin{proof}[Proof of Theorem]
 \textbf{Step 1: [Descriptive name — what this step accomplishes].}
-% e.g. "Reduction to the compact case." / "The key invariant."
+% 예: "Reduction to the compact case." / "The key invariant."
 
-% Display important equations; inline routine ones.
-% End a reduction step with: "We are reduced to showing that ..."
+% 중요한 방정식은 별도 행에 표시(display)하고, 일상적인 식은 인라인으로 처리하십시오.
+% 단순화 단계의 끝은 다음과 같이 맺으십시오: "We are reduced to showing that ..."
 
 \textbf{Step 2: [Name].}
 % ...
 
 \textbf{Step $n$: Conclusion.}
-% One or two sentences. Make the contradiction / induction close / final
-% computation land visibly.
+% 한두 문장으로 작성하십시오. 모순 도출 / 귀납법 종결 / 최종
+% 계산 도출이 시각적으로 명확하게 드러나도록 하십시오.
 \end{proof}
 
 \end{document}
 ```
 
-**Style conventions lifted from the Aletheia samples:**
+**Aletheia 샘플에서 가져온 스타일 규칙 (Style conventions):**
 
-- Display math for the equation a step _produces_; inline math for the algebra
-  getting there.
-- Cite precisely when invoking a named result:
-  _(Jacquet–Piatetski-Shapiro–Shalika, 1981)_ — not "by a well-known theorem".
-- In contradiction proofs: state the false assumption plainly ("Suppose, for
-  contradiction, that…"), and flag the collision plainly ("We are led to the
-  contradiction $0 > 0$.").
-- Integer bounds earn the ceiling: if $d \ge n/k$ and $d \in \mathbb{Z}$, write
-  $d \ge \lceil n/k \rceil$. Free sharpness.
+- 각 단계가 *도출하는* 핵심 수식은 별도 행으로 표시(display math)하고, 그에 도달하기 위한 중간 대수 연산 과정은 인라인(inline math)으로 처리하십시오.
+- 이름이 붙은 수학적 결과를 인용할 때는 정확히 기재하십시오: 예: *(Jacquet–Piatetski-Shapiro–Shalika, 1981)* — "잘 알려진 정리에 의해"와 같은 모호한 표현 지양.
+- 귀류법(귀류 증명)을 사용할 때: 틀린 가정을 명확하게 기술하고("모순을 도출하기 위해 ~라고 가정하자..."), 모순이 발생하는 지점을 분명히 밝히십시오("우리는 $0 > 0$ 이라는 모순에 도달한다.").
+- 정수 경계값은 올림 기호(ceiling)를 적용하십시오: $d \ge n/k$ 이고 $d \in \mathbb{Z}$ 이면, $d \ge \lceil n/k \rceil$ 로 기재하십시오. 명제에 정밀함을 더해 줍니다.
 
 ---
 
-## 3. Anti-Patterns to Catch
+## 3. 방지해야 할 안티 패턴 (Anti-Patterns to Catch)
 
-The presentation agent should flag and fix these:
+프레젠테이션 에이전트는 다음 문제를 탐지하고 수정해야 합니다:
 
-- **Discovery-order exposition.** "First I tried X, which led me to notice Y…" —
-  the reader doesn't care. State Y.
-- **Overkill constructions.** The tell: the bound you prove is parametrically
-  stronger than what the next line consumes. Weaken it until it's tight.
-- **Proof by intimidation.** _"It is trivial to see that…"_, _"Obviously…"_, _"A
-  standard argument shows…"_ — if it's trivial, one sentence suffices. Write the
-  sentence.
-- **Unnecessary generality.** Proving it for all $n$ when the problem asks about
-  $n=3$ and the general case adds no insight, only indices.
-- **Orphan lemmas.** Stated, proved, cited once, three lines long. Inline it.
-- **Unlabeled case splits.** Five cases, no indication of why five or what
-  distinguishes them. Name the cases; say upfront which one carries the content.
-- **Missing signposts.** A page of computation with no "we are reduced to" / "it
-  suffices to show" markers. The reader shouldn't have to reverse-engineer your
-  strategy.
+- **발견 순서대로의 설명 (Discovery-order exposition).** "처음에는 X를 시도했고, 이를 통해 Y를 발견하게 되었으며..." — 독자는 이런 과정에 관심이 없습니다. 곧바로 Y를 진술하십시오.
+- **과도한 구성 (Overkill constructions).** 단서: 증명한 바운드가 바로 다음 단계에서 소모하는 조건보다 파라미터 상으로 훨씬 더 강하게 잡혀 있는 경우입니다. 타이트해질 때까지 완화하십시오.
+- **위압적인 증명 (Proof by intimidation).** *"~는 자명하게 알 수 있다..."*, *"명백하게..."*, *"표준적인 논증이 보여주듯..."* — 정말 자명하다면 한 문장으로 충분히 쓸 수 있습니다. 그 한 문장을 직접 쓰십시오.
+- **불필요한 일반화 (Unnecessary generality).** 문제에서 $n=3$ 인 경우를 요구했는데, 일반화가 다른 통찰을 주지 못하고 인덱스(첨자)만 복잡하게 만듦에도 굳이 모든 $n$ 에 대해 증명하는 경우입니다.
+- **외톨이 보조정리 (Orphan lemmas).** 딱 한 번만 인용되면서 길이도 3줄밖에 안 되는 보조정리를 굳이 따로 기재하는 경우입니다. 인라인으로 합치십시오.
+- **설명 없는 케이스 분류 (Unlabeled case splits).** 5가지 케이스로 분류했는데 왜 5개인지, 혹은 어떻게 구별되는지 설명이 없는 경우입니다. 케이스의 이름을 짓고, 실질적인 내용이 담긴 핵심 케이스가 무엇인지 미리 밝히십시오.
+- **이정표 누락 (Missing signposts).** "~로 축소된다" / "~를 보이면 충분하다" 같은 이정표 표시도 없이 복잡한 계산식만 한 페이지 가득 채워져 있는 경우입니다. 독자가 작성자의 논리 구조를 역설계하여 파악하게 만들지 마십시오.

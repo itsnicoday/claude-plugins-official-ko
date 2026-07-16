@@ -1,44 +1,44 @@
-# Concept Map Template
+# 개념 맵 템플릿 (Concept Map Template)
 
-Use this template when the playground is about learning, exploration, or mapping relationships: concept maps, knowledge gap identification, scope mapping, task decomposition with dependencies.
+개념 맵, 지식 격차 파악, 범위 매핑, 종속성을 포함한 작업 분해 등 학습, 탐색 또는 관계 매핑과 관련된 플레이그라운드를 빌드할 때 이 템플릿을 사용하십시오.
 
-## Layout
+## 레이아웃
 
 ```
 +--------------------------------------+
-|  Canvas (draggable nodes, edges)     |
-|  with tooltip on hover               |
+|  캔버스 (드래그 가능한 노드, 에지)   |
+|  마우스 호버 시 툴팁 제공            |
 +-------------------------+------------+
 |                         |            |
-|  Sidebar:               | Prompt     |
-|  • Knowledge levels     | output     |
-|  • Connection types     |            |
-|  • Node list            | [Copy]     |
-|  • Actions              |            |
+|  사이드바:              | 프롬프트   |
+|  • 지식 수준            | 출력 영역  |
+|  • 연결 유형            |            |
+|  • 노드 목록            | [ 복사 ]   |
+|  • 작업                 |            |
 +-------------------------+------------+
 ```
 
-Canvas-based playgrounds differ from the two-panel split. The interactive visual IS the control — users drag nodes and draw connections rather than adjusting sliders. The sidebar supplements with toggles and list controls.
+캔버스 기반 플레이그라운드는 이분할 레이아웃과 다릅니다. 상호작용하는 시각 요소 자체가 컨트롤 역할을 합니다. 사용자는 슬라이더를 조정하는 대신 노드를 드래그하고 연결선을 그립니다. 사이드바는 토글 및 리스트 컨트롤로 이를 보조합니다.
 
-## Control types for concept maps
+## 개념 맵용 컨트롤 유형
 
-| Decision | Control | Example |
+| 결정 사항 | 컨트롤 유형 | 예시 |
 |---|---|---|
-| Knowledge level per node | Click-to-cycle button in sidebar list | Know → Fuzzy → Unknown |
-| Connection type | Selector before drawing | calls, depends on, contains, reads from |
-| Node arrangement | Drag on canvas | spatial layout reflects mental model |
-| Which nodes to include | Toggle or checkbox per node | hide/show concepts |
-| Actions | Buttons | Auto-layout (force-directed), clear edges, reset |
+| 노드별 지식 수준 | 사이드바 목록 내 순환 클릭 버튼 | Know (앎) → Fuzzy (모호함) → Unknown (모름) |
+| 연결 유형 | 그리기 전 선택기 | calls (호출), depends on (의존), contains (포함), reads from (읽기) |
+| 노드 배치 | 캔버스 내 드래그 | 공간적 배치를 통해 멘탈 모델 반영 |
+| 포함할 노드 선택 | 노드별 토글 또는 체크박스 | 개념 숨기기/표시 |
+| 작업 | 버튼 | 자동 배치 (force-directed), 연결선 지우기, 초기화 |
 
-## Canvas rendering
+## 캔버스 렌더링
 
-Use a `<canvas>` element with manual draw calls. Key patterns:
+직접 그리기 호출(manual draw calls)이 포함된 `<canvas>` 요소를 사용합니다. 주요 패턴:
 
-- **Hit testing:** Check mouse position against node bounding circles on mousedown/mousemove
-- **Drag:** On mousedown on a node, track offset and update position on mousemove
-- **Edge drawing:** Click node A, then click node B. Draw arrow between them with the selected relationship type
-- **Tooltips:** On hover, position a div absolutely over the canvas with description text
-- **Force-directed auto-layout:** Simple spring simulation — repulsion between all pairs, attraction along edges, iterate 100-200 times with damping
+- **충돌 테스트(Hit testing):** mousedown/mousemove 시 마우스 위치가 노드의 바운딩 서클 내에 있는지 확인
+- **드래그(Drag):** 노드 클릭(mousedown) 시 오프셋을 추적하고 마우스 이동(mousemove) 시 위치 업데이트
+- **연결선 그리기(Edge drawing):** 노드 A를 클릭한 다음 노드 B를 클릭합니다. 선택한 관계 유형으로 두 노드 사이에 화살표를 그립니다.
+- **툴팁(Tooltips):** 마우스 호버 시 설명 텍스트가 담긴 div를 캔버스 위에 absolute로 배치
+- **힘-지향형 자동 배치(Force-directed auto-layout):** 간단한 스프링 시뮬레이션 — 모든 노드 쌍 간의 척력 및 연결선에 따른 인력을 적용하여 감쇠(damping)와 함께 100~200회 반복 연산
 
 ```javascript
 function draw() {
@@ -48,26 +48,26 @@ function draw() {
 }
 ```
 
-## Prompt output for concept maps
+## 개념 맵용 프롬프트 출력
 
-The prompt should be a targeted learning request shaped by the user's knowledge markings:
+프롬프트는 사용자가 표시한 지식 수준에 맞춰 조정된 타겟 학습 요청이어야 합니다:
 
-> "I'm learning [CODEBASE/DOMAIN]. I already understand: [know nodes]. I'm fuzzy on: [fuzzy nodes]. I have no idea about: [unknown nodes]. Here are the relationships I want to understand: [edge list in natural language]. Please explain the fuzzy and unknown concepts, focusing on these relationships. Build on what I already know. Use concrete code references."
+> "[CODEBASE/DOMAIN]을 학습 중입니다. 이미 이해한 내용: [know nodes]. 모호한 내용: [fuzzy nodes]. 전혀 모르는 내용: [unknown nodes]. 이해하고 싶은 관계: [edge list in natural language]. 이미 알고 있는 지식을 바탕으로 모호한 개념과 모르는 개념을 이 관계들에 초점을 맞춰 설명해 주세요. 구체적인 코드 참조를 활용해 주십시오."
 
-Only include edges the user drew. Only mention concepts they marked as fuzzy or unknown in the explanation request.
+사용자가 직접 그린 연결선만 포함시키십시오. 설명 요청 시에는 사용자가 모호하거나 모른다고 표시한 개념만 언급해야 합니다.
 
-## Pre-populating with real data
+## 실제 데이터 채우기
 
-For codebases or domains, pre-populate with:
-- **Nodes:** 15-20 key concepts with real file paths and short descriptions
-- **Edges:** 20-30 pre-drawn relationships based on actual architecture
-- **Knowledge:** Default all to "Fuzzy" so the user adjusts from there
-- **Presets:** "Zoom out" (hide internal nodes, show only top-level), "Focus on [layer]" (highlight nodes in one area)
+특정 코드베이스나 도메인을 다루는 경우 다음을 미리 채워둡니다:
+- **노드:** 실제 파일 경로와 짧은 설명이 포함된 15~20개의 핵심 개념
+- **연결선:** 실제 아키텍처에 기반하여 미리 그려진 20~30개의 관계
+- **지식 수준:** 사용자가 직접 조정해 나갈 수 있도록 기본값을 모두 "Fuzzy(모호함)"로 설정
+- **프리셋:** "Zoom out" (내부 노드를 숨기고 상위 수준만 표시), "Focus on [layer]" (특정 영역의 노드만 하이라이트)
 
-## Example topics
+## 예시 주제
 
-- Codebase architecture map (modules, data flow, state management)
-- Framework learning (how React hooks connect, Next.js data fetching layers)
-- System design (services, databases, queues, caches and how they relate)
-- Task decomposition (goals → sub-tasks with dependency arrows, knowledge tags)
-- API surface map (endpoints grouped by resource, shared middleware, auth layers)
+- 코드베이스 아키텍처 맵 (모듈, 데이터 흐름, 상태 관리)
+- 프레임워크 학습 (React 훅의 연결 관계, Next.js 데이터 페칭 계층)
+- 시스템 디자인 (서비스, 데이터베이스, 큐, 캐시 및 이들의 관계)
+- 작업 분해 (목표 → 종속성 화살표가 포함된 하위 작업, 지식 태그)
+- API 서피스 맵 (리소스별로 그룹화된 엔드포인트, 공유 미들웨어, 인증 계층)

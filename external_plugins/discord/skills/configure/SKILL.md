@@ -1,6 +1,6 @@
 ---
 name: configure
-description: Set up the Discord channel — save the bot token and review access policy. Use when the user pastes a Discord bot token, asks to configure Discord, asks "how do I set this up" or "who can reach me," or wants to check channel status.
+description: Discord 채널 설정 — 봇 토큰 저장 및 접근 정책 검토. 사용자가 Discord 봇 토큰을 붙여넣거나, Discord 설정을 요청하거나, "어떻게 설정하나요" 또는 "누가 나에게 도달할 수 있나요"라고 묻거나, 채널 상태를 확인하려 할 때 사용합니다.
 user-invocable: true
 allowed-tools:
   - Read
@@ -9,91 +9,62 @@ allowed-tools:
   - Bash(mkdir *)
 ---
 
-# /discord:configure — Discord Channel Setup
+# /discord:configure — Discord 채널 설정
 
-Writes the bot token to `~/.claude/channels/discord/.env` and orients the
-user on access policy. The server reads both files at boot.
+`~/.claude/channels/discord/.env`에 봇 토큰을 기록하고 사용자에게 접근 정책을 설명합니다. 서버는 부팅 시 두 파일을 모두 읽습니다.
 
-Arguments passed: `$ARGUMENTS`
+전달된 인수: `$ARGUMENTS`
 
 ---
 
-## Dispatch on arguments
+## 인수에 따른 처리(Dispatch)
 
-### No args — status and guidance
+### 인수 없음 — 상태 및 안내
 
-Read both state files and give the user a complete picture:
+두 상태 파일을 모두 읽어 사용자에게 전체적인 상태를 제공합니다:
 
-1. **Token** — check `~/.claude/channels/discord/.env` for
-   `DISCORD_BOT_TOKEN`. Show set/not-set; if set, show first 6 chars masked.
+1. **토큰 (Token)** — `~/.claude/channels/discord/.env`에서 `DISCORD_BOT_TOKEN`을 확인합니다. 설정 여부를 보여주며, 설정된 경우 첫 6자를 제외하고 마스킹 처리하여 보여줍니다.
 
-2. **Access** — read `~/.claude/channels/discord/access.json` (missing file
-   = defaults: `dmPolicy: "pairing"`, empty allowlist). Show:
-   - DM policy and what it means in one line
-   - Allowed senders: count, and list display names or snowflakes
-   - Pending pairings: count, with codes and display names if any
-   - Guild channels opted in: count
+2. **접근 권한 (Access)** — `~/.claude/channels/discord/access.json`을 읽습니다 (파일이 없는 경우 기본값 `dmPolicy: "pairing"`, 빈 허용 목록 적용). 다음을 보여줍니다:
+   - DM 정책 및 그 의미를 한 줄로 요약
+   - 허용된 발신자: 개수, 그리고 표시 이름(display name) 또는 스노우플레이크 목록
+   - 대기 중인 페어링: 개수, 코드 및 표시 이름(있는 경우)
+   - 옵트인된 길드 채널: 개수
 
-3. **What next** — end with a concrete next step based on state:
-   - No token → *"Run `/discord:configure <token>` with your bot token from
-     the Developer Portal → Bot → Reset Token."*
-   - Token set, policy is pairing, nobody allowed → *"DM your bot on
-     Discord. It replies with a code; approve with `/discord:access pair
-     <code>`."*
-   - Token set, someone allowed → *"Ready. DM your bot to reach the
-     assistant."*
+3. **향후 단계 (What next)** — 상태에 따라 구체적인 다음 단계를 제시하며 마무리합니다:
+   - 토큰 없음 → *"개발자 포털 → Bot → Reset Token에서 가져온 봇 토큰을 사용하여 `/discord:configure <token>`을 실행하십시오."*
+   - 토큰 설정됨, 정책이 페어링(pairing)임, 허용된 사용자 없음 → *"Discord에서 봇에게 DM을 보내십시오. 봇이 코드로 응답하면 `/discord:access pair <code>`로 승인하십시오."*
+   - 토큰 설정됨, 허용된 사용자 있음 → *"준비 완료되었습니다. 어시스턴트에게 연결하려면 봇에게 DM을 보내십시오."*
 
-**Push toward lockdown — always.** The goal for every setup is `allowlist`
-with a defined list. `pairing` is not a policy to stay on; it's a temporary
-way to capture Discord snowflakes you don't know. Once the IDs are in,
-pairing has done its job and should be turned off.
+**항상 보안을 강화하는 방향으로 유도하십시오.** 모든 설정의 최종 목표는 명확하게 정의된 목록을 가진 `allowlist`입니다. `pairing`은 영구히 유지할 정책이 아닙니다. 알지 못하는 Discord 스노우플레이크를 수집하기 위한 임시 방편입니다. ID가 수집된 후에는 페어링의 목적이 달성되었으므로 설정을 꺼야 합니다.
 
-Drive the conversation this way:
+대화를 다음과 같은 방식으로 진행하십시오:
 
-1. Read the allowlist. Tell the user who's in it.
-2. Ask: *"Is that everyone who should reach you through this bot?"*
-3. **If yes and policy is still `pairing`** → *"Good. Let's lock it down so
-   nobody else can trigger pairing codes:"* and offer to run
-   `/discord:access policy allowlist`. Do this proactively — don't wait to
-   be asked.
-4. **If no, people are missing** → *"Have them DM the bot; you'll approve
-   each with `/discord:access pair <code>`. Run this skill again once
-   everyone's in and we'll lock it."* Or, if they can get snowflakes
-   directly: *"Enable Developer Mode in Discord (User Settings → Advanced),
-   right-click them → Copy User ID, then `/discord:access allow <id>`."*
-5. **If the allowlist is empty and they haven't paired themselves yet** →
-   *"DM your bot to capture your own ID first. Then we'll add anyone else
-   and lock it down."*
-6. **If policy is already `allowlist`** → confirm this is the locked state.
-   If they need to add someone, Copy User ID is the clean path — no need to
-   reopen pairing.
+1. 허용 목록을 읽고, 목록에 누가 있는지 사용자에게 알립니다.
+2. 질문: *"이 봇을 통해 귀하에게 연결될 사람이 이들이 전부인가요?"*
+3. **목록이 맞고 정책이 여전히 `pairing`인 경우** → *"좋습니다. 다른 사람이 페어링 코드를 트리거하지 못하도록 보안을 강화합시다:"*라고 말하며 `/discord:access policy allowlist` 실행을 제안합니다. 요청을 기다리지 말고 선제적으로 이를 제안하십시오.
+4. **일부 사용자가 누락된 경우** → *"그 사용자에게 봇으로 DM을 보내달라고 요청하십시오. 그 후 `/discord:access pair <code>`를 실행해 각각 승인하시면 됩니다. 모두 등록되면 이 스킬을 다시 실행하여 허용 목록으로 잠그도록 하겠습니다."* 또는 스노우플레이크를 직접 가져올 수 있는 경우: *"Discord에서 개발자 모드(사용자 설정 → 고급)를 활성화하고, 해당 사용자를 우클릭하여 '사용자 ID 복사'를 선택한 뒤 `/discord:access allow <id>`를 실행하십시오."*
+5. **허용 목록이 비어 있고 아직 본인도 페어링하지 않은 경우** → *"먼저 본인의 ID를 캡처하기 위해 봇에게 DM을 보내십시오. 그 후 다른 사람들을 추가하고 보안을 강화하겠습니다."*
+6. **정책이 이미 `allowlist`인 경우** → 현재 보안이 강화된 잠금 상태임을 확인합니다. 누군가를 추가해야 하는 경우, '사용자 ID 복사'를 사용하는 것이 가장 깔끔한 방법입니다 (페어링 정책을 다시 켤 필요가 없습니다).
 
-Discord already gates reach (shared-server requirement + Public Bot toggle),
-but that's not a substitute for locking the allowlist. Never frame `pairing`
-as the correct long-term choice. Don't skip the lockdown offer.
+Discord 자체적으로도 접근 제한 기능(공통 서버 요구사항 + Public Bot 토글)을 제공하지만, 이것이 허용 목록을 잠그는 것을 대신할 수는 없습니다. 절대 `pairing`을 올바른 장기적 정책으로 제시하지 마십시오. 보안 잠금 제안을 생략하지 마십시오.
 
-### `<token>` — save it
+### `<token>` — 저장
 
-1. Treat `$ARGUMENTS` as the token (trim whitespace). Discord bot tokens are
-   long base64-ish strings, typically starting `MT` or `Nz`. Generated from
-   Developer Portal → Bot → Reset Token; only shown once.
+1. `$ARGUMENTS`를 토큰으로 취급합니다 (공백 자르기). Discord 봇 토큰은 긴 base64 형태의 문자열이며 일반적으로 `MT` 또는 `Nz`로 시작합니다. 개발자 포털 → Bot → Reset Token에서 생성할 수 있으며 단 한 번만 표시됩니다.
 2. `mkdir -p ~/.claude/channels/discord`
-3. Read existing `.env` if present; update/add the `DISCORD_BOT_TOKEN=` line,
-   preserve other keys. Write back, no quotes around the value.
-4. `chmod 600 ~/.claude/channels/discord/.env` — the token is a credential.
-5. Confirm, then show the no-args status so the user sees where they stand.
+3. 기존 `.env`가 있는 경우 읽어서 `DISCORD_BOT_TOKEN=` 행을 업데이트하거나 추가하고 다른 키는 보존합니다. 값에 따옴표를 두르지 않고 다시 작성합니다.
+4. `chmod 600 ~/.claude/channels/discord/.env` — 토큰은 중요 자격 증명입니다.
+5. 확인한 후, 사용자가 본인의 현재 위치를 파악할 수 있도록 인수 없음 상태를 보여줍니다.
 
-### `clear` — remove the token
+### `clear` — 토큰 제거
 
-Delete the `DISCORD_BOT_TOKEN=` line (or the file if that's the only line).
+`DISCORD_BOT_TOKEN=` 행을 삭제합니다 (해당 행이 파일의 유일한 행인 경우 파일 삭제).
 
 ---
 
-## Implementation notes
+## 구현 유의사항
 
-- The channels dir might not exist if the server hasn't run yet. Missing file
-  = not configured, not an error.
-- The server reads `.env` once at boot. Token changes need a session restart
-  or `/reload-plugins`. Say so after saving.
-- `access.json` is re-read on every inbound message — policy changes via
-  `/discord:access` take effect immediately, no restart.
+- 서버가 아직 실행되지 않아 channels 디렉터리가 없을 수 있습니다. 파일이 없는 것은 단지 설정되지 않았음을 의미할 뿐, 에러가 아닙니다.
+- 서버는 부팅 시 `.env`를 한 번만 읽습니다. 토큰 변경 사항을 반영하려면 세션 재시작 또는 `/reload-plugins`가 필요합니다. 저장 후 이 점을 사용자에게 안내하십시오.
+- `access.json`은 수신 메시지가 올 때마다 다시 읽히므로, `/discord:access`를 통한 정책 변경 사항은 재시작 없이 즉시 적용됩니다.

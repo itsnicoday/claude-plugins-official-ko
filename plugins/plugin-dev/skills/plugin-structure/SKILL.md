@@ -4,22 +4,22 @@ description: This skill should be used when the user asks to "create a plugin", 
 version: 0.1.0
 ---
 
-# Plugin Structure for Claude Code
+# Claude Code를 위한 플러그인 구조 (Plugin Structure for Claude Code)
 
-## Overview
+## 개요 (Overview)
 
-Claude Code plugins follow a standardized directory structure with automatic component discovery. Understanding this structure enables creating well-organized, maintainable plugins that integrate seamlessly with Claude Code.
+Claude Code 플러그인은 컴포넌트 자동 감지 기능을 제공하는 표준화된 디렉토리 구조를 따릅니다. 이 구조를 이해하면 잘 구성되어 유지보수가 쉽고, Claude Code와 원활하게 통합되는 플러그인을 개발할 수 있습니다.
 
-**Key concepts:**
-- Conventional directory layout for automatic discovery
-- Manifest-driven configuration in `.claude-plugin/plugin.json`
-- Component-based organization (commands, agents, skills, hooks)
-- Portable path references using `${CLAUDE_PLUGIN_ROOT}`
-- Explicit vs. auto-discovered component loading
+**핵심 개념:**
+- 자동 감지를 위한 관례적인 디렉토리 레이아웃
+- `.claude-plugin/plugin.json`에서의 매니페스트 기반 구성
+- 컴포넌트 기반 구성 (명령어, 에이전트, 스킬, 훅)
+- `${CLAUDE_PLUGIN_ROOT}`를 사용한 이식 가능한 경로 참조
+- 명시적 컴포넌트 로딩 vs. 자동 감지형 컴포넌트 로딩
 
-## Directory Structure
+## 디렉토리 구조 (Directory Structure)
 
-Every Claude Code plugin follows this organizational pattern:
+모든 Claude Code 플러그인은 다음 구성 패턴을 따릅니다:
 
 ```
 plugin-name/
@@ -36,18 +36,18 @@ plugin-name/
 └── scripts/                 # Helper scripts and utilities
 ```
 
-**Critical rules:**
+**필수 규칙:**
 
-1. **Manifest location**: The `plugin.json` manifest MUST be in `.claude-plugin/` directory
-2. **Component locations**: All component directories (commands, agents, skills, hooks) MUST be at plugin root level, NOT nested inside `.claude-plugin/`
-3. **Optional components**: Only create directories for components the plugin actually uses
-4. **Naming convention**: Use kebab-case for all directory and file names
+1. **매니페스트 위치**: `plugin.json` 매니페스트 파일은 반드시 `.claude-plugin/` 디렉토리에 있어야 합니다.
+2. **컴포넌트 위치**: 모든 컴포넌트 디렉토리(commands, agents, skills, hooks)는 플러그인 루트 수준에 있어야 하며, `.claude-plugin/` 내부에 중첩되어 있으면 안 됩니다.
+3. **선택적 컴포넌트**: 플러그인이 실제로 사용하는 컴포넌트용 디렉토리만 생성하십시오.
+4. **명명 규칙**: 모든 디렉토리 및 파일 이름은 kebab-case를 사용하십시오.
 
-## Plugin Manifest (plugin.json)
+## 플러그인 매니페스트 (plugin.json) (Plugin Manifest (plugin.json))
 
-The manifest defines plugin metadata and configuration. Located at `.claude-plugin/plugin.json`:
+매니페스트는 플러그인 메타데이터 및 구성을 정의합니다. 경로는 `.claude-plugin/plugin.json`입니다:
 
-### Required Fields
+### 필수 필드 (Required Fields)
 
 ```json
 {
@@ -55,13 +55,13 @@ The manifest defines plugin metadata and configuration. Located at `.claude-plug
 }
 ```
 
-**Name requirements:**
-- Use kebab-case format (lowercase with hyphens)
-- Must be unique across installed plugins
-- No spaces or special characters
-- Example: `code-review-assistant`, `test-runner`, `api-docs`
+**이름 요구 사항:**
+- kebab-case 형식 사용 (소문자 및 하이픈)
+- 설치된 플러그인 중에서 유일해야 함
+- 공백이나 특수 문자 사용 불가
+- 예시: `code-review-assistant`, `test-runner`, `api-docs`
 
-### Recommended Metadata
+### 권장 메타데이터 (Recommended Metadata)
 
 ```json
 {
@@ -80,12 +80,12 @@ The manifest defines plugin metadata and configuration. Located at `.claude-plug
 }
 ```
 
-**Version format**: Follow semantic versioning (MAJOR.MINOR.PATCH)
-**Keywords**: Use for plugin discovery and categorization
+**버전 형식**: 시맨틱 버저닝 규격 준수 (MAJOR.MINOR.PATCH)
+**키워드**: 플러그인 검색 및 카테고리 분류용 태그 목록
 
-### Component Path Configuration
+### 컴포넌트 경로 구성 (Component Path Configuration)
 
-Specify custom paths for components (supplements default directories):
+컴포넌트의 맞춤형 경로를 지정합니다 (기본 디렉토리 추가 정보 제공):
 
 ```json
 {
@@ -97,23 +97,23 @@ Specify custom paths for components (supplements default directories):
 }
 ```
 
-**Important**: Custom paths supplement defaults—they don't replace them. Components in both default directories and custom paths will load.
+**중요**: 맞춤형 경로는 기본 디렉토리를 대체하지 않고 보완합니다. 기본 디렉토리와 맞춤 지정된 경로의 컴포넌트가 모두 로드됩니다.
 
-**Path rules:**
-- Must be relative to plugin root
-- Must start with `./`
-- Cannot use absolute paths
-- Support arrays for multiple locations
+**경로 규칙:**
+- 반드시 플러그인 루트에 대한 상대 경로여야 함
+- 반드시 `./`로 시작해야 함
+- 절대 경로 사용 불가
+- 다중 위치 지정을 위해 배열 형식 지원
 
-## Component Organization
+## 컴포넌트 구성 방식 (Component Organization)
 
-### Commands
+### 명령어 (Commands)
 
-**Location**: `commands/` directory
-**Format**: Markdown files with YAML frontmatter
-**Auto-discovery**: All `.md` files in `commands/` load automatically
+**위치**: `commands/` 디렉토리
+**형식**: YAML 프론트매터가 포함된 마크다운 파일
+**자동 감지**: `commands/` 디렉토리 내의 모든 `.md` 파일이 자동으로 로드됨
 
-**Example structure**:
+**예시 구조**:
 ```
 commands/
 ├── review.md        # /review command
@@ -121,7 +121,7 @@ commands/
 └── deploy.md        # /deploy command
 ```
 
-**File format**:
+**파일 형식**:
 ```markdown
 ---
 name: command-name
@@ -131,15 +131,15 @@ description: Command description
 Command implementation instructions...
 ```
 
-**Usage**: Commands integrate as native slash commands in Claude Code
+**사용법**: 명령어는 Claude Code 내에서 기본 슬래시 명령어 형식으로 통합됩니다.
 
-### Agents
+### 에이전트 (Agents)
 
-**Location**: `agents/` directory
-**Format**: Markdown files with YAML frontmatter
-**Auto-discovery**: All `.md` files in `agents/` load automatically
+**위치**: `agents/` 디렉토리
+**형식**: YAML 프론트매터가 포함된 마크다운 파일
+**자동 감지**: `agents/` 디렉토리 내의 모든 `.md` 파일이 자동으로 로드됨
 
-**Example structure**:
+**예시 구조**:
 ```
 agents/
 ├── code-reviewer.md
@@ -147,7 +147,7 @@ agents/
 └── refactorer.md
 ```
 
-**File format**:
+**파일 형식**:
 ```markdown
 ---
 description: Agent role and expertise
@@ -159,15 +159,15 @@ capabilities:
 Detailed agent instructions and knowledge...
 ```
 
-**Usage**: Users can invoke agents manually, or Claude Code selects them automatically based on task context
+**사용법**: 사용자가 수동으로 에이전트를 호출할 수 있으며, 또는 Claude Code가 작업 컨텍스트에 따라 자동으로 에이전트를 선택합니다.
 
-### Skills
+### 스킬 (Skills)
 
-**Location**: `skills/` directory with subdirectories per skill
-**Format**: Each skill in its own directory with `SKILL.md` file
-**Auto-discovery**: All `SKILL.md` files in skill subdirectories load automatically
+**위치**: `skills/` 디렉토리 및 각 스킬별 하위 디렉토리
+**형식**: 각 스킬은 자체 디렉토리를 가지며 그 내부에 `SKILL.md` 파일이 포함됨
+**자동 감지**: 스킬 하위 디렉토리 내의 모든 `SKILL.md` 파일이 자동으로 로드됨
 
-**Example structure**:
+**예시 구조**:
 ```
 skills/
 ├── api-testing/
@@ -182,7 +182,7 @@ skills/
         └── migration-template.sql
 ```
 
-**SKILL.md format**:
+**SKILL.md 형식**:
 ```markdown
 ---
 name: Skill Name
@@ -193,17 +193,17 @@ version: 1.0.0
 Skill instructions and guidance...
 ```
 
-**Supporting files**: Skills can include scripts, references, examples, or assets in subdirectories
+**지원 파일**: 스킬은 하위 디렉토리에 스크립트, 참조 자료, 예시 또는 에셋을 포함할 수 있습니다.
 
-**Usage**: Claude Code autonomously activates skills based on task context matching the description
+**사용법**: Claude Code는 설명 정보와 일치하는 작업 컨텍스트가 주어지면 자율적으로 스킬을 활성화합니다.
 
-### Hooks
+### 훅 (Hooks)
 
-**Location**: `hooks/hooks.json` or inline in `plugin.json`
-**Format**: JSON configuration defining event handlers
-**Registration**: Hooks register automatically when plugin enables
+**위치**: `hooks/hooks.json` 또는 `plugin.json` 내의 인라인 설정
+**형식**: 이벤트 핸들러를 정의하는 JSON 구성
+**등록**: 플러그인이 활성화될 때 자동으로 등록됨
 
-**Example structure**:
+**예시 구조**:
 ```
 hooks/
 ├── hooks.json           # Hook configuration
@@ -212,7 +212,7 @@ hooks/
     └── check-style.sh   # Hook script
 ```
 
-**Configuration format**:
+**구성 형식**:
 ```json
 {
   "PreToolUse": [{
@@ -226,17 +226,17 @@ hooks/
 }
 ```
 
-**Available events**: PreToolUse, PostToolUse, Stop, SubagentStop, SessionStart, SessionEnd, UserPromptSubmit, PreCompact, Notification
+**사용 가능한 이벤트**: PreToolUse, PostToolUse, Stop, SubagentStop, SessionStart, SessionEnd, UserPromptSubmit, PreCompact, Notification
 
-**Usage**: Hooks execute automatically in response to Claude Code events
+**사용법**: 훅은 Claude Code 이벤트에 맞춰 자동으로 실행됩니다.
 
-### MCP Servers
+### MCP 서버 (MCP Servers)
 
-**Location**: `.mcp.json` at plugin root or inline in `plugin.json`
-**Format**: JSON configuration for MCP server definitions
-**Auto-start**: Servers start automatically when plugin enables
+**위치**: 플러그인 루트의 `.mcp.json` 또는 `plugin.json` 내의 인라인 설정
+**형식**: MCP 서버 정의를 위한 JSON 구성
+**자동 시작**: 플러그인이 활성화될 때 서버가 자동으로 실행됨
 
-**Example format**:
+**예시 형식**:
 ```json
 {
   "mcpServers": {
@@ -251,13 +251,13 @@ hooks/
 }
 ```
 
-**Usage**: MCP servers integrate seamlessly with Claude Code's tool system
+**사용법**: MCP 서버는 Claude Code의 도구 시스템과 원활하게 통합됩니다.
 
-## Portable Path References
+## 이식 가능한 경로 참조 (Portable Path References)
 
 ### ${CLAUDE_PLUGIN_ROOT}
 
-Use `${CLAUDE_PLUGIN_ROOT}` environment variable for all intra-plugin path references:
+플러그인 내부의 모든 경로 참조에는 `${CLAUDE_PLUGIN_ROOT}` 환경 변수를 사용하십시오:
 
 ```json
 {
@@ -265,147 +265,147 @@ Use `${CLAUDE_PLUGIN_ROOT}` environment variable for all intra-plugin path refer
 }
 ```
 
-**Why it matters**: Plugins install in different locations depending on:
-- User installation method (marketplace, local, npm)
-- Operating system conventions
-- User preferences
+**사용해야 하는 이유**: 플러그인은 다음에 따라 서로 다른 위치에 설치될 수 있습니다:
+- 사용자 설치 방법 (마켓플레이스, 로컬 개발 폴더, npm)
+- 운영체제별 관례
+- 사용자 정의 환경
 
-**Where to use it**:
-- Hook command paths
-- MCP server command arguments
-- Script execution references
-- Resource file paths
+**사용 위치**:
+- 훅 명령어 경로
+- MCP 서버 명령어 인수
+- 스크립트 실행 참조 경로
+- 리소스 파일 경로
 
-**Never use**:
-- Hardcoded absolute paths (`/Users/name/plugins/...`)
-- Relative paths from working directory (`./scripts/...` in commands)
-- Home directory shortcuts (`~/plugins/...`)
+**피해야 할 사항**:
+- 하드코딩된 절대 경로 (`/Users/name/plugins/...`)
+- 작업 디렉토리 기준 상대 경로 (명령어 내 `./scripts/...`)
+- 홈 디렉토리 단축 기호 (`~/plugins/...`)
 
-### Path Resolution Rules
+### 경로 해석 규칙 (Path Resolution Rules)
 
-**In manifest JSON fields** (hooks, MCP servers):
+**매니페스트 JSON 필드 내에서** (훅, MCP 서버):
 ```json
 "command": "${CLAUDE_PLUGIN_ROOT}/scripts/tool.sh"
 ```
 
-**In component files** (commands, agents, skills):
+**컴포넌트 파일 내에서** (명령어, 에이전트, 스킬):
 ```markdown
 Reference scripts at: ${CLAUDE_PLUGIN_ROOT}/scripts/helper.py
 ```
 
-**In executed scripts**:
+**실행되는 스크립트 내에서**:
 ```bash
 #!/bin/bash
 # ${CLAUDE_PLUGIN_ROOT} available as environment variable
 source "${CLAUDE_PLUGIN_ROOT}/lib/common.sh"
 ```
 
-## File Naming Conventions
+## 파일 명명 규칙 (File Naming Conventions)
 
-### Component Files
+### 컴포넌트 파일 (Component Files)
 
-**Commands**: Use kebab-case `.md` files
+**명령어**: kebab-case `.md` 파일 사용
 - `code-review.md` → `/code-review`
 - `run-tests.md` → `/run-tests`
 - `api-docs.md` → `/api-docs`
 
-**Agents**: Use kebab-case `.md` files describing role
+**에이전트**: 역할을 묘사하는 kebab-case `.md` 파일 사용
 - `test-generator.md`
 - `code-reviewer.md`
 - `performance-analyzer.md`
 
-**Skills**: Use kebab-case directory names
+**스킬**: kebab-case 디렉토리 이름 사용
 - `api-testing/`
 - `database-migrations/`
 - `error-handling/`
 
-### Supporting Files
+### 지원 파일 (Supporting Files)
 
-**Scripts**: Use descriptive kebab-case names with appropriate extensions
+**스크립트**: 적절한 확장자를 사용하고 목적을 나타내는 kebab-case 이름 사용
 - `validate-input.sh`
 - `generate-report.py`
 - `process-data.js`
 
-**Documentation**: Use kebab-case markdown files
+**문서**: kebab-case 마크다운 파일 사용
 - `api-reference.md`
 - `migration-guide.md`
 - `best-practices.md`
 
-**Configuration**: Use standard names
+**구성 정보**: 표준 이름 사용
 - `hooks.json`
 - `.mcp.json`
 - `plugin.json`
 
-## Auto-Discovery Mechanism
+## 자동 감지 메커니즘 (Auto-Discovery Mechanism)
 
-Claude Code automatically discovers and loads components:
+Claude Code는 컴포넌트를 자동으로 발견하고 로드합니다:
 
-1. **Plugin manifest**: Reads `.claude-plugin/plugin.json` when plugin enables
-2. **Commands**: Scans `commands/` directory for `.md` files
-3. **Agents**: Scans `agents/` directory for `.md` files
-4. **Skills**: Scans `skills/` for subdirectories containing `SKILL.md`
-5. **Hooks**: Loads configuration from `hooks/hooks.json` or manifest
-6. **MCP servers**: Loads configuration from `.mcp.json` or manifest
+1. **플러그인 매니페스트**: 플러그인이 활성화될 때 `.claude-plugin/plugin.json`을 읽습니다.
+2. **명령어**: `commands/` 디렉토리에서 `.md` 파일을 스캔합니다.
+3. **에이전트**: `agents/` 디렉토리에서 `.md` 파일을 스캔합니다.
+4. **스킬**: `skills/` 디렉토리에서 `SKILL.md`를 포함하는 하위 디렉토리를 스캔합니다.
+5. **훅**: `hooks/hooks.json` 또는 매니페스트에서 구성을 로드합니다.
+6. **MCP 서버**: `.mcp.json` 또는 매니페스트에서 구성을 로드합니다.
 
-**Discovery timing**:
-- Plugin installation: Components register with Claude Code
-- Plugin enable: Components become available for use
-- No restart required: Changes take effect on next Claude Code session
+**감지 타이밍**:
+- 플러그인 설치 시: 컴포넌트가 Claude Code에 등록됩니다.
+- 플러그인 활성화 시: 컴포넌트를 사용할 수 있게 됩니다.
+- 재시작 불필요: 다음 Claude Code 세션에서 변경 사항이 즉시 적용됩니다.
 
-**Override behavior**: Custom paths in `plugin.json` supplement (not replace) default directories
+**오버라이드 규칙**: `plugin.json` 내의 맞춤형 경로는 기본 디렉토리를 대체하지 않고 보완합니다.
 
-## Best Practices
+## 권장 사항 (Best Practices)
 
-### Organization
+### 구성 방식 (Organization)
 
-1. **Logical grouping**: Group related components together
-   - Put test-related commands, agents, and skills together
-   - Create subdirectories in `scripts/` for different purposes
+1. **논리적 그룹화**: 관련된 컴포넌트들은 함께 배치합니다.
+   - 테스트 관련 명령어, 에이전트, 스킬은 한 곳에 둡니다.
+   - `scripts/` 내에 목적별로 하위 디렉토리를 만듭니다.
 
-2. **Minimal manifest**: Keep `plugin.json` lean
-   - Only specify custom paths when necessary
-   - Rely on auto-discovery for standard layouts
-   - Use inline configuration only for simple cases
+2. **최소한의 매니페스트**: `plugin.json`을 간단하게 유지합니다.
+   - 필요한 경우에만 맞춤형 경로를 지정하십시오.
+   - 표준적인 레이아웃 구조의 경우 자동 감지 메커니즘에 의존하십시오.
+   - 아주 간단한 경우에만 인라인 설정을 사용하십시오.
 
-3. **Documentation**: Include README files
-   - Plugin root: Overall purpose and usage
-   - Component directories: Specific guidance
-   - Script directories: Usage and requirements
+3. **문서화**: README 파일을 포함합니다.
+   - 플러그인 루트: 전체적인 목적 및 사용법 기술
+   - 컴포넌트 디렉토리: 세부 사용 가이드
+   - 스크립트 디렉토리: 사용법 및 선행 요구 사항
 
-### Naming
+### 명명 규칙 (Naming)
 
-1. **Consistency**: Use consistent naming across components
-   - If command is `test-runner`, name related agent `test-runner-agent`
-   - Match skill directory names to their purpose
+1. **일관성**: 컴포넌트 전반에 걸쳐 일관성 있는 명명 규칙을 적용합니다.
+   - 명령어가 `test-runner`이면, 관련 에이전트는 `test-runner-agent`로 명명합니다.
+   - 스킬 디렉토리 이름을 목적에 맞춥니다.
 
-2. **Clarity**: Use descriptive names that indicate purpose
-   - Good: `api-integration-testing/`, `code-quality-checker.md`
-   - Avoid: `utils/`, `misc.md`, `temp.sh`
+2. **명확성**: 목적을 나타내는 직관적인 이름을 사용합니다.
+   - 올바름: `api-integration-testing/`, `code-quality-checker.md`
+   - 피할 사항: `utils/`, `misc.md`, `temp.sh`
 
-3. **Length**: Balance brevity with clarity
-   - Commands: 2-3 words (`review-pr`, `run-ci`)
-   - Agents: Describe role clearly (`code-reviewer`, `test-generator`)
-   - Skills: Topic-focused (`error-handling`, `api-design`)
+3. **길이**: 간결함과 명확성의 균형을 맞춥니다.
+   - 명령어: 2-3 단어 (`review-pr`, `run-ci`)
+   - 에이전트: 역할을 명확히 묘사 (`code-reviewer`, `test-generator`)
+   - 스킬: 주제에 포커스 (`error-handling`, `api-design`)
 
-### Portability
+### 이식성 (Portability)
 
-1. **Always use ${CLAUDE_PLUGIN_ROOT}**: Never hardcode paths
-2. **Test on multiple systems**: Verify on macOS, Linux, Windows
-3. **Document dependencies**: List required tools and versions
-4. **Avoid system-specific features**: Use portable bash/Python constructs
+1. **항상 ${CLAUDE_PLUGIN_ROOT} 사용**: 경로를 하드코딩하지 마십시오.
+2. **다중 시스템 교차 검증**: macOS, Linux, Windows에서 모두 테스트하십시오.
+3. **종속성 문서화**: 필요한 외부 도구와 버전을 기재하십시오.
+4. **시스템 특정 기능 자제**: 이식 가능한 bash/Python 구조를 사용하십시오.
 
-### Maintenance
+### 유지보수 (Maintenance)
 
-1. **Version consistently**: Update version in plugin.json for releases
-2. **Deprecate gracefully**: Mark old components clearly before removal
-3. **Document breaking changes**: Note changes affecting existing users
-4. **Test thoroughly**: Verify all components work after changes
+1. **버전 관리의 일관성**: 릴리스 시 `plugin.json` 내의 버전을 함께 업데이트합니다.
+2. **우아한 사용 중단(Deprecation)**: 구성 요소를 삭제하기 전에 구버전 대상임을 명확히 표시합니다.
+3. **변경 내역(Breaking Changes) 문서화**: 기존 사용자에게 영향을 미칠 수 있는 변경 사항을 기술합니다.
+4. **철저한 테스트**: 변경 사항을 배포하기 전에 모든 컴포넌트가 작동하는지 확인합니다.
 
-## Common Patterns
+## 공통 패턴 (Common Patterns)
 
-### Minimal Plugin
+### 최소 구성 플러그인 (Minimal Plugin)
 
-Single command with no dependencies:
+의존성이 없는 단일 명령어 구성:
 ```
 my-plugin/
 ├── .claude-plugin/
@@ -414,9 +414,9 @@ my-plugin/
     └── hello.md       # Single command
 ```
 
-### Full-Featured Plugin
+### 전체 기능 플러그인 (Full-Featured Plugin)
 
-Complete plugin with all component types:
+모든 컴포넌트 유형을 갖춘 완전한 플러그인:
 ```
 my-plugin/
 ├── .claude-plugin/
@@ -431,9 +431,9 @@ my-plugin/
 └── scripts/           # Shared utilities
 ```
 
-### Skill-Focused Plugin
+### 스킬 중심 플러그인 (Skill-Focused Plugin)
 
-Plugin providing only skills:
+스킬만 제공하는 플러그인:
 ```
 my-plugin/
 ├── .claude-plugin/
@@ -445,32 +445,32 @@ my-plugin/
         └── SKILL.md
 ```
 
-## Troubleshooting
+## 문제 해결 (Troubleshooting)
 
-**Component not loading**:
-- Verify file is in correct directory with correct extension
-- Check YAML frontmatter syntax (commands, agents, skills)
-- Ensure skill has `SKILL.md` (not `README.md` or other name)
-- Confirm plugin is enabled in Claude Code settings
+**컴포넌트가 로드되지 않음**:
+- 파일이 올바른 디렉토리에 있고 올바른 확장자를 가졌는지 확인하십시오.
+- YAML 프론트매터 구문을 검증하십시오 (명령어, 에이전트, 스킬).
+- 스킬 디렉토리에 `SKILL.md`가 포함되어 있는지 확인하십시오 (`README.md` 등 다른 이름은 불가).
+- Claude Code 설정에서 플러그인이 활성화되어 있는지 확인하십시오.
 
-**Path resolution errors**:
-- Replace all hardcoded paths with `${CLAUDE_PLUGIN_ROOT}`
-- Verify paths are relative and start with `./` in manifest
-- Check that referenced files exist at specified paths
-- Test with `echo $CLAUDE_PLUGIN_ROOT` in hook scripts
+**경로 해석 오류**:
+- 하드코딩된 모든 경로를 `${CLAUDE_PLUGIN_ROOT}`로 변경하십시오.
+- 매니페스트 내의 경로가 상대 경로이며 `./`로 시작하는지 검증하십시오.
+- 참조된 파일이 해당 경로에 실제로 존재하는지 확인하십시오.
+- 훅 스크립트 내에서 `echo $CLAUDE_PLUGIN_ROOT`를 출력하여 테스트하십시오.
 
-**Auto-discovery not working**:
-- Confirm directories are at plugin root (not in `.claude-plugin/`)
-- Check file naming follows conventions (kebab-case, correct extensions)
-- Verify custom paths in manifest are correct
-- Restart Claude Code to reload plugin configuration
+**자동 감지가 작동하지 않음**:
+- 디렉토리가 플러그인 루트에 위치해 있는지 확인하십시오 (`.claude-plugin/` 내부가 아님).
+- 파일 이름이 규칙(kebab-case, 올바른 확장자)을 따르는지 검증하십시오.
+- 매니페스트에 구성된 맞춤형 경로가 올바른지 확인하십시오.
+- 플러그인 구성을 다시 로드하기 위해 Claude Code를 재시작하십시오.
 
-**Conflicts between plugins**:
-- Use unique, descriptive component names
-- Namespace commands with plugin name if needed
-- Document potential conflicts in plugin README
-- Consider command prefixes for related functionality
+**플러그인 간 충돌**:
+- 고유하고 설명적인 컴포넌트 이름을 사용하십시오.
+- 필요한 경우 명령어 이름 앞에 플러그인 이름을 접두사로 붙이십시오.
+- 플러그인 README 파일에 잠재적인 충돌 문제를 기술하십시오.
+- 관련된 일련의 기능에 대해 공통의 명령어 접두사를 고려하십시오.
 
 ---
 
-For detailed examples and advanced patterns, see files in `references/` and `examples/` directories.
+세부 예시 및 고급 패턴에 대해서는 `references/` 및 `examples/` 디렉토리 내의 파일들을 참조하십시오.

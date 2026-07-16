@@ -1,82 +1,56 @@
 ---
 name: configure
-description: Check iMessage channel setup and review access policy. Use when the user asks to configure iMessage, asks "how do I set this up" or "who can reach me," or wants to know why texts aren't reaching the assistant.
+description: iMessage 채널 설정 확인 및 접근 정책 검토. 사용자가 iMessage 설정을 요청하거나, "어떻게 설정하나요" 또는 "누가 나에게 도달할 수 있나요"라고 묻거나, 문자가 어시스턴트에 도달하지 않는 이유를 알고 싶어할 때 사용합니다.
 user-invocable: true
 allowed-tools:
   - Read
   - Bash(ls *)
 ---
 
-# /imessage:configure — iMessage Channel Setup
+# /imessage:configure — iMessage 채널 설정
 
-There's no token to save — iMessage reads `~/Library/Messages/chat.db`
-directly. This skill checks whether that works and orients the user on
-access policy.
+저장할 토큰이 없습니다. iMessage는 `~/Library/Messages/chat.db`를 직접 읽습니다. 이 스킬은 해당 읽기 작업이 잘 작동하는지 확인하고 사용자에게 접근 정책을 안내합니다.
 
-Arguments passed: `$ARGUMENTS` (unused — this skill only shows status)
+전달된 인수: `$ARGUMENTS` (사용되지 않음 — 이 스킬은 상태만 표시함)
 
 ---
 
-## Status and guidance
+## 상태 및 안내
 
-Read state and give the user a complete picture:
+상태를 읽고 사용자에게 전체적인 그림을 제공합니다:
 
-1. **Full Disk Access** — run `ls ~/Library/Messages/chat.db`. If it fails
-   with "Operation not permitted", FDA isn't granted. Say: *"Grant Full Disk
-   Access to your terminal (or IDE if that's where Claude Code runs): System
-   Settings → Privacy & Security → Full Disk Access. The server can't read
-   chat.db without it."*
+1. **전체 디스크 접근 권한 (Full Disk Access)** — `ls ~/Library/Messages/chat.db`를 실행합니다. "Operation not permitted" 에러와 함께 실패하면 FDA 권한이 없는 것입니다. 다음과 같이 안내하십시오: *"귀하의 터미널(또는 Claude Code가 실행 중인 IDE)에 전체 디스크 접근 권한을 부여하십시오: 시스템 설정 → 개인정보 보호 및 보안 → 전체 디스크 접근 권한. 이 권한이 없으면 서버는 chat.db를 읽을 수 없습니다."*
 
-2. **Access** — read `~/.claude/channels/imessage/access.json` (missing file
-   = defaults: `dmPolicy: "allowlist"`, empty allowlist). Show:
-   - DM policy and what it means in one line
-   - Allowed senders: count, and list the handles
-   - Pending pairings: count, with codes if any (only if policy is `pairing`)
+2. **접근 권한 (Access)** — `~/.claude/channels/imessage/access.json`을 읽습니다 (파일이 없는 경우 기본값 `dmPolicy: "allowlist"`, 빈 허용 목록 적용). 다음을 보여줍니다:
+   - DM 정책 및 그 의미를 한 줄로 요약
+   - 허용된 발신자: 개수 및 핸들 목록
+   - 대기 중인 페어링: 개수 및 코드(정책이 `pairing`인 경우에만 표시)
 
-3. **What next** — end with a concrete next step based on state:
-   - FDA not granted → the FDA instructions above
-   - FDA granted, policy is allowlist → *"Text yourself from any device
-     signed into your Apple ID — self-chat always bypasses the gate. To let
-     someone else through: `/imessage:access allow +15551234567`."*
-   - FDA granted, someone allowed → *"Ready. Self-chat works; {N} other
-     sender(s) allowed."*
+3. **향후 단계 (What next)** — 상태에 따라 구체적인 다음 단계를 제시하며 마무리합니다:
+   - FDA 권한 없음 → 위의 FDA 안내 지침 표시
+   - FDA 권한 있음, 정책이 allowlist임 → *"귀하의 Apple ID가 로그인된 모든 기기에서 자신에게 문자를 보내보십시오. 자신과의 대화는 항상 접근 권한 게이트를 우회합니다. 다른 사람을 허용하려면 `/imessage:access allow +15551234567`을 실행하십시오."*
+   - FDA 권한 있음, 허용된 사용자 있음 → *"준비 완료되었습니다. 자신과의 대화가 작동하며, {N}명의 다른 발신자가 허용되었습니다."*
 
 ---
 
-## Build the allowlist — don't pair
+## 허용 목록 구축 — 페어링 사용 지양
 
-iMessage reads your **personal** `chat.db`. You already know the phone
-numbers and emails of people you'd allow — there's no ID-capture problem to
-solve. Pairing has no upside here and a clear downside: every contact who
-texts this Mac gets an unsolicited auto-reply.
+iMessage는 귀하의 **개인** `chat.db`를 읽습니다. 허용할 사람들의 전화번호와 이메일을 이미 알고 있으므로 ID를 캡처하는 문제를 해결할 필요가 없습니다. iMessage에서는 페어링 정책을 사용할 이유가 없으며 명확한 단점이 존재합니다: 이 Mac으로 문자를 보내는 모든 연락처에 요청하지 않은 자동 회신(코드)이 전송됩니다.
 
-Drive the conversation this way:
+대화를 다음과 같은 방식으로 진행하십시오:
 
-1. Read the allowlist. Tell the user who's in it (self-chat always works
-   regardless).
-2. Ask: *"Besides yourself, who should be able to text you through this?"*
-3. **"Nobody, just me"** → done. The default `allowlist` with an empty list
-   is correct. Self-chat bypasses the gate.
-4. **"My partner / a friend / a couple people"** → ask for each handle
-   (phone like `+15551234567` or email like `them@icloud.com`) and offer to
-   run `/imessage:access allow <handle>` for each. Stay on `allowlist`.
-5. **Current policy is `pairing`** → flag it immediately: *"Your policy is
-   `pairing`, which auto-replies a code to every contact who texts this Mac.
-   Switch back to `allowlist`?"* and offer `/imessage:access policy
-   allowlist`. Don't wait to be asked.
-6. **User asks for `pairing`** → push back. Explain the auto-reply-to-
-   everyone consequence. If they insist and confirm a dedicated line with
-   few contacts, fine — but treat it as a one-off, not a recommendation.
+1. 허용 목록을 읽습니다. 목록에 누가 있는지 사용자에게 알립니다 (자신과의 대화는 항상 작동합니다).
+2. 질문: *"자신 외에 이 봇을 통해 귀하에게 문자를 보낼 수 있어야 하는 사람이 있나요?"*
+3. **"아무도 없고, 나만 쓸 것이다"** → 완료. 빈 목록이 지정된 기본 `allowlist` 정책이 적합합니다. 자신과의 대화는 게이트를 우회합니다.
+4. **"내 파트너 / 친구 / 몇 명의 사람"** → 각 핸들(전화번호 `+15551234567` 또는 이메일 `them@icloud.com`)을 요청한 뒤, 각 핸들에 대해 `/imessage:access allow <handle>` 실행을 제안하십시오. 정책은 `allowlist`로 유지합니다.
+5. **현재 정책이 `pairing`인 경우** → 즉시 경고하십시오: *"현재 정책이 `pairing`으로 설정되어 있어, 이 Mac으로 문자를 보내는 모든 연락처에 코드가 자동 응답으로 전송됩니다. `allowlist` 정책으로 다시 전환하시겠습니까?"*라고 묻고 `/imessage:access policy allowlist` 실행을 제안하십시오. 요청을 기다리지 말고 선제적으로 이를 처리하십시오.
+6. **사용자가 `pairing` 정책을 요구하는 경우** → 만류하십시오. 모든 사람에게 자동 답장이 전송되는 결과에 대해 설명하십시오. 만약 사용자가 이를 인지하고 연락처가 거의 없는 전용 회선이라며 고집하는 경우에 한해서만 수용하되, 이를 추천하지는 마십시오.
 
-Handles are `+15551234567` or `someone@icloud.com`. `disabled` drops
-everything except self-chat.
+핸들 형식은 `+15551234567` 또는 `someone@icloud.com`입니다. `disabled` 정책은 자신과의 대화를 제외한 모든 것을 차단합니다.
 
 ---
 
-## Implementation notes
+## 구현 유의사항
 
-- No `.env` file for this channel. No token. The only OS-level setup is FDA
-  plus the one-time Automation prompt when the server first sends (which
-  can't be checked from here).
-- `access.json` is re-read on every inbound message — policy changes via
-  `/imessage:access` take effect immediately, no restart.
+- 이 채널에 대한 `.env` 파일과 토큰은 존재하지 않습니다. OS 수준의 유일한 설정은 FDA 권한과 서버가 처음 메시지를 보낼 때 뜨는 일회성 자동화 프롬프트(이곳에서는 확인 불가)뿐입니다.
+- `access.json`은 수신 메시지가 올 때마다 다시 읽히므로, `/imessage:access`를 통한 정책 변경 사항은 재시작 없이 즉시 적용됩니다.

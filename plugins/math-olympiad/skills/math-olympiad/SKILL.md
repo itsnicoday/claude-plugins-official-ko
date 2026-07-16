@@ -1,95 +1,59 @@
 ---
 name: math-olympiad
-description:
-  "Solve competition math problems (IMO, Putnam, USAMO, AIME) with adversarial
-  verification that catches the errors self-verification misses. Activates when
-  asked to 'solve this IMO problem', 'prove this olympiad inequality', 'verify
-  this competition proof', 'find a counterexample', 'is this proof correct', or
-  for any problem with 'IMO', 'Putnam', 'USAMO', 'olympiad', or 'competition
-  math' in it. Uses pure reasoning (no tools) — then a fresh-context adversarial
-  verifier attacks the proof using specific failure patterns, not generic 'check
-  logic'. Outputs calibrated confidence — will say 'no confident solution'
-  rather than bluff. If LaTeX is available, produces a clean PDF after
-  verification passes."
+description: "자가 검증이 놓치기 쉬운 오류를 포착하는 적대적 검증(adversarial verification)을 적용하여 경시 수학 문제(IMO, Putnam, USAMO, AIME)를 해결합니다. 'solve this IMO problem', 'prove this olympiad inequality', 'verify this competition proof', 'find a counterexample', 'is this proof correct' 와 같이 요청하거나, 'IMO', 'Putnam', 'USAMO', 'olympiad', 'competition math' 단어가 포함된 모든 문제에 활성화됩니다. 먼저 순수한 추론(도구 미사용)을 통해 해결하고, 그 후 이전 맥락이 차단된(fresh-context) 적대적 검증기가 단순한 '논리 확인'이 아니라 구체적인 실패 패턴을 바탕으로 증명을 공격합니다. 확신이 없을 때는 억지 답안 대신 'no confident solution(확신할 수 있는 솔루션이 없음)'을 기권으로 반환하도록 신뢰도를 조정합니다. LaTeX를 사용할 수 있는 환경이라면 검증을 통과한 후 깔끔한 PDF를 출력합니다."
 version: 0.1.0
 ---
 
-# Math Olympiad Solver
+# 수학 올림피아드 솔버 (Math Olympiad Solver)
 
-## The five things that change outcomes
+## 결과의 차이를 만들어내는 5가지 원칙
 
-1. **Strip thinking before verifying** — a verifier that sees the reasoning is
-   biased toward agreement. Fresh context, cleaned proof only.
-2. **"Does this prove RH?"** — if your theorem's specialization to ζ is a famous
-   open problem, you have a gap. Most reliable red flag.
-3. **Short proof → extract the general lemma** — try 2×2 counterexamples. If
-   general form is false, find what's special about THIS instance.
-4. **Same gap twice → step back** — the case split may be obscuring a unified
-   argument. Three lines sometimes does what twelve pages couldn't.
-5. **Say "no confident solution"** — wrong-and-confident is worse than honest
-   abstain.
+1. **검증 전 추론 흔적 제거** — 풀이 과정을 함께 보는 검증기는 동의하는 방향으로 편향됩니다. 맥락이 분리된(Fresh context) 정돈된 증명만 검증해야 합니다.
+2. **"이것이 리만 가설(RH)까지 증명해 버리는가?"** — 정리의 특수한 사례가 ζ 함수 상에서 유명한 난제가 되어버린다면, 증명에 결함(공백)이 있는 것입니다. 가장 신뢰성 높은 경고 신호입니다.
+3. **짧은 증명 → 일반 보조정리 추출** — 2×2 반례를 대입해 보십시오. 일반적인 형태가 거짓이라면, '이번 사례'에서만 특별하게 성립하는 이유가 무엇인지 파악하십시오.
+4. **같은 공백이 두 번 반복될 때 → 한 걸음 물러서기** — 복잡한 케이스 분류로 인해 더 통합적인 논증이 가려져 있을 수 있습니다. 때로는 12페이지짜리 수식으로 해결하지 못한 것을 단 세 줄로 풀어낼 수 있습니다.
+5. **"확신 없음"을 기꺼이 말하기** — 잘못된 자신감 넘치는 답변은 정직한 기권(abstain)보다 나쁩니다.
 
 ---
 
-**Tool policy**: Solvers and verifiers use THINKING ONLY in the tight-budget
-workflow. Competition math is reasoning. Computation is for deep mode (§6c), and
-even then bounded — a recurrence that's doubly-exponential can't be computed
-past n~30, work mod 2^m instead.
+**도구 사용 방침**: 솔버와 검증기는 오직 추론(THINKING ONLY)만 사용합니다. 경시 수학은 추론의 영역입니다. 계산 도구는 심층 모드(deep mode, §6c)에서만 허용되며, 그마저도 한계가 있습니다 — 예컨대 이중 지수적으로 증가하는 점화식은 n이 30 이상인 범위에서는 직접 계산할 수 없으므로, 대신 2^m 에 대한 나머지(modulo) 연산으로 접근해야 합니다.
 
 ---
 
-## When to use which approach
+## 상황별 접근 방식 (When to use which approach)
 
-| Problem                                              | Approach                                                                       | Verification              |
+| 문제 유형 | 접근 방식 | 검증 단계 |
 | ---------------------------------------------------- | ------------------------------------------------------------------------------ | ------------------------- |
-| AIME numeric answer                                  | Best-of-N → majority vote                                                      | Answer check only         |
-| Olympiad proof (IMO/Putnam/USAMO)                    | Full workflow below                                                            | 5-pass adversarial        |
-| "Is this proof correct?"                             | Skip to verification (step 4)                                                  | Adversarial + spec-gaming |
-| **Full problem set** (e.g. all 6 from a competition) | Sequential: one full workflow per problem, collect results, compile single PDF | Per-problem adversarial   |
+| AIME 단답형(수치 정답) 문제 | N개 후보군 생성 → 다수결 투표 | 정답 검증만 수행 |
+| 올림피아드 증명 문제 (IMO/Putnam/USAMO) | 아래의 전체 워크플로우 수행 | 5단계 적대적 검증 |
+| "이 증명이 올바릅니까?" | 검증 단계(4단계)로 직행 | 적대적 검증 + 스펙 왜곡 검사 |
+| **전체 문제 세트** (예: 대회 전체 기출 6문제) | 순차 처리: 문제별 전체 워크플로우 1회씩 실행, 결과 수집 후 단일 PDF로 빌드 | 문제별 적대적 검증 |
 
-**Batch in one Workflow**: Set `opts.label` on every `agent()` call to include
-the problem ID (e.g., `label: "P3:solver:2"`). Without labels, 36 results come
-back with no problem association. Run problems in parallel — the label is what
-matters, not ordering.
+**워크플로우 내 일괄 처리**: 모든 `agent()` 호출 시 문제 ID를 포함하도록 `opts.label`을 설정하십시오 (예: `label: "P3:solver:2"`). 라벨이 없으면 어떤 문제의 풀이인지 매칭할 수 없는 36개의 결과가 한꺼번에 반환될 것입니다. 문제를 병렬로 실행하십시오 — 중요한 것은 실행 순서가 아니라 라벨입니다.
 
-### For a full problem set
+### 전체 문제 세트 처리 시 (For a full problem set)
 
-Launch one solver workflow per problem (same VERBATIM prompt, different
-statement). Run them in parallel. When all return, run adversarial verification
-per problem. Problems that pass get their proof in the PDF; problems that
-abstain get "No confident solution" with partial notes.
+문제마다 하나의 솔버 워크플로우를 시작하십시오 (프롬프트는 토씨 하나 틀리지 않고 동일하게 하되, 문제 진술문만 각각 다르게 입력). 병렬로 실행하십시오. 모두 완료되면 문제별로 적대적 검증을 실행합니다. 검증을 통과한 문제는 PDF에 증명이 포함되며, 기권한 문제는 부분적인 노트와 함께 "No confident solution"으로 기록됩니다.
 
-Don't try to solve all N problems in one agent's context — each problem needs
-its own thinking budget and its own fresh-context verifier. The composition is
-mechanical: collect the per-problem outputs, fill in LaTeX sections, compile
-once. | "Simplify this proof" | Skip to presentation (step 8) | — |
+하나의 에이전트 컨텍스트 내에서 N개의 문제를 전부 해결하려 하지 마십시오 — 각 문제는 고유의 추론 예산과 개별적인 격리 검증기를 필요로 합니다. 조합 과정은 기계적입니다. 각 문제별 출력을 수집하고, LaTeX 섹션을 채운 뒤, 한 번만 컴파일하면 됩니다. | "증명 단순화" | 프레젠테이션 단계(8단계)로 직행 | — |
 
 ---
 
-## The Workflow
+## 워크플로우 (The Workflow)
 
-### 1. Interpretation check (30 seconds, catches 50/63 of one class of errors)
+### 1. 해석 왜곡 검사 (Interpretation check) (30초 소요, 특정 유형 오류의 50/63 차단)
 
-Before solving anything, identify the interpretation.
+문제를 풀기 전에 먼저 올바른 해석 방향을 정립해야 합니다.
 
-> Read the problem statement. List 2-3 ways it could be interpreted. For each:
-> is this reading TRIVIAL? If one reading makes the problem easy and another
-> makes it hard, the hard one is almost certainly intended. State which
-> interpretation you're solving and WHY you believe it's the intended one.
+> 문제를 읽으십시오. 해석 가능한 2~3가지 방향을 나열하십시오. 각각의 해석에 대해: 이 해석이 자명한(TRIVIAL) 풀이로 이어집니까? 만약 어떤 해석이 문제를 너무 쉽게 만들고, 다른 해석은 어렵게 만든다면, 어려운 해석이 출제 의도일 가능성이 압도적으로 높습니다. 당신이 풀고자 하는 해석이 무엇인지 명시하고, 왜 그것이 진짜 출제 의도라고 생각하는지 밝히십시오.
 
-The Aletheia case study found 50 of 63 "technically correct" solutions were for
-the wrong interpretation. Olympiad problems often have a trap easy reading.
+Aletheia의 분석에 따르면, "기술적으로는 맞았으나" 오답 처리된 63개의 풀이 중 50개가 엉뚱한 해석을 전제로 풀었기 때문이었습니다. 올림피아드 문제는 종종 오독하기 쉬운 쉬운 경로를 함정으로 배치해 둡니다.
 
-### 2. Generate candidates with internal refinement (parallel, thinking only)
+### 2. 내부 개선 과정을 거친 후보군 생성 (Generate candidates) (병렬 처리, 추론 전용)
 
-Launch 8-12 attempt agents in parallel. **Each agent internally iterates** —
-solve → self-improve → self-verify → correct → repeat. This is the Yang-Huang
-structure that achieves 85.7% on IMO: one-shot solving isn't enough; per-attempt
-refinement matters.
+8~12개의 시도 에이전트(attempt agents)를 병렬로 작동시킵니다. **각 에이전트는 내부적인 반복 과정(solve → self-improve → self-verify → correct → repeat)을 거칩니다.** 이는 IMO 기출 해결에서 85.7% 성공률을 보인 Yang-Huang의 핵심 구조입니다. 단발성 풀이로는 부족하며, 매 시도마다 이 정교화 과정이 개입해야 합니다.
 
-**The Agent tool cannot enforce tool restriction.** Subagents get the full tool
-set. The only mechanism is the prompt. Use this prompt VERBATIM — do not
-summarize, do not synthesize your own:
+**서브에이전트 도구는 호출 시 도구 사용 제한을 강제할 수 없습니다.** 에이전트가 모든 도구 권한을 가지고 가므로, 유일한 제어 수단은 프롬프트뿐입니다. 다음 프롬프트를 토씨 하나 틀리지 않고 그대로(VERBATIM) 사용하십시오. 임의로 요약하거나 합성해서는 안 됩니다:
 
 ```
 NO COMPUTATION. Do not use Bash, Python, WebSearch, Read, Write, or any tool that runs code or fetches data. Numerical verification is not a proof step. "I computed n=1..10 and the pattern holds" is not a proof.
@@ -109,137 +73,107 @@ PROBLEM: <insert the problem statement here>
 ANGLE: <insert one starting angle here>
 ```
 
-The first two paragraphs are load-bearing. A session that writes its own prompt
-and omits them will produce subagents that grind Python for 30 iterations and
-confidently get wrong answers — a pattern that fits n≤10 but fails at n=100 is
-not a proof.
+앞의 두 문단은 매우 중요합니다. 이 지침을 생략하고 임의로 프롬프트를 작성하면 서브에이전트들이 Python을 30번씩 돌리며 틀린 답을 자신 있게 내놓는 현상이 벌어질 것입니다. n이 10 이하일 때의 규칙성이 n=100일 때 성립하지 않는다면 그것은 수학적 증명이 아닙니다.
 
-Starting angles (vary across agents — see `references/solver_heuristics.md`):
+다양한 각도에서의 출발점(Starting angles - `references/solver_heuristics.md` 참조):
 
-- Work out small cases (test past n=3)
-- Look for an invariant or monovariant
-- Consider the extremal case
-- Try induction
-- What symmetries?
-- Work backwards
-- Drop a condition — where does it become trivially false?
-- Generalize (inventor's paradox — more structure is sometimes easier)
+- 작은 사례들을 직접 전개하기 (최소 n=3 너머까지 테스트)
+- 불변량(invariant)이나 단조불변량(monovariant) 찾기
+- 극단적인 케이스(extremal case) 설정해 보기
+- 수학적 귀납법 적용
+- 대칭성 고려
+- 결론에서 거꾸로 추적하기
+- 조건 하나를 배제하고 언제 자명하게 모순이 되는지 확인하기
+- 일반화하기 (발명가의 역설 - 구조를 키우면 오히려 쉬워지기도 함)
 
-Each returns its FINAL state (not intermediate rounds):
+각 에이전트는 중간 라운드 과정을 제외하고, 최종 상태(FINAL state)만을 다음과 같이 반환합니다:
 
 ```
 **Verdict**: complete solution | partial result | no progress
-**Rounds**: [how many verify→correct cycles]
-**Method**: [key idea, one paragraph]
-**Detailed Solution**: [full step-by-step, every step justified]
-**Answer**: [if applicable]
-**Self-verification notes**: [what you caught and fixed; remaining concerns]
+**Rounds**: [verify→correct 반복 횟수]
+**Method**: [핵심 아이디어, 한 단락 작성]
+**Detailed Solution**: [단계별 상세 증명, 모든 근거 제시]
+**Answer**: [답안 기재란, 해당하는 경우]
+**Self-verification notes**: [자가 검출 및 수정한 내용, 남은 우려사항]
 ```
 
-**Retry policy**: If an agent fails or times out, retry once. Transient failures
-happen.
+**재시도 정책 (Retry policy)**: 에이전트 호출이 실패하거나 타임아웃이 발생하면 1회 재시도합니다. 일시적인 시스템 에러는 발생할 수 있습니다.
 
-### 3. Clean the solution (context isolation — the #1 lever)
+### 3. 풀이 정돈 (Clean the solution) (컨텍스트 격리 — 가장 확실한 해결 장치)
 
-The thinking trace biases the verifier toward agreement — a long chain of
-reasoning reads as supporting evidence even when the conclusion is wrong. Before
-any verification, strip:
+풀이 도중에 생성된 지저분한 생각의 흔적(thinking trace)은 검증기의 눈을 흐립니다. 긴 전개 과정은 결론이 틀렸을 때조차 맞다는 착각을 불러일으킵니다. 검증 단계 전에 다음 항목들을 모두 잘라내십시오:
 
-- All thinking-block content
-- All "Let me try..." / "Actually wait..." / "Hmm" prose
-- All false starts and backtracking
+- 모든 생각 블록(thinking-block) 내용
+- "한번 시도해 보자...", "아 맞다...", "음..." 같은 구어체 줄글
+- 모든 오답 시도와 백트래킹(되짚기) 과정
 
-What remains: problem statement + clean final argument only.
+잘라내고 남겨둘 핵심: 오직 문제 진술과 군더더기 없는 최종 증명 내용뿐이어야 합니다.
 
-Extract only the **Method** + **Proof** + **Answer** sections from each solver's
-output. The verifier never sees how the solver got there.
+솔버의 출력에서 오직 **Method** + **Proof** + **Answer** 섹션만 추출해 내십시오. 검증기는 솔버가 그 답에 어떻게 도달했는지에 대한 중간 고민 과정을 전혀 보지 못해야 합니다.
 
-### 4. Adversarial verify (fresh context, pattern-armed)
+### 4. 적대적 검증 (Adversarial verify) (맥락 분리, 패턴 무장)
 
-For each cleaned solution, launch a fresh verifier agent. **Fresh context**: it
-sees only (problem statement + cleaned solution). **No tools.**
+각 정돈된 풀이에 대해 새로운 검증기 에이전트를 가동합니다. **맥락 격리(Fresh context)**: 이 검증기는 오직 (문제 진술 + 최종 정돈된 풀이)만을 전달받으며, **도구 권한이 없습니다.**
 
-The verifier's job is to ATTACK, not grade. Load
-`references/adversarial_prompts.md` for the prompts. The key patterns it runs:
+검증기의 역할은 채점이 아니라 공격(ATTACK)입니다. `references/adversarial_prompts.md`에서 프롬프트를 로드하십시오. 주요 탐지 패턴은 다음과 같습니다:
 
-| Pattern | The check                                                                                                                                                          |
-| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **#4**  | Does this theorem specialize to a famous object (ζ, quadratic reciprocity, etc.) and prove something open about it? → gap                                          |
-| **#18** | Substitute the proof's own intermediate identities into any "remaining gap." Recover the original claim? → tautological                                            |
-| **#40** | Is any step a "one-line lemma"? Extract the GENERAL form. Find a 2×2 counterexample. If the general form is false, find what special structure saves THIS instance |
-| **#5**  | For each invoked theorem: re-check hypotheses FROM SCRATCH. "Continuous on [0,1]" ≠ "continuous on ℝ"                                                              |
-| **#6**  | Any infinite sum "bounded" via a regularized value? Check the boundary — if there's a pole there, the sum diverges                                                 |
+| 패턴 | 검사 내용 |
+| --- | --- |
+| **#4** | 정리를 특수한 유명 대상(ζ 함수, 이차 상호 법칙 등)에 적용했을 때 미해결 난제까지 증명해 버리지 않는가? → 공백 발견 |
+| **#18** | 증명 중에 도출한 중간 항등식들을 "남겨진 공백"에 대입했을 때 원래 증명해야 할 명제로 환원되지 않는가? → 동어반복 |
+| **#40** | 어느 단계가 근거 빈약한 "한 줄 보조정리"인가? 일반적인 형태를 추출하고, 2×2 반례를 찾으라. 일반 형태가 거짓이라면, 이번 사례를 성립하게 만드는 특수한 구조가 무엇인지 밝히라. |
+| **#5** | 인용된 정리의 가정을 처음부터 다시 점검하십시오. "[0,1] 상에서 연속"은 "실수 전체에서 연속"과 엄연히 다릅니다. |
+| **#6** | 임의의 무한급수를 임의의 수렴 값으로 "유계" 처리했는가? 경계값을 점검하십시오. 그 지점에 극(pole)이 존재한다면 급수는 발산합니다. |
 
-Full pattern list: `references/verifier_patterns.md`
+전체 패턴 목록: `references/verifier_patterns.md`
 
-Verifier returns:
+검증기는 다음 형식을 반환합니다:
 
 ```
 **Verdict**: HOLDS | HOLE FOUND | UNCLEAR
 
 **If HOLE FOUND**:
-- Location: [quote the problematic step]
-- Pattern: [which check fired, or "other"]
-- Why it breaks: [specific]
-- Fixable?: [yes with X / no, fundamental]
+- Location: [문제가 되는 단계를 그대로 인용]
+- Pattern: [탐지된 패턴 번호 기재, 또는 "기타"]
+- Why it breaks: [구체적인 이유]
+- Fixable?: [해결 가능 여부 및 방법 / 혹은 근본적 해결 불가]
 ```
 
-### 5. Rank and vote-verify (asymmetric + early exit)
+### 5. 순위 책정 및 다수결 투표 검증 (Rank and vote-verify) (비대칭성 + 조기 종료)
 
-Rank solutions by (verdict, verifier confidence). Take the top one. Run up to 5
-fresh verifier agents.
+검증 판정과 신뢰도를 기준으로 솔루션들의 순위를 매긴 뒤, 1위 솔루션을 선택합니다. 그리고 최대 5개의 새로운 검증기 에이전트를 가동합니다.
 
-**Asymmetric thresholds**: 4 HOLDS to confirm, 2 HOLE FOUND to refute. Why
-asymmetric: one flaky verifier shouldn't kill a correct proof; but two
-independent dissents is a real signal.
+**비대칭적 임계값 (Asymmetric thresholds)**: 최종 통과(confirm)를 위해 4개의 HOLDS 가 필요하며, 최종 기각(refute)을 위해 2개의 HOLE FOUND 가 필요합니다. 왜 비대칭인가: 검증기 1개의 일시적 오류 때문에 올바른 증명이 누락되어서는 안 되지만, 서로 독립된 검증기 2개가 일치하여 반대한다면 그것은 실질적인 오류 신호이기 때문입니다.
 
-**Pigeonhole early exit**: stop launching verifiers once the outcome is decided.
+**비둘기집 조기 종료 (Pigeonhole early exit)**: 결과가 수학적으로 확정되면 더 이상 검증기 에이전트를 가동하지 않고 중단합니다.
 
-- 2 say HOLE FOUND → refuted, stop (save the remaining 3 calls)
-- 4 say HOLDS → confirmed, stop (save the 5th)
-- After 3 verifiers: if 2 HOLDS + 1 HOLE, launch 2 more (outcome undecided). If
-  3 HOLDS + 0 HOLE, launch 1 more (could still hit 4-1).
+- 2개가 HOLE FOUND 를 내놓음 → 기각 확정, 즉시 종료 (남은 3개의 호출 취소)
+- 4개가 HOLDS 를 내놓음 → 통과 확정, 즉시 종료 (5번째 호출 취소)
+- 검증기 3개 실행 후: 만약 2 HOLDS + 1 HOLE 이라면, 최종 결정을 위해 남은 2개를 추가 실행합니다. 만약 3 HOLDS + 0 HOLE 이라면, 마지막 4-1 상황이 될 수 있으므로 1개를 추가 실행합니다.
 
-**Dual context-isolation**: each verifier is blind to (a) the solver's thinking
-trace — already stripped in step 3 — AND (b) other verifiers' verdicts. Each
-verifier thinks it's the first. No "3 agents already confirmed this" social
-proof.
+**이중 맥락 격리 (Dual context-isolation)**: 각 검증기는 (a) 3단계에서 잘라낸 솔버의 생각 흔적과, (b) 다른 검증기들이 내놓은 판정 결과 모두에 대해 눈이 가려져 있어야 합니다. 각 검증기는 자신이 최초이자 유일한 검토자라고 여겨야 합니다. "다른 에이전트 3명이 이미 확인했다"는 사회적 증거 편향을 원천 차단합니다.
 
-**A solver cannot verify its own solution.** Different agent, fresh context.
+**솔버는 자기 자신의 풀이를 검증할 수 없습니다.** 반드시 다른 에이전트가 분리된 맥락에서 수행해야 합니다.
 
-### 5b. When one case won't close — step back before grinding
+### 5b. 한 가지 케이스가 풀리지 않을 때 — 기계적으로 몰두하기 전에 물러서기
 
-If a proof splits into cases and one case proves easily but the other resists:
-**before grinding through the hard case, ask whether there's a route that makes
-the split disappear.**
+만약 증명이 여러 케이스로 나뉘는데, 하나는 쉽게 풀렸지만 다른 하나가 격렬하게 저항하는 경우: **계산 대수를 억지로 밀어붙이기 전에, 이 케이스 분리를 완전히 없애버릴 수 있는 다른 증명 경로가 없는지 질문해 보십시오.**
 
-The pattern that saves you: the hard case's very hypothesis often implies
-something strong about an _intermediate object_ you haven't looked at. Use that
-implication directly instead of the original chain.
+이러한 상황을 구제하는 구조적 규칙: 난해한 케이스가 상정하는 그 조건 자체가, 사실은 당신이 미처 주목하지 않았던 *중간 매개 대상*에 대해 매우 강력한 성질을 부여하고 있을 수 있습니다. 복잡한 연쇄 증명을 밀고 나가는 대신, 그 파생된 성질을 직접 이용하십시오.
 
-Concrete shape: proving f(n) ≤ cn for a constrained function f, with a case
-split on a prime p dividing f(n). One branch closes by index arguments in
-(ℤ/p^e)\*. The other branch resists — same group structure, but the arithmetic
-doesn't contradict. The fix: the hypothesis "p | f(n)" plugged back into the
-governing equation implies **f(p) = p itself**. Once you have that, a
-Fermat+Dirichlet argument kills both branches in three lines. The case split was
-a detour — it was splitting on a variable that, under the hypothesis, takes a
-known value.
+구체적인 예: 제약 조건 f 하의 함수에 대해 f(n) ≤ cn 임을 보여야 하는데, f(n)을 나누는 소수 p에 대해 케이스가 분류된 상황입니다. 한쪽 가지는 (ℤ/p^e)\* 상의 지수 논증으로 쉽게 해결되나, 다른 한쪽 가지는 동일한 군 구조 하에서 대수 연산 모순이 일어나지 않아 막혀 있습니다. 해결책: "p가 f(n)을 나눈다"는 조건을 원래 관계식에 다시 밀어 넣으면 **f(p) = p 라는 매우 강력한 항등식**을 유도해 낼 수 있습니다. 이 단계를 얻고 나면 페르마+디리클레 논증을 적용해 케이스 분류 없이 단 세 줄 만에 양쪽 가지를 모두 끝내버릴 수 있습니다. 애당초 케이스 분류 자체가 우회로였습니다. 가정이 성립하는 순간 이미 정해진 값을 갖게 될 변수를 붙잡고 굳이 케이스를 나누고 있었던 것입니다.
 
-Check when stuck on case B:
+케이스 B에서 막혔을 때 점검할 사항:
 
-- What does case B's hypothesis imply about f at _other_ inputs?
-- Is there a different pair (a,b) to plug into the governing equation?
-- Are you proving too much? (A cleaner contradiction needs less machinery.)
+- 케이스 B의 가정이 *다른* 입력값에 대한 f의 거동에 대해 무엇을 암시하고 있는가?
+- 관계식에 대입해 볼 수 있는 또 다른 변수 쌍 (a,b)가 존재하는가?
+- 혹시 너무 과도한 일반화를 증명하려다 벽에 부딪힌 것은 아닌가? (더 간결한 모순 도출에는 복잡한 도구가 덜 필요할 수 있습니다.)
 
-This is also a presentation-pass win: the split-free proof is shorter AND more
-general.
+이러한 점검은 프레젠테이션 단계에서도 매우 유리하게 작용합니다. 분기가 사라진 증명은 더 짧을 뿐만 아니라 훨씬 더 일반적인 수학적 아름다움을 갖춥니다.
 
-### 6. Revise (if needed)
+### 6. 수정 (Revise) (필요 시)
 
-If verification finds a hole: launch a reviser agent. It gets (cleaned
-solution + verifier's hole report). STILL no access to the original thinking —
-the reviser works from the hole, not by rereading how you got there.
+검증 과정에서 틈(hole)이 발견된 경우: 수정기 에이전트를 구동합니다. 수정기는 (정돈된 풀이 + 검증기의 틈 보고서)를 전달받습니다. 이 역시 원래 솔버의 생각 흔적에는 접근할 수 없습니다 — 수정기는 어떻게 풀었었는가를 되짚어보는 것이 아니라, 지적된 오류 지점 자체를 해결하는 방향으로 작동합니다.
 
 ```
 A verifier found this issue in the proof:
@@ -250,162 +184,106 @@ Fix the proof. If the hole is fundamental (the approach doesn't work), say so an
 For any step you cannot fully close, mark it inline: [GAP: specific description of what remains]. Gaps in the proof text, not in a separate list — they're greppable and the next reviser knows exactly where to look.
 ```
 
-Up to 3 revise cycles. Then re-run the vote on the revised proof.
+최대 3회 수정 사이클을 진행합니다. 그 후 수정된 증명에 대해 검증 투표를 재진행합니다.
 
-**If pattern #40 fired** (one-line-proof-too-clean), the reviser gets a stronger
-brief — the Adversarial Brief template from `references/adversarial_prompts.md`
-§7. It forces a binary: "the general lemma is obviously false (here's a 2×2
-counterexample) — so either find what's special about THIS case, or find where
-the proof breaks." Can't return "looks fine."
+**만약 패턴 #40이 트리거된 경우** (지나치게 깔끔한 한 줄 증명), 수정기는 더 엄격한 가이드라인인 `references/adversarial_prompts.md` §7의 Adversarial Brief(적대적 브리프) 양식을 전달받습니다. 이 양식은 "일반 보조정리가 틀렸음이 밝혀졌다 (반례 제시) — 그러므로 이번 사례를 성립시키는 특별한 대수 구조를 명시하거나, 혹은 증명이 완전히 실패하는 지점을 밝히라"고 요구하며 이지선다 압박을 가합니다. "기존 풀이도 그냥 괜찮다"는 대답은 거부됩니다.
 
-### 6c. Deep mode (when tight-budget abstains)
+### 6c. 심층 모드 (Deep mode) (타이트한 예산으로 해결하지 못해 기권했을 때)
 
-The standard workflow is tight-budget: 8 solvers, ~15 min, pure reasoning. When
-it abstains, the problem may need more time, not more capability.
+기본 워크플로우는 제한된 예산으로 실행됩니다 (솔버 8개 구동, 약 15분 소요, 순수 추론). 여기서 기권 처리가 난 경우, 그 문제는 능력이 부족해서가 아니라 문제를 다각도로 뜯어볼 절대적 시간이 부족해서 풀지 못한 것일 수 있습니다.
 
-**Deep mode** is a single focused agent with:
+**심층 모드**는 다음과 같은 속성을 가진 단일 집중 에이전트를 가동하는 것입니다:
 
-- **Unlimited time** — no wall-clock pressure
-- **Targeted computation allowed** — modular arithmetic checks, small-case
-  enumeration, symbolic verification of identities. NOT exploratory brute force
-  or unbounded recursion.
-- **The abstention reason as starting point** — if verifiers found a specific
-  gap, start there. If solvers never claimed complete, start from what they
-  partially proved.
+- **시간 무제한** — 실시간 시간 압박 제거
+- **제한된 범위의 계산 도구 허용** — 모듈러 합동식 검사, 작은 범위에서의 수치 나열, 등식의 기호적 검증 등. (답을 찾기 위한 무차별 대입이나 무한 재귀 형태는 금지)
+- **기권 사유를 출발점으로 설정** — 검증기가 찾아낸 구체적인 결함이 있다면 거기서부터 시작합니다. 솔버가 완전한 증명을 내지 못했다면 부분적으로 증명해 둔 지점부터 이어나갑니다.
 
-The archetype: a focused agent that gets the proven-so-far state plus "one case
-of Lemma 5 is open" — and finds a 3-line argument the case split was obscuring.
-Often under 10 minutes with almost no computation. Deep mode is about giving the
-problem sustained attention, not throwing compute at it.
+대표적인 예: 솔버들이 풀어둔 부분 증명과 함께 "보조정리 5의 특정 케이스 하나가 미결 상태임"을 전달받고, 복잡한 케이스 분류 때문에 보이지 않았던 단 세 줄짜리 논증을 찾아내는 집중 에이전트. 대개 계산 도구를 거의 쓰지 않고 10분 이내에 해결해 냅니다. 심층 모드는 무작정 컴퓨팅 자원을 쏟아붓는 것이 아니라, 문제에 끈기 있게 주의를 집중시키는 것입니다.
 
-**What deep mode is NOT**: open-ended exploration, literature search, looking up
-solutions, multi-day investigation. That's a different workflow
-(`math-research`). Deep mode is still "solve THIS problem yourself" — just
-without the clock.
+**심층 모드에서 금지되는 사항**: 자유분방한 탐색, 논문 검색, 외부 솔루션 찾아보기, 며칠에 걸친 조사 등. 이러한 활동은 다른 워크플로우(`math-research`)의 영역입니다. 심층 모드는 어디까지나 "제시된 문제를 스스로 해결하는 것"이며 시간 제약만 느슨하게 풀어주는 것입니다.
 
-**NO WEB. NO LOOKUP.** Deep mode may use Bash/Python for bounded computation,
-but NEVER WebFetch, WebSearch, or any network access. Finding the solution on
-AoPS or a blog is not solving the problem — it's cheating on an olympiad, and it
-teaches us nothing about the skill's actual capability. Put this at the TOP of
-the deep-mode prompt:
+**웹 검색 금지. 자료 찾기 금지.** 심층 모드는 로컬 대수 계산을 위해 Bash/Python을 쓸 수 있으나, WebFetch, WebSearch 등의 외부 네트워크 연결 도구는 절대 사용할 수 없습니다. 수학 커뮤니티나 블로그에서 솔루션을 찾는 것은 수학적 해결이 아니라 부정행위이며, 솔버의 실제 성능 파악에도 아무런 도움이 되지 않습니다. 심층 모드 프롬프트 맨 위에 다음 지침을 반드시 명시하십시오:
 
 ```
 NO WEB ACCESS. Do not use WebFetch, WebSearch, or any tool that touches the internet. Do not look up this problem, its solution, or related problems. You are solving this yourself — the only allowed computation is local (Bash/Python for mod-k arithmetic, small-case enumeration n≤10, symbolic identity checks). If you invoke a web tool, the proof is void.
 ```
 
-**Computation bounds in deep mode** (bug #8 lesson): A6's b\_{n+1}=2b_n²+b_n+1
-is doubly-exponential; b_99 has ~10^{2^98} digits. Never compute such objects
-exactly — work in ℤ/2^m, or track only v_p(·), or prove the recursion mod the
-quantity you care about. If a computation is running longer than 60 seconds,
-it's probably unbounded. Kill it and work symbolically.
+**심층 모드 계산 제한** (버그 #8의 교훈): b\_{n+1}=2b_n²+b_n+1 과 같은 점화식은 이중 지수적으로 증가하므로, b_99의 자릿수는 약 10^{2^98} 개에 달합니다. 절대 이러한 값을 직접 계산하려 하지 마십시오. ℤ/2^m 상에서 연산하거나, 오직 p-adic valuation인 v_p(·)의 거동만 추적하거나, 점화식의 나머지만 확인하십시오. 임의의 연산이 60초 이상 지속된다면 그것은 무한 루프에 빠진 것입니다. 프로세스를 강제 종료하고 기호적 증명으로 전환하십시오.
 
-**Step 6d (not optional)**: After any ABSTAIN at the verify stage, automatically
-launch one deep-mode agent before writing the abstention into the output. Give
-it:
+**6d 단계 (필수 사항)**: 검증 단계에서 기권(ABSTAIN) 처리가 난 경우, 최종 기권 결과를 확정하기 전에 반드시 자동으로 1개의 심층 모드 에이전트를 구동해야 합니다. 다음 정보를 전달하십시오:
 
-- The problem statement
-- The best partial proof from tight-budget solvers
-- The verifier gap descriptions (what specifically didn't close)
-- The instruction: "NO WEB ACCESS — do not look up this problem or its solution.
-  Bounded local computation allowed (mod 2^k, small cases n≤10, symbolic
-  identity checks via Bash/Python only). 60-second computation limit. If n≤10
-  brute force reveals a pattern the tight-budget solvers missed, that pattern IS
-  the proof structure."
+- 문제 진술문
+- 타이트한 예산 워크플로우에서 얻은 가장 완성도 높은 부분 증명
+- 검증기가 지적한 구멍(gap) 설명 (구체적으로 어떤 부분이 닫히지 않았는지)
+- 지침: "웹 검색 금지 — 이 문제나 정답을 검색하지 마십시오. 로컬에서의 제한된 연산만 허용됩니다 (mod 2^k, n≤10 소규모 나열, Bash/Python을 통한 기호적 항등식 검증만 가능). 연산 제한 시간은 60초입니다. 만약 n≤10 범위에서 손으로 찾기 힘든 규칙성이 확인된다면, 그 규칙이 곧 증명의 구조입니다."
 
-The deep agent may find the construction the pure-reasoning solvers couldn't
-see. If it also abstains, THEN write the abstention. Do not skip this step —
-problems with √n or log n answers are often invisible to pure reasoning because
-the optimal structure is the asymmetric one.
+심층 에이전트는 순수 추론 솔버들이 놓친 숨겨진 구성을 찾아낼 수 있습니다. 심층 에이전트마저 해결하지 못하고 기권할 때 비로소 최종 기권을 선언하십시오. 이 단계를 절대 건너뛰지 마십시오 — 정답이 √n 이나 log n 처럼 비대칭적 최적 구조를 가지는 문제는 순수 추론만으로는 포착하기 매우 어렵습니다.
 
-**Orchestrator self-restraint**: The orchestrator itself must not web-search the
-problem "to help" the deep agent. If you're tempted to Fetch an AoPS thread
-"just to check the answer," don't — that contaminates the skill's output and
-misrepresents its capability.
+**오케스트레이터의 자제력**: 오케스트레이터 스스로도 심층 에이전트를 "돕기 위해" 웹 검색을 수행해서는 안 됩니다. "답만 확인해 볼까" 하고 수학 포럼 글을 긁어오는 순간, 스킬의 공정한 평가가 오염되고 성능이 왜곡됩니다.
 
-### 7. Calibrated abstention
+### 7. 신뢰도 높은 기권 (Calibrated abstention)
 
-If 3 revise cycles all fail: **stop and admit it.**
+3회의 수정 사이클을 거치고도 실패했다면, **동작을 멈추고 인정하십시오.**
 
 ```
 **Verdict**: no confident solution
 
-**What was tried**: [approaches]
-**What WAS proven**: [any lemma or partial result that survived verification]
-**Where it breaks**: [the unfixed hole]
+**What was tried**: [시도해 본 접근 방식들]
+**What WAS proven**: [검증을 통과하고 증명해 둔 보조정리나 부분적 결과들]
+**Where it breaks**: [해결하지 못한 논리적 결함]
 ```
 
-Do NOT guess. A wrong confident answer is worse than an honest "couldn't solve
-it." The metric that matters is CONDITIONAL accuracy — when you say "solved,"
-are you right?
+추측으로 때우려 하지 마십시오. 틀린 풀이를 자신 있게 우기는 것보다 정직하게 기권하는 편이 훨씬 낫습니다. 진짜 가치 있는 지표는 '조건부 정확도(Conditional accuracy)'입니다 — 즉, 솔버가 "해결했다(solved)"고 선언했을 때 그 답이 정말로 맞는가의 여부입니다.
 
-### 8. Presentation pass (after correctness is established)
+### 8. 프레젠테이션 단계 (Presentation pass) (증명의 참이 검증된 후 수행)
 
-A VERIFIED-CORRECT proof is often not a BEAUTIFUL proof. The order you
-discovered it is rarely the best order to present it. Launch a fresh
-presentation agent with the verified proof.
+올바른 증명이 항상 우아한 증명인 것은 아닙니다. 문제를 해결해 낸 논리 순서가 증명을 제시하기에 가장 적절한 순서인 경우는 드뭅니다. 검증된 풀이를 지니고 새로운 프레젠테이션 에이전트를 구동하십시오.
 
-Load `references/presentation_prompts.md`. The agent asks:
+`references/presentation_prompts.md`를 로드하십시오. 에이전트는 다음을 점검합니다:
 
-- What's the simplest way to say this?
-- Which lemmas should be inlined? Which deserve to stand alone?
-- Is anything OVERKILL? (constructing a double exponential when linear suffices)
-- Now that we know the answer, is there a 3-line hindsight proof?
+- 이를 서술하는 가장 단순하고 아름다운 방식은 무엇인가?
+- 어떤 보조정리를 본문에 병합(inline)시키고, 어떤 보조정리를 분리해 둘 것인가?
+- 지나치게 비대하게 유도한 대수 구조가 있는가? (일차식으로 충분한데 이중 지수를 구성하는 등)
+- 답을 알고 있는 상태에서 유도할 수 있는 단 세 줄짜리 더 간결한 증명이 존재하는가?
 
-Output: LaTeX-formatted proof. If `pdflatex` is available
-(`scripts/check_latex.sh` returns 0), also compile to PDF via
-`scripts/compile_pdf.sh`.
+출력물: LaTeX 형식의 증명. 만약 로컬에 `pdflatex` 가 설치되어 있다면 (`scripts/check_latex.sh` 결과가 0인 경우), `scripts/compile_pdf.sh`를 사용해 PDF 파일로 컴파일하십시오.
 
 ---
 
-## Model tier defaults
+## 모델 티어별 기본 설정 (Model tier defaults)
 
-Read `references/model_tier_defaults.md` for full details. Summary:
+상세한 내용은 `references/model_tier_defaults.md`를 참조하십시오. 요약:
 
-| Model  | Solvers | Verify passes          | Abstain after  | Presentation           |
-| ------ | ------- | ---------------------- | -------------- | ---------------------- |
-| Haiku  | 8       | 3                      | 2 revise fails | skip                   |
-| Sonnet | 4       | 5                      | 3 revise fails | yes                    |
-| Opus   | 3       | 5 + full pattern sweep | 4 revise fails | 2 drafts, pick cleaner |
+| 모델 | 솔버 수 | 검증 단계 | 기권 기준 | 프레젠테이션 단계 |
+| --- | --- | --- | --- | --- |
+| Haiku | 8 | 3 | 2회 수정 실패 시 | 수행 안 함 |
+| Sonnet | 4 | 5 | 3회 수정 실패 시 | 수행함 |
+| Opus | 3 | 5 + 전체 패턴 스윕 | 4회 수정 실패 시 | 2개 초안 중 깔끔한 것 선택 |
 
-Weaker models: more parallel attempts, faster abstention. Stronger models:
-deeper verification, more presentation effort.
-
----
-
-## For numeric-answer problems (AIME-style)
-
-Skip the proof machinery. Run 5-7 solvers with varied approaches, take majority
-vote on the numeric answer. If no majority: verify the top 2 candidates by
-substitution.
+약한 모델일수록 병렬 시도 횟수를 늘리고 빠르게 기권하게 합니다. 강한 모델일수록 검증을 깊게 수행하고 프레젠테이션 정리에 더 공을 들입니다.
 
 ---
 
-## Key references
+## 수치 정답형 문제 (AIME 스타일) (For numeric-answer problems)
 
-- `references/verifier_patterns.md` — the 12 adversarial checks
-- `references/adversarial_prompts.md` — ready-to-use verifier prompts
-- `references/presentation_prompts.md` — beautification prompts + LaTeX template
-- `references/model_tier_defaults.md` — per-model configuration
+증명 생성 단계를 건너뜁니다. 다양한 방식으로 솔버를 5~7개 작동시킨 뒤, 수치 정답에 대해 다수결 투표를 수행합니다. 다수결로 좁혀지지 않는 경우, 값을 원래 문제의 관계식에 대입하여 상위 2개 후보를 검증하십시오.
 
 ---
 
-## What makes this different from generic verify-and-refine
+## 핵심 참조 파일 목록
 
-1. **Dual context isolation**: verifier is blind to (a) the solver's thinking
-   trace — which biases toward agreement — and (b) other verifiers' verdicts —
-   social proof also biases. Each verifier thinks it's first.
-2. **Pattern-specific attacks**: not "is this correct?" but "does this make the
-   #40 mistake? the #4 mistake?" Specific beats generic. The 7-category
-   refutation taxonomy gives the verifier a checklist.
-3. **Asymmetric vote + pigeonhole exit**: 4-to-confirm, 2-to-refute. One flaky
-   verifier doesn't kill a correct proof; two dissents does. Stop launching
-   verifiers once the outcome is decided — saves ~30% of verification cost on
-   clear cases.
-4. **Specification-gaming check first**: explicitly asks "is this the intended
-   interpretation?" before solving. The #1 failure mode in prior work (50/63
-   "correct" answers solved the wrong reading).
-5. **Calibrated abstention**: will say "no confident solution" with partial
-   results. Optimizes conditional accuracy, not coverage.
-6. **Presentation pass**: correctness and elegance are separate steps. The
-   presentation agent gets the VERIFIED proof and finds the cleanest way to say
-   it.
+- `references/verifier_patterns.md` — 12가지 적대적 검증 패턴
+- `references/adversarial_prompts.md` — 바로 사용 가능한 검증기 프롬프트 뱅크
+- `references/presentation_prompts.md` — 증명 정리 프롬프트 및 LaTeX 템플릿
+- `references/model_tier_defaults.md` — 모델별 상세 설정값
+
+---
+
+## 일반적인 검증-수정 구조와 차별화되는 차이점
+
+1. **이중 맥락 격리 (Dual context isolation)**: 검증기는 솔버의 생각 흔적(동조 편향 유발) 및 다른 검증기들의 판정(사회적 증거 편향 유발) 모두로부터 격리되어 있습니다. 각 검증기는 자신이 최초의 검토자라고 생각합니다.
+2. **패턴 특정 공격 (Pattern-specific attacks)**: 모호하게 "맞는지 확인하라"가 아니라, "패턴 #40의 오류가 있지는 않은가? 패턴 #4의 오류는?" 처럼 구체적으로 파고듭니다. 구체성이 일반성을 압도합니다. 7가지 범주의 오류 분류 체계가 확실한 체크리스트를 제공합니다.
+3. **비대칭 투표 + 비둘기집 조기 종료**: 4명 확인, 2명 반박 구조입니다. 검증기 1개의 일시적 흔들림으로 증명을 기각하지 않되, 2명이 동조해 반박하면 수용합니다. 결과가 조기에 확정되면 검증기 구동을 멈추어 명확한 케이스에 대해 검증 비용의 약 30%를 절감합니다.
+4. **해석 왜곡 사전 검사**: 문제를 풀기 전에 "이것이 의도된 진짜 해석인가?"를 명시적으로 파악합니다. 이전 모델들이 겪은 실패 원인 1위(63개 중 50개가 해석 오독으로 오답 처리됨)를 사전에 차단합니다.
+5. **신뢰성 높은 기권**: 억지 답변을 피하고 부분 증명과 함께 "no confident solution"으로 기권하여 결과의 신뢰도를 극대화합니다.
+6. **프레젠테이션 단계**: 정확성 검증과 아름다운 정리는 별개의 단계입니다. 프레젠테이션 에이전트는 검증이 완료된 증명을 넘겨받아 가장 명료한 언어로 다시 씁니다.

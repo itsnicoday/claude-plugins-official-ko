@@ -1,14 +1,14 @@
-# Widget Templates
+# 위젯 템플릿 (Widget Templates)
 
-Minimal HTML scaffolds for the common widget shapes. Copy, fill in, ship.
+자주 사용되는 위젯 형태의 최소한의 HTML 스캐폴딩 코드 모음입니다. 복사해서 알맞게 채워 넣고 배포하십시오.
 
-All templates inline the `App` class from `@modelcontextprotocol/ext-apps` at build time — the iframe's CSP blocks CDN script imports. They're intentionally framework-free; widgets are small enough that React/Vue hydration cost usually isn't worth it.
+모든 템플릿은 빌드 시점에 `@modelcontextprotocol/ext-apps` 패키지에서 제공하는 `App` 클래스를 인라인 코드로 포함합니다. iframe의 CSP 보안 정책이 CDN 스크립트 호출을 원천 차단하기 때문입니다. 또한 프레임워크를 전혀 사용하지 않는 순수 JS 형태로 설계되었습니다. 위젯의 크기는 보통 크지 않기 때문에, React/Vue 등을 올려 발생하는 하이드레이션(hydration) 연산 비용을 지불할 가치가 크지 않습니다.
 
 ---
 
-## Serving widget HTML
+## 위젯 HTML 서빙 방법 (Serving widget HTML)
 
-Widgets are static HTML with one placeholder: `/*__EXT_APPS_BUNDLE__*/` gets replaced at server startup with the `ext-apps/app-with-deps` bundle (rewritten to expose `globalThis.ExtApps`).
+위젯은 정적 HTML 파일 구조로 이루어져 있으며, 단 하나의 플레이스홀더 주석 `/*__EXT_APPS_BUNDLE__*/`을 포함합니다. 서버 구동 시점에 이 주석 영역은 `ExtApps` 객체를 전역 노출하도록 다시 쓰여진 `ext-apps/app-with-deps` 번들 스크립트 문자열로 직접 치환됩니다.
 
 ```typescript
 import { readFileSync } from "node:fs";
@@ -37,11 +37,11 @@ registerAppResource(server, "Picker", "ui://widgets/picker.html", {},
 );
 ```
 
-Bundle once per server startup (or at build time); reuse the `bundle` string across all widget templates.
+이 번들링 연산은 서버 기동 시 한 번만(또는 빌드 타임에) 수행하면 됩니다. 확보한 `bundle` 문자열을 모든 위젯 템플릿에 재사용하십시오.
 
 ---
 
-## Picker (single-select list)
+## 피커 위젯 (Picker — 단일 항목 선택 목록)
 
 ```html
 <!doctype html>
@@ -82,11 +82,11 @@ const { App } = globalThis.ExtApps;
 </script>
 ```
 
-**Tool returns:** `{ content: [{ type: "text", text: JSON.stringify({ items: [{ id, label, sub? }] }) }] }`
+**도구 반환 형식:** `{ content: [{ type: "text", text: JSON.stringify({ items: [{ id, label, sub? }] }) }] }`
 
 ---
 
-## Confirm dialog
+## 확인 대화창 (Confirm dialog)
 
 ```html
 <!doctype html>
@@ -126,13 +126,13 @@ const { App } = globalThis.ExtApps;
 </script>
 ```
 
-**Tool returns:** `{ content: [{ type: "text", text: JSON.stringify({ message, confirmLabel? }) }] }`
+**도구 반환 형식:** `{ content: [{ type: "text", text: JSON.stringify({ message, confirmLabel? }) }] }`
 
-**Note:** For simple confirmation, prefer **elicitation** over a widget — see `../build-mcp-server/references/elicitation.md`. Use this widget when you need custom styling or context beyond what a native form offers.
+**참고:** 단순 승인/확인 시나리오에서는 위젯을 그리는 것보다 **elicitation** 기능을 이용하는 것이 훨씬 간편합니다 — `../build-mcp-server/references/elicitation.md` 참고. UI 커스텀 스타일링이 꼭 필요하거나 네이티브 입력 폼 규격을 벗어난 정교한 정보 표기가 필요할 때만 이 위젯 구조를 쓰십시오.
 
 ---
 
-## Progress (long-running)
+## 진척도 표시 위젯 (Progress — 장시간 연산용)
 
 ```html
 <!doctype html>
@@ -171,13 +171,13 @@ const { App } = globalThis.ExtApps;
 </script>
 ```
 
-Server side, emit progress via `extra.sendNotification({ method: "notifications/progress", ... })` — see `apps-sdk-messages.md`.
+서버 측에서 진척 상태 전송은 `extra.sendNotification({ method: "notifications/progress", ... })` 명령 채널을 사용해 처리합니다 — `apps-sdk-messages.md` 참고.
 
 ---
 
-## Display-only (chart / preview)
+## 출력 전용 위젯 (Display-only — 차트 / 미리보기 패널)
 
-Display widgets don't call `sendMessage` — they render and sit there. The tool should return a text summary **alongside** the widget so Claude can keep reasoning while the user sees the visual:
+출력 목적의 위젯은 `sendMessage` 등을 호출하지 않고, 데이터를 렌더링한 채 그대로 대기합니다. 도구 응답값은 위젯 시각화 정보 **이외에** Claude가 계속 대화 맥락을 읽고 인프런스할 수 있도록 설명 요약 문자열을 텍스트 형태로 함께 내려주어야 합니다:
 
 ```typescript
 registerAppTool(server, "show_chart", {
@@ -224,15 +224,15 @@ const { App } = globalThis.ExtApps;
 
 ---
 
-## Carousel (multi-item display with actions)
+## 캐러셀 위젯 (Carousel — 선택 버튼이 달린 가로 스크롤 카드 레이아웃)
 
-For presenting multiple items (product picks, search results) in a horizontal scroll rail. Patterns that tested well:
+여러 개의 카드 목록 정보(추천 상품 목록, 상세 검색 결과 등)를 슬라이딩 레일 형태로 노출할 때 사용하는 서식입니다. 사용성 테스트 결과 다음 설계안들이 권장됩니다:
 
-- **Skip nav chevrons** — users know how to scroll. `scroll-snap-type` can cause a few-px-off-flush initial render; omit it and `scrollLeft = 0` after rendering.
-- **Layout-fork by item count** — `items.length === 1` → detail/PDP layout, `> 1` → carousel. Handle in widget JS, keep the tool schema flat.
-- **Put Claude's reasoning in each item** — a `note` field rendered as a small callout on the card gives users the "why" inline.
-- **Silent state via `updateModelContext`** — cart/selection changes should inform Claude without spamming the chat. Reserve `sendMessage` for terminal actions ("checkout", "done").
-- **Outbound links via `app.openLink`** — `window.open` and `<a target="_blank">` are blocked by the sandbox.
+- **가로 스크롤 제어용 좌우 버튼 제거** — 요즘 모바일/데스크톱 사용자들은 자연스러운 제스처 스크롤에 익숙합니다. `scroll-snap-type` 스타일은 렌더링 첫 프레임에서 카드 정렬이 픽셀 단위로 미세하게 밀리는 오작동이 발생하기 쉬우므로, 렌더링 완료 후 `scrollLeft = 0` 스크립트 실행으로 초기화하는 방식을 권장합니다.
+- **아이템 개수에 따른 분기 대응** — 카드 개수가 1개인 경우(`items.length === 1`) 단독 와이드 상세 레이아웃을 표시하고, 여러 개인 경우 가로 스크롤 캐러셀 레이아웃으로 동적 분기 처리하는 것이 좋습니다. 도구 스케마는 가볍게 플랫 구조로 설계하고 분기 로직은 위젯의 JS가 처리하게 만드십시오.
+- **각 카드마다 Claude가 추천한 사유 명시** — 카탈로그 데이터 이외에 `note` 속성 필드를 두어 Claude가 왜 이 상품을 골라 추천했는지 근거 요약문을 카드에 작게 함께 렌더링해주면 사용자 경험이 매우 훌륭해집니다.
+- **`updateModelContext`를 활용한 은밀한 상태 변경** — 장바구니에 아이템을 담는 등의 동작은 대화창에 말풍선을 뿌려 도배하지 말고, 무음으로 Claude의 인지 상태값만 갱신해 주십시오. `sendMessage` 통신 채널은 "주문서 작성 완료", "최종 확인"과 같이 대화 맥락의 완전한 턴 전환 시점에만 아껴 쓰십시오.
+- **외부 이동은 무조건 `app.openLink` 이용** — 샌드박스로 인해 `window.open`이나 `<a target="_blank">` 링크는 차단됩니다.
 
 ```html
 <style>
@@ -246,4 +246,4 @@ For presenting multiple items (product picks, search results) in a horizontal sc
 <div class="rail" id="rail"></div>
 ```
 
-**Images:** the iframe CSP blocks remote `img-src`. Fetch thumbnails server-side in the tool handler, embed as `data:` URLs in the JSON payload, and render from those. Add `referrerpolicy="no-referrer"` as a fallback.
+**이미지 처리 요령:** iframe의 CSP 보안 정책 상 외부 `img-src` 통신이 차단됩니다. 이미지 썸네일 자원은 서버 단에서 먼저 받아 긁어온 뒤, 도구 결과 페이로드 문자열 안에 base64 인라인 `data:` 이미지 URL 스키마 포맷으로 직접 치환해 위젯에 내려주어야 정상적으로 렌더링됩니다. 대체 수단으로 이미지 태그에 `referrerpolicy="no-referrer"` 설정을 함께 부여하는 기법도 고려해 두십시오.

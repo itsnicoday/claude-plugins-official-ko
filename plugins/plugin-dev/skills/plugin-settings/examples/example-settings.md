@@ -1,6 +1,6 @@
-# Example Plugin Settings File
+# 플러그인 설정 파일 예시 (Example Plugin Settings File)
 
-## Template: Basic Configuration
+## 템플릿: 기본 구성 (Template: Basic Configuration)
 
 **.claude/my-plugin.local.md:**
 
@@ -15,7 +15,7 @@ mode: standard
 Plugin is active in standard mode.
 ```
 
-## Template: Advanced Configuration
+## 템플릿: 고급 구성 (Template: Advanced Configuration)
 
 **.claude/my-plugin.local.md:**
 
@@ -46,7 +46,7 @@ This project uses custom plugin configuration with:
 Contact @team-lead with questions about this configuration.
 ```
 
-## Template: Agent State File
+## 템플릿: 에이전트 상태 파일 (Template: Agent State File)
 
 **.claude/multi-agent-swarm.local.md:**
 
@@ -88,7 +88,7 @@ Depends on:
 Report status to coordinator session 'team-leader'.
 ```
 
-## Template: Feature Flag Pattern
+## 템플릿: 기능 플래그 패턴 (Template: Feature Flag Pattern)
 
 **.claude/experimental-features.local.md:**
 
@@ -112,9 +112,9 @@ Current enabled features:
 Experimental mode is OFF (stable features only).
 ```
 
-## Usage in Hooks
+## 훅에서의 사용법 (Usage in Hooks)
 
-These templates can be read by hooks:
+이러한 템플릿은 훅에서 다음과 같이 읽을 수 있습니다:
 
 ```bash
 # Check if plugin is configured
@@ -133,9 +133,9 @@ if [[ "$ENABLED" == "true" ]]; then
 fi
 ```
 
-## Gitignore
+## Gitignore 설정 (Gitignore)
 
-Always add to project `.gitignore`:
+항상 프로젝트 `.gitignore`에 추가하십시오:
 
 ```gitignore
 # Plugin settings (user-local, not committed)
@@ -143,9 +143,9 @@ Always add to project `.gitignore`:
 .claude/*.local.json
 ```
 
-## Editing Settings
+## 설정 편집 (Editing Settings)
 
-Users can edit settings files manually:
+사용자는 설정 파일을 수동으로 편집할 수 있습니다:
 
 ```bash
 # Edit settings
@@ -156,4 +156,4 @@ exit  # Exit Claude Code
 claude  # Restart
 ```
 
-Changes require Claude Code restart - hooks can't be hot-swapped.
+변경 사항은 Claude Code 재시작이 필요합니다. 훅은 실행 중에 즉시 교체(hot-swap)할 수 없습니다.

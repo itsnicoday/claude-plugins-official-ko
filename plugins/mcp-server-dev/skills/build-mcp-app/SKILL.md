@@ -4,72 +4,72 @@ description: This skill should be used when the user wants to build an "MCP app"
 version: 0.1.0
 ---
 
-# Build an MCP App (Interactive UI Widgets)
+# MCP App 구축하기 (대화형 UI 위젯)
 
-An MCP app is a standard MCP server that **also serves UI resources** — interactive components rendered inline in the chat surface. Build once, runs in Claude *and* ChatGPT and any other host that implements the apps surface.
+MCP app is a standard MCP server that **also serves UI resources** — interactive components rendered inline in the chat surface. Build once, runs in Claude *and* ChatGPT and any other host that implements the apps surface.
 
-The UI layer is **additive**. Under the hood it's still tools, resources, and the same wire protocol. If you haven't built a plain MCP server before, the `build-mcp-server` skill covers the base layer. This skill adds widgets on top.
+UI 레이어는 **추가적인 결합 요소(additive)**입니다. 밑단에서는 여전히 이전과 동일한 도구(tools), 리소스(resources) 및 프로토콜 규격으로 돌아갑니다. 일반적인 형태의 MCP 서버를 개발해 본 적이 없다면, `build-mcp-server` skill을 통해 기초 환경 설계를 먼저 숙지하십시오. 이 skill은 그 기초 위에 화면 위젯을 얹는 지침을 다룹니다.
 
-> **Testing in Claude:** Add the server as a custom connector in claude.ai (via a Cloudflare tunnel for local dev) — this exercises the real iframe sandbox and `hostContext`. See https://claude.com/docs/connectors/building/testing.
+> **Claude 환경에서의 테스트:** claude.ai 환경에 커넥터로 서버를 등록하십시오 (로컬 개발 환경인 경우 Cloudflare 터널 서비스를 사용해 우회 주소를 확보해 진행). 이를 통해 실제 iframe 샌드박스 정책과 `hostContext` 상속이 어떻게 반영되는지 검증할 수 있습니다. 가이드는 https://claude.com/docs/connectors/building/testing 문서를 참고하십시오.
 
-## Claude host specifics
+## Claude 호스트 특화 규격 명세
 
-| `_meta.ui.*` key | Where | Effect |
+| `_meta.ui.*` 속성 키 | 기재 위치 | 효과 |
 |---|---|---|
-| `resourceUri` | tool | Which `ui://` resource the host renders for this tool's results. |
-| `visibility: ["app"]` | tool | Hide a widget-only helper tool (e.g. geometry/image fetcher called via `callServerTool`) from Claude's tool list. |
-| `prefersBorder: false` | resource | Drop the host's outer card border (mobile). |
-| `csp.{connectDomains, resourceDomains, baseUriDomains}` | resource | Declare external origins; default is block-all. `frameDomains` is currently restricted in Claude. |
+| `resourceUri` | tool (도구) | 이 도구의 실행 결과 시각화를 위해 호스트가 로드해야 할 `ui://` 리소스 주소. |
+| `visibility: ["app"]` | tool (도구) | Claude의 일반 대화 도구 추천 목록에서 위젯 전용 내부 도우미 도구(예: `callServerTool` 호출로 위젯이 내부적으로 사용하는 이미지/데이터 로더)를 숨김 처리함. |
+| `prefersBorder: false` | resource (리소스) | 모바일 화면 등에서 호스트가 위젯 바깥 테두리에 씌우는 카드 보더 선을 제거함. |
+| `csp.{connectDomains, resourceDomains, baseUriDomains}` | resource (리소스) | 연동을 위해 외부로 통신이 허용되어야 할 도메인 화이트리스트 주소 선언. 기본값은 모든 외부 요청 차단. (현재 Claude 내에서 `frameDomains` 제어는 제한적임) |
 
-- `hostContext.safeAreaInsets: {top, right, bottom, left}` (px) — honor these for notches and the composer overlay.
-- Directory submission requires OAuth or **authless** (`none`) — static bearer is private-deploy only and blocks listing — plus tool `annotations` and 3–5 PNG screenshots; see `references/directory-checklist.md`.
+- `hostContext.safeAreaInsets: {top, right, bottom, left}` (px) — 기기별 노치 디자인이나 작문 영역 입력 컴포저 오버레이와의 겹침 방지용 패딩 값으로 이를 준수해야 합니다.
+- 공용 디렉토리 등록을 위해서는 OAuth 또는 **인증 없음**(`none`) 사양이 필수입니다 — 고정 static bearer 토큰 방식은 사설 배포만 허용되고 공용 등록이 차단됩니다 — 추가로 도구의 `annotations` 명시와 3~5장의 PNG 스크린샷이 필요합니다. 상세 지침은 `references/directory-checklist.md` 문서를 참고하십시오.
 
 ---
 
-## When a widget beats plain text
+## 화면 위젯(Widget)이 텍스트보다 나은 경우
 
-Don't add UI for its own sake — most tools are fine returning text or JSON. Add a widget when one of these is true:
+화려함만을 이유로 UI를 억지로 끼워 넣지는 마십시오 — 대다수의 도구는 단순 텍스트나 JSON 응답으로도 매우 잘 돌아갑니다. 아래 사례에 해당하는 경우에만 위젯 연동을 결정하십시오:
 
-| Signal | Widget type |
+| 연동 시그널 | 적합한 위젯 유형 |
 |---|---|
-| Tool needs structured input Claude can't reliably infer | Form |
-| User must pick from a list Claude can't rank (files, contacts, records) | Picker / table |
-| Destructive or billable action needs explicit confirmation | Confirm dialog |
-| Output is spatial or visual (charts, maps, diffs, previews) | Display widget |
-| Long-running job the user wants to watch | Progress / live status |
+| 도구 호출에 필요한 매개변수 구조를 Claude가 스스로 완벽히 유추하기 힘들 때 | 입력 폼 (Form) |
+| 파일 일람, 주소록 연락처, 다량의 레코드 중 사용자가 손으로 직접 골라야 할 때 | 피커 / 테이블 뷰 |
+| 리소스가 많이 소모되거나 결제 등 파괴적인 액션에 대해 명시적 승인이 요구될 때 | 확인 대화창 (Confirm dialog) |
+| 출력 데이터 자체가 지리 정보나 통계 등 시각화가 본질일 때 | 차트 / 지도 / 미리보기 위젯 |
+| 시간이 오래 걸리는 연산이 돌아가고 있어 실시간 진행도를 보여주고 싶을 때 | 로딩 상태 바 / 실시간 현황판 |
 
-If none apply, skip the widget. Text is faster to build and faster for the user.
+위 케이스에 해당하지 않는다면 위젯 추가 단계를 건너뛰십시오. 텍스트 방식으로 개발하는 것이 연산 속도도 빠르고 사용자 인터랙션도 더 가볍습니다.
 
 ---
 
-## Widgets vs Elicitation — route correctly
+## 위젯 vs Elicitation — 올바른 설계 경로 판단
 
-Before building a widget, check if **elicitation** covers it. Elicitation is spec-native, zero UI code, works in any compliant host.
+위젯을 새로 그리는 설계를 밟기 전에, 단순 표준 기능인 **elicitation**으로 대체할 수 없는지 먼저 검토해 보십시오. elicitation은 UI 개발 공수가 제로이며 프로토콜 내장 표준 동작입니다.
 
-| Need | Elicitation | Widget |
+| 기능 필요 사양 | Elicitation 기능 범위 | 위젯(Widget) 필요 범위 |
 |---|---|---|
-| Confirm yes/no | ✅ | overkill |
-| Pick from short enum | ✅ | overkill |
-| Fill a flat form (name, email, date) | ✅ | overkill |
-| Pick from a large/searchable list | ❌ (no scroll/search) | ✅ |
-| Visual preview before choosing | ❌ | ✅ |
-| Chart / map / diff view | ❌ | ✅ |
-| Live-updating progress | ❌ | ✅ |
+| 예/아니오 단순 확인 | ✅ 지원 가능 | 위젯을 설계하는 것은 오버스펙 |
+| 짧은 리스트 중 단일 값 선택 | ✅ 지원 가능 | 위젯을 설계하는 것은 오버스펙 |
+| 1차원 구조의 짧은 양식 기재 (이름, 메일 주소, 날짜 등) | ✅ 지원 가능 | 위젯을 설계하는 것은 오버스펙 |
+| 대량이거나 내부 키워드 검색이 필요한 목록 선택 | ❌ (스크롤/검색 미지원) | ✅ 위젯 필요 |
+| 선택 전에 시각적 미리보기 필요 (썸네일, 사진 등) | ❌ | ✅ 위젯 필요 |
+| 통계 차트 / 지도 데이터 / 코드 디프(diff) 화면 표시 | ❌ | ✅ 위젯 필요 |
+| 실시간으로 갱신되는 로딩 진척 표시 | ❌ | ✅ 위젯 필요 |
 
-If elicitation covers it, use it. See `../build-mcp-server/references/elicitation.md`.
+elicitation 범위 내에서 해결 가능한 구조라면 무조건 elicitation을 쓰십시오. 가이드는 `../build-mcp-server/references/elicitation.md` 문서를 참고하십시오.
 
 ---
 
-## Architecture: two deployment shapes
+## 아키텍처: 두 가지 배포 시나리오
 
-### Remote MCP app (most common)
+### 원격 MCP App 구조 (가장 널리 쓰임)
 
 Hosted streamable-HTTP server. Widget templates are served as **resources**; tool results reference them. The host fetches the resource, renders it in an iframe sandbox, and brokers messages between the widget and Claude.
 
 ```
 ┌──────────┐  tools/call   ┌────────────┐
 │  Claude  │─────────────> │ MCP server │
-│   host   │<── result ────│  (remote)  │
+│  호스트  │<── result ────│  (remote)  │
 │          │  + widget ref │            │
 │          │               │            │
 │          │ resources/read│            │
@@ -81,22 +81,22 @@ Hosted streamable-HTTP server. Widget templates are served as **resources**; too
 └──────────┘
 ```
 
-### MCPB-packaged MCP app (local + UI)
+### MCPB 패키징 방식의 MCP App 구조 (로컬 구동 + 대화창 UI 연동)
 
 Same widget mechanism, but the server runs locally inside an MCPB bundle. Use this when the widget needs to drive a **local** application — e.g., a file picker that browses the actual local disk, a dialog that controls a desktop app.
 
-For MCPB packaging mechanics, defer to the **`build-mcpb`** skill. Everything below applies to both shapes.
+MCPB 패키징 빌드 기법에 대해서는 **`build-mcpb`** skill을 통해 상세 안내를 이어나가십시오. 아래에 다루는 UI 구현 지침은 두 아키텍처 환경 모두에 공통 적용되는 스펙입니다.
 
 ---
 
-## How widgets attach to tools
+## 위젯 화면과 도구의 연결 매커니즘
 
 A widget-enabled tool has **two separate registrations**:
 
 1. **The tool** declares a UI resource via `_meta.ui.resourceUri`. Its handler returns plain text/JSON — NOT the HTML.
 2. **The resource** is registered separately and serves the HTML.
 
-When Claude calls the tool, the host sees `_meta.ui.resourceUri`, fetches that resource, renders it in an iframe, and pipes the tool's return value into the iframe via the `ontoolresult` event.
+Claude가 도구를 실행하면 호스트는 `_meta.ui.resourceUri` 메타 정보를 발견해 해당 리소스 주소로 HTML 파일을 조회하고, 이를 iframe 위에 렌더링한 뒤, 도구가 뱉어낸 순수 반환값 데이터를 `ontoolresult` 이벤트 채널을 통해 해당 iframe으로 실어 보냅니다.
 
 ```typescript
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -106,7 +106,7 @@ import { z } from "zod";
 
 const server = new McpServer({ name: "contacts", version: "1.0.0" });
 
-// 1. The tool — returns DATA, declares which UI to show
+// 1. 도구 등록 — 데이터(DATA)를 반환하고, 보여줄 UI 정보 명시
 registerAppTool(server, "pick_contact", {
   description: "Open an interactive contact picker",
   annotations: { title: "Pick Contact", readOnlyHint: true },
@@ -114,11 +114,11 @@ registerAppTool(server, "pick_contact", {
   _meta: { ui: { resourceUri: "ui://widgets/contact-picker.html" } },
 }, async ({ filter }) => {
   const contacts = await db.contacts.search(filter);
-  // Plain JSON — the widget receives this via ontoolresult
+  // 순수 JSON 반환 — 위젯이 ontoolresult로 전달받을 데이터
   return { content: [{ type: "text", text: JSON.stringify(contacts) }] };
 });
 
-// 2. The resource — serves the HTML
+// 2. 리소스 등록 — 위젯 HTML 파일 내용 서빙
 registerAppResource(
   server,
   "Contact Picker",
@@ -128,29 +128,29 @@ registerAppResource(
     contents: [{
       uri: "ui://widgets/contact-picker.html",
       mimeType: RESOURCE_MIME_TYPE,
-      text: pickerHtml,  // your HTML string
+      text: pickerHtml,  // HTML 소스 코드 문자열
     }],
   }),
 );
 ```
 
-The URI scheme `ui://` is convention. The mime type MUST be `RESOURCE_MIME_TYPE` (`"text/html;profile=mcp-app"`) — this is how the host knows to render it as an interactive iframe, not just display the source.
+사용할 URI 스키마명은 관례적으로 `ui://`를 씁니다. 리소스 MIME 타입은 반드시 `RESOURCE_MIME_TYPE` 규격인 `"text/html;profile=mcp-app"` 값을 설정해 주어야만, 호스트가 이것을 단순 코드 텍스트 뷰어로 뿌리지 않고 렌더링용 iframe 창을 띄워 실행시킵니다.
 
 ---
 
-## Widget runtime — the `App` class
+## 위젯 런타임 환경 — `App` 클래스 연동
 
-Inside the iframe, your script talks to the host via the `App` class from `@modelcontextprotocol/ext-apps`. This is a **persistent bidirectional connection** — the widget stays alive as long as the conversation is active, receiving new tool results and sending user actions.
+ Inside the iframe, your script talks to the host via the `App` class from `@modelcontextprotocol/ext-apps`. This is a **persistent bidirectional connection** — the widget stays alive as long as the conversation is active, receiving new tool results and sending user actions.
 
 ```html
 <script type="module">
-  /* ext-apps bundle inlined at build time → globalThis.ExtApps */
+  /* 빌드 타임에 인라인 치환되어 globalThis.ExtApps 위치에 상주 */
   /*__EXT_APPS_BUNDLE__*/
   const { App } = globalThis.ExtApps;
 
   const app = new App({ name: "ContactPicker", version: "1.0.0" }, {});
 
-  // Set handlers BEFORE connecting
+  // 연결(connect)을 수행하기 전에 항상 이벤트 수신 핸들러를 정의해 둠
   app.ontoolresult = ({ content }) => {
     const contacts = JSON.parse(content[0].text);
     render(contacts);
@@ -158,7 +158,7 @@ Inside the iframe, your script talks to the host via the `App` class from `@mode
 
   await app.connect();
 
-  // Later, when the user clicks something:
+  // 사용자가 화면에서 연락처 카드를 골라 클릭했을 때 호출될 함수 예시:
   function onPick(contact) {
     app.sendMessage({
       role: "user",
@@ -168,42 +168,42 @@ Inside the iframe, your script talks to the host via the `App` class from `@mode
 </script>
 ```
 
-The `/*__EXT_APPS_BUNDLE__*/` placeholder gets replaced by the server at startup with the contents of `@modelcontextprotocol/ext-apps/app-with-deps` — see `references/iframe-sandbox.md` for why this is necessary and the rewrite snippet. **Do not** `import { App } from "https://esm.sh/..."`; the iframe's CSP blocks the transitive dependency fetches and the widget renders blank.
+정적 HTML 안의 `/*__EXT_APPS_BUNDLE__*/` 주석 영역은 서버 기동 시점에 `@modelcontextprotocol/ext-apps/app-with-deps` 파일 모듈 코드로 자동 치환됩니다 — 자세한 번들 인라이닝 치환 로직과 필요성에 대해서는 `references/iframe-sandbox.md` 문서를 참고하십시오. **절대로** `import { App } from "https://esm.sh/..."`와 같이 외부 주소로 스크립트를 import 호출하지 마십시오; iframe 샌드박스의 CSP 보안 정책이 외부 ESM 연계 종속성 조회를 도중에 차단해 버려 화면에 에러조차 찍히지 않고 하얗게 굳어버리게 됩니다.
 
-| Method | Direction | Use for |
+| 주요 API | 통신 방향 | 활용 목적 |
 |---|---|---|
-| `app.ontoolresult = fn` | Host → widget | Receive the tool's return value |
-| `app.ontoolinput = fn` | Host → widget | Receive the tool's input args (what Claude passed) |
-| `app.sendMessage({...})` | Widget → host | Inject a message into the conversation |
-| `app.updateModelContext({...})` | Widget → host | Update context silently (no visible message) |
-| `app.callServerTool({name, arguments})` | Widget → server | Call another tool on your server |
-| `app.openLink({url})` | Widget → host | Open a URL in a new tab (sandbox blocks `window.open`) |
-| `app.getHostContext()` / `app.onhostcontextchanged` | Host → widget | Theme, host CSS vars, `containerDimensions`, `displayMode`, `deviceCapabilities` |
-| `app.requestDisplayMode({mode})` | Widget → host | Ask for `inline` / `pip` / `fullscreen` |
-| `app.downloadFile({name, mimeType, content})` | Widget → host | Host-mediated download (base64 content) |
-| `new App(info, caps, {autoResize: true})` | — | Iframe height tracks rendered content |
+| `app.ontoolresult = fn` | 호스트 → 위젯 | 도구가 리턴해 준 가공된 연산 결과 데이터 수집 |
+| `app.ontoolinput = fn` | 호스트 → 위젯 | Claude가 도구를 실행할 때 넣은 입력 인자값 수집 |
+| `app.sendMessage({...})` | 위젯 → 호스트 | 사용자 대화 이력 타임라인에 명시적 메시지 전송 |
+| `app.updateModelContext({...})` | 위젯 → 호스트 | 채팅창을 도배하지 않고, 백그라운드 인지 상태값만 유기적으로 동기화 |
+| `app.callServerTool({name, arguments})` | 위젯 → 서버 | 서버 측에 마련된 다른 보조 도구 함수 직접 호출 |
+| `app.openLink({url})` | 위젯 → 호스트 | 새 브라우저 창으로 주소 열기 (샌드박스로 인한 `window.open` 차단 대응용) |
+| `app.getHostContext()` / `app.onhostcontextchanged` | 호스트 → 위젯 | 테마 상태, 호스트 CSS 연계 변수, 표시 크기, 디스플레이 모드, 입력 장치 사양 조회 |
+| `app.requestDisplayMode({mode})` | 위젯 → 호스트 | 화면 표시 상태 변경 요청 (`inline`, `pip`, `fullscreen` 등) |
+| `app.downloadFile({name, mimeType, content})` | 위젯 → 호스트 | 샌드박스 우회 방식의 바이너리 파일 다운로드 처리 (base64 전달) |
+| `new App(info, caps, {autoResize: true})` | — | 위젯 높이를 그리고 있는 콘텐츠 높이에 맞추어 동적으로 가변 조정 |
 
-`sendMessage` is the typical "user picked something, tell Claude" path. `updateModelContext` is for state that Claude should know about but shouldn't clutter the chat. `openLink` is **required** for any outbound navigation — `window.open` and `<a target="_blank">` are blocked by the sandbox attribute.
+`sendMessage`는 "사용자가 선택을 끝냈으니 Claude에게 알려 대화를 진행하자"는 시나리오의 표준 경로입니다. `updateModelContext`는 진행 중인 상태 정보를 Claude에게 상시 업데이트해 알려주고는 싶지만 사용자의 채팅 말풍선 영역을 어지럽히고 싶지 않을 때 사용합니다. `openLink`는 외부 주소로 링크를 아웃링크 처리할 때 **필수**로 써야 하는 우회 API입니다.
 
-**What widgets cannot do:**
-- Access the host page's DOM, cookies, or storage
-- Make network calls to arbitrary origins (CSP-restricted — route through `callServerTool`)
-- Open popups or navigate directly — use `app.openLink({url})`
-- Load remote images reliably — inline as `data:` URLs server-side
+**위젯 샌드박스 내부에서 불가능한 작업들:**
+- 호스트 모(parent) 화면의 DOM 트리 접근, 쿠키 정보 조회 및 브라우저 로컬 스토리지에 직접 접근하는 행위
+- 도메인 간의 직접적인 외부 API `fetch()` 요청 호출 (CSP 정책으로 제한됨 — 필요한 통신은 `callServerTool` 우회 방식으로 해결)
+- 직접 팝업 레이어를 띄우거나 페이지를 즉시 네비게이션으로 이동하는 행위 — `app.openLink`를 활용하십시오.
+- 외부 정적 이미지 파일 주소를 이미지 태그로 직접 로드하는 행위 — 서버 단에서 미리 받아 base64 `data:` 이미지 규격으로 내려주십시오.
 
-Keep widgets **small and single-purpose**. A picker picks. A chart displays. Don't build a whole sub-app inside the iframe — split it into multiple tools with focused widgets.
+위젯은 **단일한 역할과 간결한 구조**를 유지하십시오. 피커는 조회 선택만 하고, 차트는 시각화만 그리게 하십시오. iframe 안에 거대한 서브 애플리케이션 전체를 몽땅 설계해 얹지 말고, 용도가 명확한 개별 도구와 이에 맞물린 단순한 위젯들로 파편화하여 연동하는 구조가 Claude가 활용하기 훨씬 좋습니다.
 
 ---
 
-## Scaffold: minimal picker widget
+## 최소한의 피커 위젯 구현 예제 스캐폴딩
 
-**Install:**
+**종속성 라이브러리 추가:**
 
 ```bash
 npm install @modelcontextprotocol/sdk @modelcontextprotocol/ext-apps zod express
 ```
 
-**Server (`src/server.ts`):**
+**서버 로직 (`src/server.ts`):**
 
 ```typescript
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -218,8 +218,8 @@ import { z } from "zod";
 const require = createRequire(import.meta.url);
 const server = new McpServer({ name: "contact-picker", version: "1.0.0" });
 
-// Inline the ext-apps browser bundle into the widget HTML.
-// The iframe CSP blocks CDN script fetches — bundling is mandatory.
+// 브라우저 ext-apps SDK 모듈을 정적 HTML 내부에 인라인 치환하기 위한 준비 과정입니다.
+// iframe CSP 정책상 외부 스크립트 로드가 제한되므로 이 빌드 처리는 필수 사항입니다.
 const bundle = readFileSync(
   require.resolve("@modelcontextprotocol/ext-apps/app-with-deps"), "utf8",
 ).replace(/export\{([^}]+)\};?\s*$/, (_, body) =>
@@ -259,9 +259,9 @@ app.post("/mcp", async (req, res) => {
 app.listen(process.env.PORT ?? 3000);
 ```
 
-For local-only widget apps (driving a desktop app, reading local files), swap the transport to `StdioServerTransport` and package via the `build-mcpb` skill.
+만약 데스크톱 앱을 직접 다루거나 로컬 파일을 다루기 위해 로컬에서만 구동하는 위젯 앱을 만들고자 한다면, 통신 방식을 `StdioServerTransport`로 교체하고 `build-mcpb` skill 규칙에 맞춰 패키징하여 구성하십시오.
 
-**Widget (`widgets/picker.html`):**
+**위젯 파일 (`widgets/picker.html`):**
 
 ```html
 <!doctype html>
@@ -302,15 +302,15 @@ const { App } = globalThis.ExtApps;
 </script>
 ```
 
-See `references/widget-templates.md` for more widget shapes.
+다양한 형태의 UI 조각 템플릿들은 `references/widget-templates.md` 문서를 참고하십시오.
 
 ---
 
-## Design notes that save you a rewrite
+## 뼈아픈 리팩토링 예방을 위한 핵심 설계 팁
 
 **One widget per tool.** Resist the urge to build one mega-widget that does everything. One tool → one focused widget → one clear result shape. Claude reasons about these far better.
 
-**Tool description must mention the widget.** Claude only sees the tool description when deciding what to call. "Opens an interactive picker" in the description is what makes Claude reach for it instead of guessing an ID.
+**도구의 자연어 설명 부분에 '위젯 노출' 사실을 기재하십시오.** Claude는 오직 도구의 설명 구문만 읽고 무엇을 호출할지 결정합니다. 설명 부분에 "대화형 피커 창을 열어 사용자로부터 입력을 받습니다"라는 힌트 문구를 적어주어야만 Claude가 멋대로 ID 값을 추측해 텍스트 입력창으로 진행하지 않고 이 위젯 도구를 트리거하여 사용자에게 창을 띄워 줍니다.
 
 **Widgets are optional at runtime.** Hosts that don't support the apps surface simply ignore `_meta.ui` and render the tool's text content normally. Since your tool handler already returns meaningful text/JSON (the widget's data), degradation is automatic — Claude sees the data directly instead of via the widget.
 
@@ -326,7 +326,7 @@ See `references/widget-templates.md` for more widget shapes.
 
 ---
 
-## Testing
+## 작동 확인 및 테스트 방법
 
 **Claude Desktop** — current builds still require the `command`/`args` config shape (no native `"type": "http"`). Wrap with `mcp-remote` and force `http-only` transport so the SSE probe doesn't swallow widget-capability negotiation:
 
@@ -382,11 +382,11 @@ Open `http://localhost:3000/widget-preview?payload={"rows":[...]}` in a normal b
 
 ---
 
-## Reference files
+## 참고 문서 정보 목록
 
-- `references/iframe-sandbox.md` — CSP/sandbox constraints, the bundle-inlining pattern, image handling, host theming
-- `references/widget-templates.md` — reusable HTML scaffolds for picker / confirm / progress / display
-- `references/apps-sdk-messages.md` — the `App` class API: widget ↔ host ↔ server messaging, lifecycle & supersession
-- `references/payload-budgeting.md` — host tool-result size caps, prune-then-truncate, heavy assets via `callServerTool`
-- `references/abuse-protection.md` — Anthropic egress CIDRs, tiered rate limiting, `trust proxy`, response caching
-- `references/directory-checklist.md` — pre-flight for connector-directory submission
+- `references/iframe-sandbox.md` — CSP 및 샌드박스 정책의 제약 수칙, 라이브러리 인라이닝 처리 요령, 이미지 인라인 치환 패턴 및 호스트 테마 설정 기법
+- `references/widget-templates.md` — 바로 가져다 사용 가능한 피커 / 확인 대화창 / 진척 진계 / 차트 레이아웃 HTML 마크업 코드 세트
+- `references/apps-sdk-messages.md` — `App` 클래스 API 상세 명세: 위젯과 호스트 간 통신 주기, 라이프사이클 관리 및 구버전 위젯 비활성 대응책
+- `references/payload-budgeting.md` — 호스트별 연산 반환 크기 임계치, 불필요한 데이터 걸러내기 및 무거운 데이터의 `callServerTool` 처리 기법
+- `references/abuse-protection.md` — 인증 없는 공개 서버의 남용 방지: Anthropic IP CIDR 매칭 분류, 프록시 신뢰 설정 기법 및 데이터 응답 캐싱 가이드
+- `references/directory-checklist.md` — Claude 커넥터 공식 디렉토리 등록 제출 전 점검이 요구되는 최종 심사 통과 항목

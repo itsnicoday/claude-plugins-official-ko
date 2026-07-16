@@ -1,150 +1,148 @@
-# CLAUDE.md Update Guidelines
+# CLAUDE.md 업데이트 가이드라인
 
-## Core Principle
+## 핵심 원칙
 
-Only add information that will genuinely help future Claude sessions. The context window is precious - every line must earn its place.
+향후 Claude 세션에 실제로 도움이 될 정보만 추가하십시오. 컨텍스트 윈도우는 매우 소중하므로, 모든 줄은 그 존재 가치를 증명해야 합니다.
 
-## What TO Add
+## 추가해야 할 사항
 
-### 1. Commands/Workflows Discovered
-
-```markdown
-## Build
-
-`npm run build:prod` - Full production build with optimization
-`npm run build:dev` - Fast dev build (no minification)
-```
-
-Why: Saves future sessions from discovering these again.
-
-### 2. Gotchas and Non-Obvious Patterns
+### 1. 새로 발견한 명령어/워크플로우
 
 ```markdown
-## Gotchas
+## 빌드
 
-- Tests must run sequentially (`--runInBand`) due to shared DB state
-- `yarn.lock` is authoritative; delete `node_modules` if deps mismatch
+`npm run build:prod` - 최적화를 포함한 전체 프로덕션 빌드
+`npm run build:dev` - 빠른 개발 빌드 (압축 없음)
 ```
 
-Why: Prevents repeating debugging sessions.
+이유: 향후 세션에서 동일한 명령어를 다시 찾아내야 하는 번거로움을 줄여줍니다.
 
-### 3. Package Relationships
+### 2. 주의 사항 및 직관적이지 않은 패턴
 
 ```markdown
-## Dependencies
+## 주의 사항
 
-The `auth` module depends on `crypto` being initialized first.
-Import order matters in `src/bootstrap.ts`.
+- DB 상태 공유로 인해 테스트는 반드시 순차적으로 실행해야 함 (`--runInBand`)
+- `yarn.lock` 파일이 권한을 가짐. 종속성 불일치 시 `node_modules`를 삭제할 것
 ```
 
-Why: Architecture knowledge that isn't obvious from code.
+이유: 디버깅 과정을 반복하는 일을 방지합니다.
 
-### 4. Testing Approaches That Worked
+### 3. 패키지 관계
 
 ```markdown
-## Testing
+## 의존성
 
-For API endpoints: Use `supertest` with the test helper in `tests/setup.ts`
-Mocking: Factory functions in `tests/factories/` (not inline mocks)
+`auth` 모듈은 `crypto`가 먼저 초기화되는 것에 의존함.
+`src/bootstrap.ts` 내의 임포트 순서가 중요함.
 ```
 
-Why: Establishes patterns that work.
+이유: 코드만 봐서는 파악하기 힘든 아키텍처 지식입니다.
 
-### 5. Configuration Quirks
+### 4. 유효했던 테스트 접근 방식
 
 ```markdown
-## Config
+## 테스트
 
-- `NEXT_PUBLIC_*` vars must be set at build time, not runtime
-- Redis connection requires `?family=0` suffix for IPv6
+API 엔드포인트: `tests/setup.ts` 내의 테스트 헬퍼와 함께 `supertest` 사용
+모킹(Mocking): 인라인 모크가 아닌 `tests/factories/`에 정의된 팩토리 함수 사용
 ```
 
-Why: Environment-specific knowledge.
+이유: 검증된 동작 패턴을 수립합니다.
 
-## What NOT to Add
+### 5. 환경 설정상의 특이 사항
 
-### 1. Obvious Code Info
-
-Bad:
 ```markdown
-The `UserService` class handles user operations.
+## 설정
+
+- `NEXT_PUBLIC_*` 변수들은 런타임이 아닌 빌드 타임에 설정되어야 함
+- Redis 연결 시 IPv6를 위해 `?family=0` 접미사가 필요함
 ```
 
-The class name already tells us this.
+이유: 환경에 특화된 정보입니다.
 
-### 2. Generic Best Practices
+## 추가하지 말아야 할 사항
 
-Bad:
+### 1. 당연한 코드 정보
+
+나쁜 예:
 ```markdown
-Always write tests for new features.
-Use meaningful variable names.
+`UserService` 클래스는 사용자 관련 작업을 처리합니다.
 ```
 
-This is universal advice, not project-specific.
+클래스명만 봐도 유추할 수 있는 정보입니다.
 
-### 3. One-Off Fixes
+### 2. 일반적인 모범 사례
 
-Bad:
+나쁜 예:
 ```markdown
-We fixed a bug in commit abc123 where the login button didn't work.
+새로운 기능에 대한 테스트를 항상 작성하십시오.
+의미 있는 변수명을 사용하십시오.
 ```
 
-Won't recur; clutters the file.
+이는 보편적인 조언일 뿐, 이 프로젝트만의 특화된 내용이 아닙니다.
 
-### 4. Verbose Explanations
+### 3. 일회성 수정 사항
 
-Bad:
+나쁜 예:
 ```markdown
-The authentication system uses JWT tokens. JWT (JSON Web Tokens) are
-an open standard (RFC 7519) that defines a compact and self-contained
-way for securely transmitting information between parties as a JSON
-object. In our implementation, we use the HS256 algorithm which...
+커밋 abc123에서 로그인 버튼이 작동하지 않던 버그를 수정했습니다.
 ```
 
-Good:
+다시 발생할 일이 없으며 파일만 복잡하게 만듭니다.
+
+### 4. 장황한 설명
+
+나쁜 예:
 ```markdown
-Auth: JWT with HS256, tokens in `Authorization: Bearer <token>` header.
+인증 시스템은 JWT 토큰을 사용합니다. JWT(JSON Web Tokens)는
+당사자 간에 정보를 JSON 객체로 안전하게 전송하기 위한 간결하고
+독립적인 방법을 정의하는 개방형 표준(RFC 7519)입니다. 당사 구현에서는
+HS256 알고리즘을 사용하며 이 알고리즘은...
 ```
 
-## Diff Format for Updates
+좋은 예:
+```markdown
+인증: HS256 알고리즘을 사용하는 JWT, 토큰은 `Authorization: Bearer <token>` 헤더에 포함.
+```
 
-For each suggested change:
+## 업데이트용 Diff 포맷
 
-### 1. Identify the File
+제안하는 각 변경 사항에 대해:
+
+### 1. 대상 파일 식별
 
 ```
 File: ./CLAUDE.md
-Section: Commands (new section after ## Architecture)
+섹션: 명령어 (## 아키텍처 다음의 신규 섹션)
 ```
 
 ### 2. Show the Change
 
 ```diff
  ## Architecture
- ...
+  ...
 
-+## Commands
++## 명령어
 +
-+| Command | Purpose |
++| 명령어 | 용도 |
 +|---------|---------|
-+| `npm run dev` | Dev server with HMR |
-+| `npm run build` | Production build |
-+| `npm test` | Run test suite |
++| `npm run dev` | HMR이 적용된 개발 서버 |
++| `npm run build` | 프로덕션 빌드 |
++| `npm test` | 테스트 스위트 실행 |
 ```
 
-### 3. Explain Why
+### 3. 이유 설명
 
-> **Why this helps:** The build commands weren't documented, causing
-> confusion about how to run the project. This saves future sessions
-> from needing to inspect `package.json`.
+> **도움이 되는 이유:** 빌드 명령어가 문서화되어 있지 않아 프로젝트 실행 방법에 혼선이 있었습니다. 이를 통해 향후 세션에서 `package.json`을 직접 확인할 필요가 없어집니다.
 
-## Validation Checklist
+## 검증 체크리스트
 
-Before finalizing an update, verify:
+업데이트를 완료하기 전에 다음 사항을 확인하십시오:
 
-- [ ] Each addition is project-specific
-- [ ] No generic advice or obvious info
-- [ ] Commands are tested and work
-- [ ] File paths are accurate
-- [ ] Would a new Claude session find this helpful?
-- [ ] Is this the most concise way to express the info?
+- [ ] 추가 사항이 프로젝트에 특화된 내용인가
+- [ ] 일반적인 조언이나 당연한 정보가 배제되었는가
+- [ ] 명령어가 테스트되었고 정상 작동하는가
+- [ ] 파일 경로가 정확한가
+- [ ] 새로운 Claude 세션에 실질적으로 도움이 되는가
+- [ ] 정보를 표현하는 가장 간결한 방식인가

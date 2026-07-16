@@ -3,70 +3,31 @@ description: Environment readiness check — analysis tools, build toolchain, so
 argument-hint: <system-dir> [target-stack]
 ---
 
-Check whether this environment is ready to analyze — and eventually
-transform — `legacy/$1`, and tell the user exactly what to fix before the
-other commands run into it. Modernization sessions fail late and
-confusingly when this isn't done: assessment metrics silently degrade
-without analysis tools, characterization tests can't run without a build
-toolchain, and dependency maps come out wrong when half the source isn't
-in the tree.
+이 환경이 `legacy/$1`에 대한 분석(및 궁극적으로 전환) 준비가 되었는지 검사하고, 다른 명령어가 실행되어 오류를 만나기 전에 사용자에게 무엇을 수정해야 하는지 정확히 알려줍니다. 모더나이제이션 세션은 이 작업을 하지 않으면 나중에 원인 불명으로 실패하기 쉽습니다: 분석 도구가 없으면 평가 지표가 무단히 저하되고, 빌드 툴체인이 없으면 캐릭터리제이션 테스트를 실행할 수 없으며, 소스의 절반이 트리 내에 없으면 의존성 맵이 잘못 작성됩니다.
 
-Run every check even when an early one fails — the point is one complete
-readiness report, not the first error.
+초기 단계에서 오류가 발생하더라도 모든 검사를 수행하십시오. 목적은 첫 번째 에러에서 멈추는 것이 아니라 하나의 완전한 준비도 보고서를 작성하는 것입니다.
 
-## Check 0 — Ask the human (these answers are not in the source)
+## 검사 0 — 사람에게 질문하기 (이 답변들은 소스 코드에 없습니다)
 
-Before any automated check, ask the person running this command the five
-questions below. The most expensive modernization mistakes are things a
-person who knows the system answers in seconds and that cost real money to
-discover wrong from the source alone. Ask **only** these — add none —
-and accept "don't know" for any of them.
+자동화된 검사를 수행하기 전에 이 명령어를 실행하는 사람에게 아래의 5가지 질문을 던지십시오. 가장 비용이 많이 드는 모더나이제이션의 실수는 시스템을 아는 사람이라면 몇 초 만에 답할 수 있는 질문들이며, 소스 코드만을 검사하여 알아내려면 실제 비용과 시간이 많이 듭니다. **오직** 이 질문들만 던지십시오 (추가 질문 배제). 대답을 모르는 질문이 있다면 "모름"으로 처리하고 넘어가십시오.
 
-**Ask, then do not block on the answers.** None of Checks 1–6 needs one
-(Check 6 verifies the scope boundary from the source *independently* — the
-human's answer says whether a crossing *matters*, not whether it exists), so
-proceed to the checks immediately after asking and write the report with
-whatever answers exist by then. Any question still unanswered goes in the
-report **verbatim, marked as an open item the human must fill in** — it is
-not dropped. This way an interactive user answers while the checks run, a
-headless or scripted run still produces a complete `PREFLIGHT.md`, and the
-one thing that never happens is a readiness report silently missing the
-questions.
+**질문을 던진 후 답변을 무한정 기다리지 마십시오.** 검사 1~6단계는 이 답변들에 종속되지 않습니다 (검사 6단계는 소스 코드로부터 범위 경계를 *독립적으로* 검증합니다. 사람의 답변은 경계 교차가 *실제로 중요한지* 여부를 판단하며 경계의 존재 유무를 따지지 않습니다). 질문을 던진 즉시 다음 검사들을 실행하고, 보고서 작성 시점까지 수집된 답변들로 채워 보고서를 작성하십시오. 여전히 답변되지 않은 질문은 **질문 그대로 보고서에 기록하고, 사람이 채워야 할 미결 항목으로 표시**해야 합니다 (답변되지 않았다고 해서 질문을 보고서에서 누락시켜서는 안 됩니다). 이렇게 하면 대화형 사용자는 검사가 실행되는 동안 답변할 수 있고, 헤드리스(headless) 또는 스크립트 방식의 실행에서도 완전한 `PREFLIGHT.md`를 산출할 수 있으며, 준비도 보고서에서 이러한 핵심 질문이 누락되는 상황을 완전히 방지할 수 있습니다.
 
-1. **Scope** — Is `legacy/$1` the complete system, or one slice of a
-   larger codebase? If a slice: what *outside* it depends on code *inside*
-   it, and is breaking those consumers acceptable? (Check 6 verifies this
-   from the source independently; the human's answer says whether it
-   *matters*.)
-2. **Build & test locally** — Can this environment restore, build, and run
-   the tests? Roughly how long does the full CI pipeline take? (A pipeline
-   measured in hours changes the whole validation strategy: you cannot
-   afford to first learn you were wrong from CI.)
-3. **Bespoke build infrastructure** — Is there organization-specific build
-   or dependency-resolution machinery (an internal package feed, a custom
-   binary store, a code generator, a wrapper around the standard build
-   tool) that someone new to this codebase would not guess? Where is it
-   documented?
-4. **Prior attempts** — Has anyone tried to modernize any of this before?
-   What went wrong?
-5. **Off limits** — Is anything under `legacy/$1` not allowed to change in
-   this pass (a component another team owns, a frozen branch, generated
-   code)?
+1. **범위 (Scope)** — `legacy/$1`이 시스템 전체입니까, 아니면 더 큰 코드베이스의 일부 슬라이스입니까? 일부 슬라이스라면: 이 코드 *외부*에서 이 코드 *내부*에 의존하는 것은 무엇이며, 이러한 외부 소비자(consumers)와의 연결이 끊어지는 것을 감수할 수 있습니까? (검사 6단계는 소스 코드로부터 이를 독립적으로 검증합니다. 사람의 답변은 그것이 *중요한지* 여부를 설명해 줍니다.)
+2. **로컬 빌드 및 테스트 (Build & test locally)** — 이 환경에서 패키지를 복구(restore)하고 빌드하며 테스트를 실행할 수 있습니까? 전체 CI 파이프라인은 대략 얼마나 걸립니까? (파이프라인 실행에 몇 시간이 소요된다면 검증 전략 전체를 변경해야 합니다: CI 단계에서 비로소 오류를 발견하는 비용을 감당할 수 없기 때문입니다.)
+3. **독자적인 빌드 인프라 (Bespoke build infrastructure)** — 이 코드베이스를 처음 접하는 사람이 짐작하기 어려운 조직 전용의 빌드 또는 의존성 해결 메커니즘(사내 패키지 피드, 커스텀 바이너리 저장소, 코드 생성기, 표준 빌드 도구의 래퍼 스크립트 등)이 존재합니까? 이에 대한 문서는 어디에 있습니까?
+4. **이전 시도 (Prior attempts)** — 과거에 이 시스템의 일부라도 모더나이제이션하려고 시도한 적이 있습니까? 무엇이 잘못되었었습니까?
+5. **금지 구역 (Off limits)** — 이번 모더나이제이션 과정에서 `legacy/$1` 아래의 코드 중 변경이 허용되지 않는 구역(다른 팀이 소유한 컴포넌트, 고정된 브랜치, 자동 생성된 코드 등)이 있습니까?
 
-Record every answer **verbatim** in the report — downstream commands, and
-`/modernize-brief` most of all, read them from there. Do not paraphrase
-away a caveat the human gave you.
+모든 답변을 보고서에 **그대로(verbatim)** 기록하십시오. 다운스트림 명령어와 특히 `/modernize-brief` 명령어는 이 정보를 거기서 읽어옵니다. 사용자가 제공한 단서를 임의로 요약하거나 의역하여 누락시키지 마십시오.
 
-## Check 1 — Detect the stack
+## 검사 1 — 스택 감지
 
-Fingerprint `legacy/$1` from file extensions and manifests: languages,
-build system, deployment/config descriptors. This drives which checks
-below apply. Report what was detected and the rough file split.
+파일 확장자 및 매니페스트 파일(언어, 빌드 시스템, 배포/설정 기술자 등)을 기반으로 `legacy/$1`의 지문을 채취(fingerprint)합니다. 이 정보에 따라 아래의 검사들이 적용됩니다. 감지된 내용과 대략적인 파일 분포를 보고하십시오.
 
-## Check 2 — Analysis tooling
+## 검사 2 — 분석 도구
 
-For each, check availability (`command -v`) and report version, what it's
-used for, and what degrades without it:
+각 도구에 대해 가용성(`command -v`)을 검사하고 버전, 용도, 그리고 해당 도구가 없을 때 감수해야 할 성능 저하를 보고하십시오:
 
 | Tool | Used by | Without it |
 |---|---|---|
@@ -75,152 +36,54 @@ used for, and what degrades without it:
 | `glow` | all | markdown artifacts render as plain text |
 | `delta` | transform | side-by-side diffs fall back to `diff -y` |
 
-Include the platform's install one-liner for anything missing
-(`brew install scc`, `apt install cloc`, `pip install lizard`, …).
+누락된 도구에 대해서는 플랫폼별 설치 명령어를 한 줄로 포함시키십시오 (`brew install scc`, `apt install cloc`, `pip install lizard` 등).
 
-## Check 3 — Build toolchain (prove it on THIS codebase, not just presence)
+## 검사 3 — 빌드 툴체인 (단순히 존재 여부뿐만 아니라 이 코드베이스에서의 작동 여부 증명)
 
-**3a — The build definition is the ground truth. Find it and read it
-before guessing.** Something already builds this system; go find out how.
-Look for the CI/pipeline definition (`azure-pipelines.yml`, `Jenkinsfile`,
-`.github/workflows/`, `.gitlab-ci.yml`, `bitbucket-pipelines.yml`, build
-JCL procs, a `Makefile`) and any organization-level build configuration
-above or beside the source (`Directory.Build.props`/`.targets` and
-`nuget.config` in .NET; a parent POM, a `settings.xml` mirror, or a
-`.mvn/` directory in Java; a private-registry `.npmrc`/`pip.conf`; a root
-`build/`, `eng/`, `tools/`, or `scripts/` directory). These files are the
-single most honest document about how the system *actually* builds: the
-exact toolchain version it pins, where dependency binaries really come
-from, and which steps a naive build invocation skips. Every mid-migration
-"wait, how do dependencies resolve here?" surprise is already written down
-in one of them. Report what you found (or that none exists), quote the
-pinned toolchain version and the dependency source, and flag anything
-bespoke — a homegrown binary-resolution scheme is exactly the thing a
-transformation must not have to discover halfway through.
+**3a — 빌드 정의가 가장 신뢰할 수 있는 소스입니다. 추측하기 전에 이를 먼저 찾아서 읽으십시오.** 이 시스템은 이미 무언가를 통해 빌드되고 있습니다. 그 방법을 찾으십시오. CI/파이프라인 정의 파일(`azure-pipelines.yml`, `Jenkinsfile`, `.github/workflows/`, `.gitlab-ci.yml`, `bitbucket-pipelines.yml`, 빌드 JCL procs, `Makefile`) 및 소스 코드 상위 또는 주변에 있는 조직 수준의 빌드 설정 파일( .NET의 `Directory.Build.props`/`.targets` 및 `nuget.config`, Java의 부모 POM, `settings.xml` 미러 또는 `.mvn/` 디렉토리, 비공개 레지스트리용 `.npmrc`/`pip.conf`, 루트의 `build/`, `eng/`, `tools/` 또는 `scripts/` 디렉토리)을 찾으십시오. 이 파일들은 시스템이 *실제로* 어떻게 빌드되는지에 대한 가장 솔직한 기록입니다: 핀(pin)으로 고정해 둔 정확한 툴체인 버전, 의존성 바이너리가 실제로 어디서 공급되는지, 그리고 단순한 빌드 호출 시 어떤 단계를 건너뛰는지 등이 적혀 있습니다. 마이그레이션 도중에 발견될 수 있는 "여기서 의존성이 어떻게 해석되는 거지?"와 같은 깜짝 놀랄 만한 변수들은 이미 이 파일들 중 하나에 기록되어 있습니다. 발견한 내용(또는 없는 경우 없다는 사실)을 보고하고, 툴체인의 특정 버전과 의존성 공급처를 인용하며, 독자적인 빌드 방식이 있다면 플래그를 지정하십시오. 자체적으로 구축한 바이너리 해석 방식은 마이그레이션이 절반쯤 진행된 상태에서 갑자기 발견되어서는 안 되는 가장 중요한 항목입니다.
 
-**3b — Smoke test, escalating.** Identify the compiler/interpreter for the
-detected legacy stack — e.g. GnuCOBOL (`cobc`) for COBOL, a JDK +
-Maven/Gradle for Java, `cc`/`make` for C, `dotnet` for .NET — then **prove
-it works on this codebase**, at the strongest level available:
+**3b — 단계별로 스모크 테스트 실행.** 감지된 레거시 스택에 상응하는 컴파일러/인터프리터(예: COBOL의 GnuCOBOL(`cobc`), Java의 JDK + Maven/Gradle, C의 `cc`/`make`, .NET의 `dotnet`)를 확인한 다음, 지원되는 가장 강한 수준에서 **이 코드베이스에 작동하는지 증명**하십시오:
 
-- **Level 1 (any stack) — syntax-compile one representative source file**
-  (`cobc -fsyntax-only`, `javac`, `gcc -fsyntax-only`, …). This catches
-  missing copybooks/includes, dialect flags, fixed-vs-free format.
-- **Level 2 (any stack with a build system) — restore + build ONE whole
-  project/module the way 3a says the CI does.** A single file
-  syntax-compiling proves almost nothing about a real build system: a
-  restore that hits a private feed, a code-generation step, a shared props
-  file, a pinned SDK are all invisible to a one-file compile — and are
-  exactly where large codebases hide their surprises. Pick one small
-  *real* unit and take it all the way through.
+- **레벨 1 (모든 스택) — 대표적인 소스 파일 하나에 대해 구문 컴파일 수행** (`cobc -fsyntax-only`, `javac`, `gcc -fsyntax-only` 등). 이를 통해 누락된 카피북/인클루드 파일, 언어 방언(dialect) 플래그, 고정 형식(fixed) vs 자유 형식(free) 포맷 문제를 걸러냅니다.
+- **레벨 2 (빌드 시스템이 있는 모든 스택) — 3a에서 파악한 CI 빌드 방식대로 전체 프로젝트/모듈 중 하나를 복구(restore)하고 빌드.** 단일 파일의 구문 컴파일 성공은 실제 빌드 시스템에 대해서는 거의 아무것도 증명하지 못합니다: 사내 비공개 피드에 접속해야 하는 복구 단계, 코드 생성 단계, 공유 속성 파일, 고정된 SDK 등은 단일 파일 컴파일 시에는 드러나지 않으며, 바로 이곳이 대규모 코드베이스가 변수를 숨겨두는 장소입니다. 작은 *실제* 단위 모듈 하나를 골라 전체 빌드 과정을 끝까지 수행해 보십시오.
 
-A failed smoke test at either level is the most valuable output of this
-whole command — report the actual error and diagnose it: missing
-copybook/include path, missing dialect flag (`-std=ibm` etc.), fixed vs
-free format, a dependency the standard feed cannot resolve. These are the
-errors that otherwise surface mid-transformation with far less context.
-Level 2 being *impossible* (no build system in the tree, a mainframe stack
-with no local runtime) is normal for some legacy code: report it as a
-fact, not a failure — equivalence then degrades to recorded traces, which
-the other commands already handle.
+어느 레벨에서든 스모크 테스트가 실패했다면 그것이 이 명령어의 가장 가치 있는 결과물입니다. 실제 발생한 에러를 보고하고 이를 진단하십시오: 카피북/인클루드 경로 누락, 언어 방언 플래그 누락 (`-std=ibm` 등), 고정 형식 vs 자유 형식 포맷 오류, 표준 피드에서 해결할 수 없는 의존성 등. 이 에러들은 지금 진단하지 않으면 마이그레이션 도중에 훨씬 적은 맥락 정보만을 가진 상태로 불쑥 나타나게 됩니다. 레벨 2 빌드가 *불가능함*(트리에 빌드 시스템이 없거나, 로컬 런타임이 없는 메인프레임 스택인 경우)은 일부 레거시 코드에서는 정상적인 상황입니다: 이를 실패가 아닌 사실로서 보고하십시오. 이 경우 동등성 검증은 기록된 트레이스로 한 단계 격하되며, 다른 명령어들은 이미 이를 처리할 수 있게 설계되어 있습니다.
 
-If the user passed a `[target-stack]`, do the same for it: runtime,
-package manager, test framework (`mvn -v`, `npm -v`, `pytest --version`, …).
+만약 사용자가 `[target-stack]`을 인수로 제공했다면 해당 대상 스택에 대해서도 동일한 검사를 수행하십시오: 런타임, 패키지 관리자, 테스트 프레임워크 (`mvn -v`, `npm -v`, `pytest --version` 등).
 
-## Check 4 — Source completeness
+## 검사 4 — 소스 완성도
 
-The dependency map is only as good as what's in the tree. Check for the
-detected stack's equivalents of:
+의존성 맵의 품질은 트리에 실제로 존재하는 소스 코드의 완성도에 비례합니다. 감지된 스택에 따라 다음에 상응하는 파일들이 존재하는지 확인하십시오:
 
-- **Referenced-but-missing includes** — copybooks (`COPY X` with no
-  `X.cpy`), headers, imports that resolve nowhere. Count and list the top
-  missing names.
-- **Deployment/config descriptors** — JCL for batch COBOL, CICS CSD
-  definitions, `web.xml`/route configs, cron/scheduler definitions.
-  Without these, entry-point detection and the code↔storage join in
-  `/modernize-map` are guesswork.
-- **Data definitions** — DDL, schemas, copybook record layouts, ORM
-  mappings.
-- **Binary-only artifacts** — load modules, jars, DLLs with no matching
-  source. These become unmappable black boxes; flag them now.
+- **참조되었으나 누락된 인클루드 파일** — 카피북 (`X.cpy` 파일이 없는 `COPY X` 구문), 헤더 파일, 그 어디에서도 해석되지 않는 import 구문. 누락된 파일들의 총 개수와 가장 자주 참조되는 누락 파일 목록을 작성하십시오.
+- **배포/설정 기술자** — 배치 COBOL의 JCL, CICS CSD 정의 파일, `web.xml`/라우팅 설정, 크론/스케줄러 정의 파일. 이 파일들이 없으면 `/modernize-map`에서 진입점 감지 및 코드↔스토리지의 연결은 추측에 의존할 수밖에 없습니다.
+- **데이터 정의** — DDL, 스키마, 카피북 레코드 레이아웃, ORM 매핑 파일.
+- **바이너리로만 존재하는 산출물** — 매칭되는 소스 코드가 없는 로드 모듈(load modules), jar 파일, DLL 파일. 이들은 맵을 그릴 수 없는 블랙박스가 되므로 지금 플래그를 지정하여 감지하십시오.
 
-## Check 5 — Optional context
+## 검사 5 — 선택적 콘텍스트
 
-- **Production telemetry** — is an observability/APM MCP server connected,
-  or are batch job logs / runtime exports available? (Enables the runtime
-  overlay in `/modernize-assess` Step 4 and timing annotations in
-  `/modernize-map`.)
-- **Version control history** — is `legacy/$1` under git with meaningful
-  history? (Change-frequency data sharpens risk ranking.)
+- **운영 텔레메트리 (Production telemetry)** — 모니터링/APM MCP 서버가 연결되어 있거나, 배치 작업 로그 / 런타임 내보내기 파일을 사용할 수 있습니까? (이를 통해 `/modernize-assess` 4단계의 런타임 오버레이 및 `/modernize-map`의 실행 시간 주석 표시가 가능해집니다.)
+- **버전 관리 이력** — `legacy/$1`이 의미 있는 커밋 히스토리를 가진 git 저장소로 관리되고 있습니까? (변경 빈도 데이터는 리스크 순위를 명확히 하는 데 도움을 줍니다.)
 
-## Check 6 — Scope boundary (is `$1` the whole world, or a slice of one?)
+## 검사 6 — 범위 경계 (이 코드가 전체 세상입니까, 아니면 일부 슬라이스입니까?)
 
-Every downstream command assumes `legacy/$1` *is* the system. When it is
-actually **one directory inside a larger source repository** — a module in
-a monorepo, one solution folder inside a much bigger solution, a subsystem
-sharing copybooks or includes with siblings — that assumption is the most
-dangerous thing in the whole run, and nothing else checks it.
+모든 다운스트림 명령어들은 `legacy/$1`이 시스템 *전체*라고 가정합니다. 만약 이 디렉토리가 실제로는 **더 큰 소스 저장소 내부의 특정 디렉토리 하나**인 경우(모노레포 내의 한 모듈, 훨씬 더 큰 솔루션 내의 특정 솔루션 폴더, 형제 디렉토리들과 카피북이나 인클루드 파일을 공유하는 서브시스템 등), 이 가정은 전체 실행 과정에서 가장 위험한 변수이며 그 어떤 검사도 이를 잡아내지 못합니다.
 
-Detect it: after resolving the `legacy/$1` symlink (the recommended setup
-symlinks real code in), is there a repository / solution / workspace /
-reactor root *above* it? Do manifests or includes *inside* `$1` reference
-paths *outside* it? If either is true, report **both directions** of the
-boundary crossing:
+이를 감지하십시오: `legacy/$1` 심링크를 해석한 후(권장 설정은 실제 코드를 심링크로 연결하는 것임), 그 *상위*에 저장소 / 솔루션 / 작업 공간 / 리액터 루트가 존재합니까? `$1` *내부*의 매니페스트나 인클루드 파일이 `$1` *외부*의 경로를 참조하고 있습니까? 둘 중 하나라도 참이면, 경계 교차의 **양방향**을 모두 보고하십시오:
 
-- **Outbound** — things inside `$1` that depend on source *outside* it
-  (project/module references, shared includes, a parent build file). The
-  `/modernize-map` topology and any delta catalog only see what is under
-  `$1`, so every outbound reference is a dependency they will silently
-  miss. List them.
-- **Inbound** — things *outside* `$1` that depend on things *inside* it.
-  This is the **blast radius**: an in-place migration (`/modernize-uplift`)
-  of a node with external consumers breaks every one of them. Grep the
-  sibling manifests for references into `$1`, enumerate the
-  inbound-referenced nodes, and say plainly that each needs an explicit
-  decision *before* any in-place change — keep it buildable for both old
-  and new consumers during the transition, expand the scope to include the
-  consumers, or accept and schedule the break. Never let this be
-  discovered by a broken build in a directory nobody was looking at.
+- **Outbound (아웃바운드)** — `$1` 내부에서 `$1` *외부*의 소스에 의존하는 항목 (프로젝트/모듈 참조, 공유 인클루드 파일, 상위 빌드 파일). `/modernize-map` 토폴로지와 델타 카탈로그는 오직 `$1` 하위의 파일만 바라보므로, 모든 아웃바운드 참조는 이들이 조용히 놓치게 되는 의존성이 됩니다. 목록을 작성하십시오.
+- **Inbound (인바운드)** — `$1` 외부에서 `$1` *내부*의 요소에 의존하는 항목. 이것이 바로 **유발 가능한 장애 반경(blast radius)**입니다: 외부 소비자가 있는 노드를 제자리 마이그레이션(`/modernize-uplift`)하면 모든 외부 소비자의 빌드가 깨집니다. 형제 디렉토리의 매니페스트에서 `$1`을 참조하는 구문을 검색(grep)하고, 인바운드로 참조되는 노드들을 열거하며, 제자리 변경을 수행하기 *전에* 명시적인 의사결정이 필요하다고 명확히 경고하십시오 — 전환 기간 동안 구버전과 신버전 소비자 모두 빌드가 가능하도록 호환성을 유지할 것인지, 빌드 범위를 소비자를 포함하도록 확장할 것인지, 아니면 빌드가 깨지는 것을 감수하고 일정을 수립할 것인지 결정해야 합니다. 아무도 보지 않던 디렉토리의 빌드가 깨지는 현상을 통해 이 문제를 사후에 알아채는 일이 없도록 하십시오.
 
-If `$1` really is a standalone repository, one line saying so is the whole
-check — it is cheap when it does not apply.
+만약 `$1`이 진정한 독립형 저장소라면 이를 명시하는 한 줄로 이 검사는 끝납니다. 해당하지 않는 경우에는 리소스를 거의 소모하지 않습니다.
 
-## Report
+## 보고서 작성
 
-Write `analysis/$1/PREFLIGHT.md`. It **leads with the Check 0 answers,
-verbatim, and the Check 6 scope-boundary finding** — those two are read by
-every downstream command (`/modernize-brief` above all) and are worth
-nothing paraphrased. Then a status table — one row per check, status
-✅ / ⚠️ / ❌, what was found, and the fix for anything not green — followed
-by a **Ready / Ready-with-gaps / Not ready** verdict per command:
+`analysis/$1/PREFLIGHT.md` 파일을 작성합니다. 이 보고서는 **검사 0의 답변 원본(verbatim)과 검사 6의 범위 경계 분석 결과로 시작**해야 합니다 — 이 두 정보는 모든 다운스트림 명령어(특히 `/modernize-brief`)가 가장 먼저 읽으며, 임의로 의역하면 가치가 크게 훼손됩니다. 그 뒤에 검사별 상태 테이블(검사 항목별 ✅ / ⚠️ / ❌ 상태, 감지된 내용, 해결 방법 기술)을 배치하고, 마지막으로 명령어별 **Ready / Ready-with-gaps / Not ready** 판정을 기술합니다:
 
-- `assess` + `map` + `extract-rules` — need Checks 1–2 green-ish and
-  Check 4's missing-include count low
-- `brief` — needs only the three discovery artifacts (plus
-  `DELTA_CATALOG.md` when the plan is a same-stack uplift); no tooling
-- `transform` + `reimagine` — additionally need Check 3 green for the
-  **target** stack. A red legacy toolchain downgrades these to
-  Ready-with-gaps, not Not-ready: equivalence testing falls back to
-  recorded traces / golden-master fixtures instead of dual execution
-  (common and expected for CICS/IMS code that has no local runtime)
-- `harden` — needs Check 2 plus any stack-specific SAST tooling found
-- `uplift` (same-stack version bump) — needs Check 3 green for the **target**
-  version. Two uplift-specific signals to report when a `[target-stack]` that
-  looks like a version bump was passed: (a) is the **source** runtime also
-  available here? Both present = a true dual-run is possible; target-only =
-  equivalence degrades to characterization tests against recorded outputs (say
-  which). (b) Is the stack's **migration tool** installed (`dotnet tool list`
-  for `upgrade-assistant`, `apiport`, OpenRewrite, `pyupgrade`, `ng`)? Missing
-  is Ready-with-gaps, not Not-ready — the delta catalog is then fully
-  Claude-derived and loses the tool's coverage; note that. (c) Did Check 6
-  find **inbound external consumers** of `$1`? That is **Ready-with-gaps**,
-  not Not-ready — preflight runs before any plan exists, so there is nowhere
-  yet to record a decision — but it is the gap that matters most: name the
-  inbound-referenced shared nodes and say that `/modernize-brief` must give
-  each one an explicit transition decision as its own line item (Check 6
-  lists the options), and that `/modernize-uplift` Step 1 will not migrate a
-  shared node in place without one. Never let this be discovered from a
-  sibling's broken build.
+- `assess` + `map` + `extract-rules` — 검사 1~2가 대체로 녹색(green)이어야 하고, 검사 4의 누락된 인클루드 파일 수가 적어야 합니다.
+- `brief` — 마이그레이션 설계 도출을 위한 3가지 산출물(동일 스택 업그레이드의 경우 `DELTA_CATALOG.md` 추가)만 필요하며, 별도 빌드 도구는 요구되지 않습니다.
+- `transform` + `reimagine` — 추가적으로 **대상(target)** 스택에 대한 검사 3이 녹색이어야 합니다. 레거시 툴체인이 적색(red)인 경우 이들은 Not-ready가 아니라 Ready-with-gaps로 판정됩니다: 동등성 테스트가 이중 실행 대신 기록된 트레이스 / 골든 마스터 피스처를 사용하는 방식으로 변경됩니다 (로컬 런타임이 없는 CICS/IMS 코드에서는 매우 일반적이고 정상적인 방식입니다).
+- `harden` — 검사 2 결과와 감지된 스택 전용 SAST 도구가 필요합니다.
+- `uplift` (동일 스택 버전 범프) — **대상(target)** 버전에 대한 검사 3이 녹색이어야 합니다. 버전 범프처럼 보이는 `[target-stack]`이 제공된 경우 보고해야 할 두 가지 uplift 전용 신호가 있습니다: (a) **소스(source)** 런타임도 현재 환경에서 사용 가능합니까? 둘 다 사용 가능 = 진정한 의미의 이중 실행(dual-run) 가능; 대상 런타임만 사용 가능 = 동등성 검증이 기록된 출력값에 대한 캐릭터리제이션 테스트로 강등됩니다 (어느 쪽인지 명시하십시오). (b) 스택의 **마이그레이션 도구**가 설치되어 있습니까? (예: `dotnet tool list`의 `upgrade-assistant`, `apiport`, OpenRewrite, `pyupgrade`, `ng` 등). 누락된 경우 Not-ready가 아니라 Ready-with-gaps 판정을 내립니다. 이 경우 델타 카탈로그는 도구의 도움 없이 순수하게 Claude에 의해서만 작성되므로 이 점을 명시하십시오. (c) 검사 6에서 `$1`에 대한 **인바운드 외부 소비자**를 발견했습니까? 이는 **Ready-with-gaps** 판정 사항입니다. 계획이 수립되기 전에 preflight가 먼저 실행되므로 아직 결정을 기록할 곳이 없지만, 가장 중요한 갭(gap)에 해당합니다: 인바운드로 참조되는 공유 노드들의 이름을 나열하고, `/modernize-brief`가 각 노드에 대해 구체적인 전환 결정(검사 6에 나열된 옵션들 참고)을 개별 라인 아이템으로 부여해야 하며, `/modernize-uplift` 1단계는 이러한 결정 없이 공유 노드를 제자리 마이그레이션하지 않을 것임을 명시하십시오. 형제 프로젝트의 빌드 실패를 통해 사후에 이 문제가 발견되지 않도록 하십시오.
 
-Print the table in the session too, and end with the single most
-important fix if anything is red.
+세션 화면에도 이 테이블을 출력하고, 적색(red) 상태의 항목이 있다면 이를 해결하기 위한 가장 중요한 수정 방법을 안내하며 종료하십시오.

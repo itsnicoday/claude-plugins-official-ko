@@ -1,53 +1,53 @@
 ---
 allowed-tools: Bash(gh issue view:*), Bash(gh search:*), Bash(gh issue list:*), Bash(gh pr comment:*), Bash(gh pr diff:*), Bash(gh pr view:*), Bash(gh pr list:*)
-description: Code review a pull request
+description: 풀 리퀘스트 코드 리뷰
 disable-model-invocation: false
 ---
 
-Provide a code review for the given pull request.
+주어진 풀 리퀘스트에 대한 코드 리뷰를 제공합니다.
 
-To do this, follow these steps precisely:
+이 작업을 위해 다음 단계를 정확히 수행하십시오:
 
-1. Use a Haiku agent to check if the pull request (a) is closed, (b) is a draft, (c) does not need a code review (eg. because it is an automated pull request, or is very simple and obviously ok), or (d) already has a code review from you from earlier. If so, do not proceed.
-2. Use another Haiku agent to give you a list of file paths to (but not the contents of) any relevant CLAUDE.md files from the codebase: the root CLAUDE.md file (if one exists), as well as any CLAUDE.md files in the directories whose files the pull request modified
-3. Use a Haiku agent to view the pull request, and ask the agent to return a summary of the change
-4. Then, launch 5 parallel Sonnet agents to independently code review the change. The agents should do the following, then return a list of issues and the reason each issue was flagged (eg. CLAUDE.md adherence, bug, historical git context, etc.):
-   a. Agent #1: Audit the changes to make sure they compily with the CLAUDE.md. Note that CLAUDE.md is guidance for Claude as it writes code, so not all instructions will be applicable during code review.
-   b. Agent #2: Read the file changes in the pull request, then do a shallow scan for obvious bugs. Avoid reading extra context beyond the changes, focusing just on the changes themselves. Focus on large bugs, and avoid small issues and nitpicks. Ignore likely false positives.
-   c. Agent #3: Read the git blame and history of the code modified, to identify any bugs in light of that historical context
-   d. Agent #4: Read previous pull requests that touched these files, and check for any comments on those pull requests that may also apply to the current pull request.
-   e. Agent #5: Read code comments in the modified files, and make sure the changes in the pull request comply with any guidance in the comments.
-5. For each issue found in #4, launch a parallel Haiku agent that takes the PR, issue description, and list of CLAUDE.md files (from step 2), and returns a score to indicate the agent's level of confidence for whether the issue is real or false positive. To do that, the agent should score each issue on a scale from 0-100, indicating its level of confidence. For issues that were flagged due to CLAUDE.md instructions, the agent should double check that the CLAUDE.md actually calls out that issue specifically. The scale is (give this rubric to the agent verbatim):
-   a. 0: Not confident at all. This is a false positive that doesn't stand up to light scrutiny, or is a pre-existing issue.
-   b. 25: Somewhat confident. This might be a real issue, but may also be a false positive. The agent wasn't able to verify that it's a real issue. If the issue is stylistic, it is one that was not explicitly called out in the relevant CLAUDE.md.
-   c. 50: Moderately confident. The agent was able to verify this is a real issue, but it might be a nitpick or not happen very often in practice. Relative to the rest of the PR, it's not very important.
-   d. 75: Highly confident. The agent double checked the issue, and verified that it is very likely it is a real issue that will be hit in practice. The existing approach in the PR is insufficient. The issue is very important and will directly impact the code's functionality, or it is an issue that is directly mentioned in the relevant CLAUDE.md.
-   e. 100: Absolutely certain. The agent double checked the issue, and confirmed that it is definitely a real issue, that will happen frequently in practice. The evidence directly confirms this.
-6. Filter out any issues with a score less than 80. If there are no issues that meet this criteria, do not proceed.
-7. Use a Haiku agent to repeat the eligibility check from #1, to make sure that the pull request is still eligible for code review.
-8. Finally, use the gh bash command to comment back on the pull request with the result. When writing your comment, keep in mind to:
-   a. Keep your output brief
-   b. Avoid emojis
-   c. Link and cite relevant code, files, and URLs
+1. Haiku 에이전트를 사용하여 풀 리퀘스트가 (a) 닫혔는지, (b) 초안(draft)인지, (c) 코드 리뷰가 필요하지 않은지 (예: 자동 생성된 풀 리퀘스트이거나 매우 간단하여 명백히 괜찮은 경우), 또는 (d) 이미 이전에 작성한 코드 리뷰가 있는지 확인합니다. 해당되는 경우 더 이상 진행하지 않습니다.
+2. 다른 Haiku 에이전트를 사용하여 코드베이스에 있는 관련 CLAUDE.md 파일들의 경로 목록(내용은 제외)을 받습니다: 루트 CLAUDE.md 파일(존재하는 경우)과 풀 리퀘스트가 수정한 파일들이 위치한 디렉터리의 CLAUDE.md 파일들을 포함합니다.
+3. Haiku 에이전트를 사용하여 풀 리퀘스트를 보고, 에이전트에게 변경 사항의 요약을 반환하도록 요청합니다.
+4. 그 다음, 5개의 Sonnet 에이전트를 병렬로 실행하여 변경 사항을 독립적으로 코드 리뷰합니다. 에이전트들은 다음을 수행한 후 발견된 이슈 목록과 각 이슈가 지적된 이유(예: CLAUDE.md 준수, 버그, 과거 git 맥락 등)를 반환해야 합니다:
+   a. 에이전트 1: 변경 사항이 CLAUDE.md를 준수하는지 감사힙니다. CLAUDE.md는 Claude가 코드를 작성할 때 참고하는 가이드라인이므로 코드 리뷰 중에 모든 지침이 적용 가능하지는 않을 수 있음에 유의하세요.
+   b. 에이전트 2: 풀 리퀘스트의 파일 변경 사항을 읽고 명백한 버그에 대한 얕은 스캔(shallow scan)을 수행합니다. 변경 사항 이외의 추가 콘텍스트를 읽는 것은 피하고 오직 변경 사항 자체에만 집중합니다. 큰 버그 위주로 확인하고, 사소한 이슈나 트집(nitpicks)은 피합니다. 오탐일 가능성이 높은 것은 무시합니다.
+   c. 에이전트 3: 수정된 코드의 git blame 및 이력을 읽어 과거 맥락에 비추어 버그를 식별합니다.
+   d. 에이전트 4: 해당 파일들을 수정한 이전 풀 리퀘스트들을 읽고, 현재 풀 리퀘스트에도 적용될 수 있는 코멘트가 해당 풀 리퀘스트들에 달렸는지 확인합니다.
+   e. 에이전트 5: 수정된 파일의 코드 주석을 읽고, 풀 리퀘스트의 변경 사항이 주석의 안내 사항을 준수하는지 확인합니다.
+5. 4단계에서 발견된 각 이슈에 대해 병렬 Haiku 에이전트를 구동합니다. 이 에이전트는 PR, 이슈 설명 및 CLAUDE.md 파일 목록(2단계 결과)을 전달받아 이슈가 실제 이슈인지 오탐인지 나타내는 신뢰도 점수를 반환합니다. 이를 위해 에이전트는 각 이슈에 대해 0~100점의 신뢰도 점수를 부여해야 합니다. CLAUDE.md 지침으로 인해 지적된 이슈의 경우, 에이전트는 CLAUDE.md가 실제로 해당 이슈를 명시적으로 언급하고 있는지 재차 확인해야 합니다. 평가 기준은 다음과 같습니다 (아래 기준을 에이전트에게 그대로 제공하세요):
+   a. 0: 전혀 신뢰할 수 없음. 가벼운 조사도 통과하지 못하는 오탐이거나 기존에 존재하던 문제입니다.
+   b. 25: 약간 신뢰함. 실제 이슈일 수 있지만 오탐일 수도 있습니다. 에이전트가 이것이 실제 이슈인지 검증하지 못했습니다. 스타일 관련 이슈인 경우, 관련 CLAUDE.md에 명시적으로 언급되지 않은 스타일입니다.
+   c. 50: 보통 신뢰함. 에이전트가 이것이 실제 이슈임을 검증했으나, 사소한 트집(nitpick)이거나 실제 환경에서 자주 발생하지 않을 수 있습니다. PR의 다른 부분들에 비해 그리 중요하지 않습니다.
+   d. 75: 매우 신뢰함. 에이전트가 이슈를 재확인하고 실제 환경에서 마주칠 가능성이 매우 높은 실제 이슈임을 검증했습니다. PR의 기존 접근 방식은 불충분합니다. 이 이슈는 매우 중요하며 코드 기능에 직접적인 영향을 미치거나, 관련 CLAUDE.md에 직접 언급된 문제입니다.
+   e. 100: 절대적으로 확실함. 에이전트가 이슈를 재확인하고 실제 환경에서 빈번하게 발생할 확실한 실제 이슈임을 확인했습니다. 증거가 이를 직접적으로 뒷받침합니다.
+6. 80점 미만의 점수를 받은 이슈는 모두 필터링합니다. 이 기준을 충족하는 이슈가 없으면 더 이상 진행하지 않습니다.
+7. Haiku 에이전트를 사용하여 1단계의 적격성 확인을 다시 반복함으로써, 풀 리퀘스트가 여전히 코드 리뷰를 받기에 적합한 상태인지 확인합니다.
+8. 마지막으로, gh bash 명령어를 사용하여 풀 리퀘스트에 결과를 코멘트로 게시합니다. 코멘트를 작성할 때 다음 사항을 유의하세요:
+   a. 출력을 간결하게 유지합니다
+   b. 이모티콘 사용을 피합니다
+   c. 관련 코드, 파일, URL을 링크하고 인용합니다
 
-Examples of false positives, for steps 4 and 5:
+4단계 및 5단계에 해당하는 오탐 예시:
 
-- Pre-existing issues
-- Something that looks like a bug but is not actually a bug
-- Pedantic nitpicks that a senior engineer wouldn't call out
-- Issues that a linter, typechecker, or compiler would catch (eg. missing or incorrect imports, type errors, broken tests, formatting issues, pedantic style issues like newlines). No need to run these build steps yourself -- it is safe to assume that they will be run separately as part of CI.
-- General code quality issues (eg. lack of test coverage, general security issues, poor documentation), unless explicitly required in CLAUDE.md
-- Issues that are called out in CLAUDE.md, but explicitly silenced in the code (eg. due to a lint ignore comment)
-- Changes in functionality that are likely intentional or are directly related to the broader change
-- Real issues, but on lines that the user did not modify in their pull request
+- 기존에 존재하던 이슈
+- 버그처럼 보이지만 실제로는 버그가 아닌 것
+- 시니어 엔지니어라면 지적하지 않을 아주 세세한 트집(nitpicks)
+- 린터, 타입 검사기 또는 컴파일러가 잡아낼 수 있는 문제 (예: 누락되거나 잘못된 import, 타입 오류, 깨진 테스트, 포맷팅 이슈, 개행 등 세세한 스타일 이슈). 이러한 빌드 단계를 직접 실행할 필요는 없습니다. CI의 일부로 별도 실행된다고 가정하는 것이 안전합니다.
+- 일반적인 코드 품질 이슈 (예: 테스트 커버리지 부족, 일반적인 보안 이슈, 빈약한 문서 등) - CLAUDE.md에서 명시적으로 요구하지 않는 한
+- CLAUDE.md에서 지적하는 사항이지만, 코드 내에서 명시적으로 무시 처리된 문제 (예: lint ignore 주석 등으로 인해)
+- 의도된 것 같거나 더 넓은 범위의 변경 사항과 직접 관련된 기능적 변경
+- 실제 이슈이지만, 사용자가 이번 풀 리퀘스트에서 수정하지 않은 라인에 있는 이슈
 
-Notes:
+참고 사항:
 
-- Do not check build signal or attempt to build or typecheck the app. These will run separately, and are not relevant to your code review.
-- Use `gh` to interact with Github (eg. to fetch a pull request, or to create inline comments), rather than web fetch
-- Make a todo list first
-- You must cite and link each bug (eg. if referring to a CLAUDE.md, you must link it)
-- For your final comment, follow the following format precisely (assuming for this example that you found 3 issues):
+- 빌드 신호를 확인하거나 앱을 빌드/타입 검사하려고 시도하지 마십시오. 이들은 별도로 실행되며 코드 리뷰와 관련이 없습니다.
+- 웹 패치 대신 `gh`를 사용하여 GitHub과 상호작용하십시오 (예: 풀 리퀘스트 가져오기, 인라인 코멘트 작성 등).
+- 먼저 할 일 목록(todo list)을 만드세요.
+- 각 버그를 인용하고 링크해야 합니다 (예: CLAUDE.md를 언급하는 경우 반드시 링크해야 함).
+- 최종 코멘트는 다음 형식을 정확히 따라야 합니다 (이 예시에서는 3개의 이슈를 발견했다고 가정함):
 
 ---
 
@@ -69,24 +69,24 @@ Found 3 issues:
 
 🤖 Generated with [Claude Code](https://claude.ai/code)
 
-<sub>- If this code review was useful, please react with 👍. Otherwise, react with 👎.</sub>
+<sub>- 이 코드 리뷰가 유용했다면 👍로 반응해 주세요. 그렇지 않다면 👎로 반응해 주세요.</sub>
 
 ---
 
-- Or, if you found no issues:
+- 또는, 이슈가 발견되지 않은 경우:
 
 ---
 
 ### Code review
 
-No issues found. Checked for bugs and CLAUDE.md compliance.
+이슈가 발견되지 않았습니다. 버그 및 CLAUDE.md 준수 여부를 검사했습니다.
 
 🤖 Generated with [Claude Code](https://claude.ai/code)
 
-- When linking to code, follow the following format precisely, otherwise the Markdown preview won't render correctly: https://github.com/anthropics/claude-cli-internal/blob/c21d3c10bc8e898b7ac1a2d745bdc9bc4e423afe/package.json#L10-L15
-  - Requires full git sha
-  - You must provide the full sha. Commands like `https://github.com/owner/repo/blob/$(git rev-parse HEAD)/foo/bar` will not work, since your comment will be directly rendered in Markdown.
-  - Repo name must match the repo you're code reviewing
-  - # sign after the file name
-  - Line range format is L[start]-L[end]
-  - Provide at least 1 line of context before and after, centered on the line you are commenting about (eg. if you are commenting about lines 5-6, you should link to `L4-7`)
+- 코드에 링크를 걸 때는 반드시 다음 형식을 정확히 따르십시오. 그렇지 않으면 마크다운 미리보기가 올바르게 렌더링되지 않습니다: https://github.com/anthropics/claude-cli-internal/blob/c21d3c10bc8e898b7ac1a2d745bdc9bc4e423afe/package.json#L10-L15
+  - 전체 git sha 필요
+  - 전체 sha를 제공해야 합니다. `https://github.com/owner/repo/blob/$(git rev-parse HEAD)/foo/bar` 같은 명령어는 작동하지 않습니다. 코멘트가 마크다운으로 직접 렌더링되기 때문입니다.
+  - 리포지토리 이름은 코드 리뷰 중인 리포지토리와 일치해야 합니다.
+  - 파일 이름 뒤에 # 기호 사용
+  - 라인 범위 형식은 L[시작]-L[끝]
+  - 코멘트 대상 라인을 중심으로 앞뒤로 최소 1줄 이상의 콘텍스트를 제공하십시오 (예: 5~6라인에 코멘트를 다는 경우 `L4-7`에 링크해야 함)

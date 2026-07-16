@@ -1,56 +1,56 @@
-# Discord — Access & Delivery
+# Discord — 접근 및 전송
 
-Discord only allows DMs between accounts that share a server. Who can DM your bot depends on where it's installed: one private server means only that server's members can reach it; a public community means every member there can open a DM.
+Discord는 공통 서버에 속한 계정 간에만 DM을 허용합니다. 누가 귀하의 봇에게 DM을 보낼 수 있는지는 봇이 설치된 위치에 따라 다릅니다: 하나의 비공개 서버인 경우 해당 서버의 멤버만 봇에게 도달할 수 있으며, 공개 커뮤니티인 경우 거기 속한 모든 멤버가 DM을 보낼 수 있습니다.
 
-The **Public Bot** toggle in the Developer Portal (Bot tab, on by default) controls who can add the bot to new servers. Turn it off and only your own account can install it. This is your first gate, and it's enforced by Discord rather than by this process.
+개발자 포털(Bot 탭, 기본적으로 켜져 있음)의 **Public Bot** 토글은 누가 봇을 새로운 서버에 추가할 수 있는지 제어합니다. 이 설정을 끄면 본인 계정으로만 설치할 수 있습니다. 이는 첫 번째 진입 장벽이며, 본 프로세스가 아닌 Discord 자체에서 강제합니다.
 
-For DMs that do get through, the default policy is **pairing**. An unknown sender gets a 6-character code in reply and their message is dropped. You run `/discord:access pair <code>` from your assistant session to approve them. Once approved, their messages pass through.
+전송된 DM의 경우 기본 정책은 **페어링(pairing)**입니다. 알 수 없는 발신자는 답장으로 6자리 코드를 받으며 해당 메시지는 삭제됩니다. 이들을 승인하려면 어시스턴트 세션에서 `/discord:access pair <code>`를 실행하십시오. 승인되면 그들의 메시지가 전달됩니다.
 
-All state lives in `~/.claude/channels/discord/access.json`. The `/discord:access` skill commands edit this file; the server re-reads it on every inbound message, so changes take effect without a restart. Set `DISCORD_ACCESS_MODE=static` to pin config to what was on disk at boot (pairing is unavailable in static mode since it requires runtime writes).
+모든 상태는 `~/.claude/channels/discord/access.json`에 저장됩니다. `/discord:access` 스킬 명령어가 이 파일을 편집하며, 서버는 수신 메시지가 올 때마다 파일을 다시 읽으므로 재시작 없이 변경 사항이 적용됩니다. 부팅 시 디스크에 있던 설정으로 고정하려면 `DISCORD_ACCESS_MODE=static`으로 설정하십시오 (정적 모드에서는 런타임 쓰기가 불가능하므로 페어링을 사용할 수 없습니다).
 
-## At a glance
+## 요약
 
 | | |
 | --- | --- |
-| Default policy | `pairing` |
-| Sender ID | User snowflake (numeric, e.g. `184695080709324800`) |
-| Group key | Channel snowflake — not guild ID |
-| Config file | `~/.claude/channels/discord/access.json` |
+| 기본 정책 | `pairing` |
+| 발신자 ID | 사용자 스노우플레이크 (숫자 형식, 예: `184695080709324800`) |
+| 그룹 키 | 채널 스노우플레이크 — 길드 ID가 아님 |
+| 설정 파일 | `~/.claude/channels/discord/access.json` |
 
-## DM policies
+## DM 정책
 
-`dmPolicy` controls how DMs from senders not on the allowlist are handled.
+`dmPolicy`는 허용 목록에 없는 발신자로부터 오는 DM을 처리하는 방식을 제어합니다.
 
-| Policy | Behavior |
+| 정책 | 동작 |
 | --- | --- |
-| `pairing` (default) | Reply with a pairing code, drop the message. Approve with `/discord:access pair <code>`. |
-| `allowlist` | Drop silently. No reply. Use this once everyone who needs access is already on the list, or if pairing replies would attract spam. |
-| `disabled` | Drop everything, including allowlisted users and guild channels. |
+| `pairing` (기본값) | 페어링 코드로 회신하고 메시지를 삭제합니다. `/discord:access pair <code>`로 승인합니다. |
+| `allowlist` | 자동으로 삭제합니다. 회신하지 않습니다. 접근 권한이 필요한 모든 사용자가 이미 목록에 등록되었거나, 페어링 회신으로 인해 스팸이 발생할 우려가 있는 경우에 사용합니다. |
+| `disabled` | 허용 목록에 있는 사용자와 길드 채널을 포함하여 모든 것을 차단(drop)합니다. |
 
 ```
 /discord:access policy allowlist
 ```
 
-## User IDs
+## 사용자 ID
 
-Discord identifies users by **snowflakes**: permanent numeric IDs like `184695080709324800`. Usernames are mutable; snowflakes aren't. The allowlist stores snowflakes.
+Discord는 사용자를 **스노우플레이크(snowflakes)**(예: `184695080709324800`와 같은 고유한 숫자 ID)로 식별합니다. 사용자 이름은 변경될 수 있지만 스노우플레이크는 불변입니다. 허용 목록에는 스노우플레이크가 저장됩니다.
 
-Pairing captures the ID automatically. To add someone manually, enable **User Settings → Advanced → Developer Mode** in Discord, then right-click any user and choose **Copy User ID**. Your own ID is available by right-clicking your avatar in the lower-left.
+페어링을 통해 ID는 자동으로 캡처됩니다. 수동으로 사용자를 추가하려면 Discord에서 **사용자 설정 → 고급 → 개발자 모드**를 활성화한 뒤, 임의의 사용자를 우클릭하고 **사용자 ID 복사**를 선택하십시오. 자신의 ID는 왼쪽 아래의 프로필 아바타를 우클릭하여 가져올 수 있습니다.
 
 ```
 /discord:access allow 184695080709324800
 /discord:access remove 184695080709324800
 ```
 
-## Guild channels
+## 길드 채널
 
-Guild channels are off by default. Opt each one in individually, keyed on the **channel** snowflake (not the guild). Threads inherit their parent channel's opt-in; no separate entry needed. Find channel IDs the same way as user IDs: Developer Mode, right-click the channel, Copy Channel ID.
+길드 채널은 기본적으로 비활성화되어 있습니다. 길드가 아닌 **채널** 스노우플레이크를 키로 하여 개별적으로 옵트인하십시오. 스레드는 상위 채널의 옵트인 설정을 그대로 상속받으므로 별도의 등록이 필요하지 않습니다. 채널 ID는 사용자 ID와 동일한 방법으로 찾을 수 있습니다: 개발자 모드를 켜고 채널을 우클릭하여 채널 ID 복사를 클릭합니다.
 
 ```
 /discord:access group add 846209781206941736
 ```
 
-With the default `requireMention: true`, the bot responds only when @mentioned or replied to. Pass `--no-mention` to process every message in the channel, or `--allow id1,id2` to restrict which members can trigger it.
+기본값인 `requireMention: true` 설정 시, 봇은 @멘션되거나 답장이 달렸을 때만 응답합니다. 채널 내의 모든 메시지를 처리하려면 `--no-mention`을 전달하고, 트리거할 수 있는 멤버를 제한하려면 `--allow id1,id2`를 전달하십시오.
 
 ```
 /discord:access group add 846209781206941736 --no-mention
@@ -58,86 +58,86 @@ With the default `requireMention: true`, the bot responds only when @mentioned o
 /discord:access group rm 846209781206941736
 ```
 
-## Mention detection
+## 멘션 감지
 
-In channels with `requireMention: true`, any of the following triggers the bot:
+`requireMention: true` 상태인 채널에서는 다음 중 하나라도 만족하면 봇이 트리거됩니다:
 
-- A structured `@botname` mention (typed via Discord's autocomplete)
-- A reply to one of the bot's recent messages
-- A match against any regex in `mentionPatterns`
+- 구조화된 `@botname` 멘션 (Discord의 자동 완성을 통해 입력)
+- 봇의 최근 메시지에 대한 답장
+- `mentionPatterns` 내의 정규식과 일치하는 항목
 
-Example regex setup for a nickname trigger:
+닉네임 트리거를 위한 정규식 설정 예시:
 
 ```
 /discord:access set mentionPatterns '["^hey claude\\b", "\\bassistant\\b"]'
 ```
 
-## Delivery
+## 전송
 
-Configure outbound behavior with `/discord:access set <key> <value>`.
+`/discord:access set <key> <value>` 명령어로 아웃바운드 동작을 설정합니다.
 
-**`ackReaction`** reacts to inbound messages on receipt as a "seen" acknowledgment. Unicode emoji work directly; custom server emoji require the full `<:name:id>` form. The emoji ID is at the end of the URL when you right-click the emoji and copy its link. Empty string disables.
+**`ackReaction`**은 "확인함" 표시의 일환으로 수신된 메시지에 이모지 반응을 남깁니다. 유니코드 이모지는 바로 사용 가능하며, 커스텀 서버 이모지는 `<:name:id>` 전체 형식이 필요합니다. 이모지 ID는 이모지를 우클릭하고 링크를 복사했을 때 URL 끝부분에 나오는 숫자입니다. 빈 문자열로 설정 시 비활성화됩니다.
 
 ```
 /discord:access set ackReaction 🔨
 /discord:access set ackReaction ""
 ```
 
-**`replyToMode`** controls threading on chunked replies. When a long response is split, `first` (default) threads only the first chunk under the inbound message; `all` threads every chunk; `off` sends all chunks standalone.
+**`replyToMode`**는 청크(chunk) 단위로 나누어 응답할 때의 스레딩을 제어합니다. 긴 응답이 분할될 때, `first`(기본값)는 수신 메시지 아래에 첫 번째 청크만 스레드로 연결합니다. `all`은 모든 청크를 스레드로 연결하며, `off`는 모든 청크를 개별 메시지로 보냅니다.
 
-**`textChunkLimit`** sets the split threshold. Discord rejects messages over 2000 characters, which is the hard ceiling.
+**`textChunkLimit`**은 분할 기준을 설정합니다. Discord는 2000자를 초과하는 메시지를 차단하므로, 이것이 고정된 최대 한계(hard ceiling)입니다.
 
-**`chunkMode`** chooses the split strategy: `length` cuts exactly at the limit; `newline` prefers paragraph boundaries.
+**`chunkMode`**는 분할 전략을 선택합니다: `length`는 한계치에서 정확히 자르며, `newline`은 문단 경계를 우선적으로 고려하여 자릅니다.
 
-## Skill reference
+## 스킬 참조
 
-| Command | Effect |
+| 명령어 | 효과 |
 | --- | --- |
-| `/discord:access` | Print current state: policy, allowlist, pending pairings, enabled channels. |
-| `/discord:access pair a4f91c` | Approve pairing code `a4f91c`. Adds the sender to `allowFrom` and sends a confirmation on Discord. |
-| `/discord:access deny a4f91c` | Discard a pending code. The sender is not notified. |
-| `/discord:access allow 184695080709324800` | Add a user snowflake directly. |
-| `/discord:access remove 184695080709324800` | Remove from the allowlist. |
-| `/discord:access policy allowlist` | Set `dmPolicy`. Values: `pairing`, `allowlist`, `disabled`. |
-| `/discord:access group add 846209781206941736` | Enable a guild channel. Flags: `--no-mention`, `--allow id1,id2`. |
-| `/discord:access group rm 846209781206941736` | Disable a guild channel. |
-| `/discord:access set ackReaction 🔨` | Set a config key: `ackReaction`, `replyToMode`, `textChunkLimit`, `chunkMode`, `mentionPatterns`. |
+| `/discord:access` | 정책, 허용 목록, 대기 중인 페어링, 활성화된 채널 등 현재 상태를 출력합니다. |
+| `/discord:access pair a4f91c` | 페어링 코드 `a4f91c`를 승인합니다. 발신자를 `allowFrom`에 추가하고 Discord로 확인 메시지를 보냅니다. |
+| `/discord:access deny a4f91c` | 대기 중인 코드를 폐기합니다. 발신자에게는 알림이 가지 않습니다. |
+| `/discord:access allow 184695080709324800` | 사용자 스노우플레이크를 직접 추가합니다. |
+| `/discord:access remove 184695080709324800` | 허용 목록에서 제거합니다. |
+| `/discord:access policy allowlist` | `dmPolicy`를 설정합니다. 값: `pairing`, `allowlist`, `disabled`. |
+| `/discord:access group add 846209781206941736` | 길드 채널을 활성화합니다. 플래그: `--no-mention`, `--allow id1,id2`. |
+| `/discord:access group rm 846209781206941736` | 길드 채널을 비활성화합니다. |
+| `/discord:access set ackReaction 🔨` | 설정 키를 설정합니다: `ackReaction`, `replyToMode`, `textChunkLimit`, `chunkMode`, `mentionPatterns`. |
 
-## Config file
+## 설정 파일
 
-`~/.claude/channels/discord/access.json`. Absent file is equivalent to `pairing` policy with empty lists, so the first DM triggers pairing.
+`~/.claude/channels/discord/access.json`. 파일이 없으면 빈 목록이 적용된 `pairing` 정책과 동일하게 작동하므로, 첫 DM 시 페어링이 트리거됩니다.
 
 ```jsonc
 {
-  // Handling for DMs from senders not in allowFrom.
+  // allowFrom에 없는 발신자로부터 오는 DM 처리 방식.
   "dmPolicy": "pairing",
 
-  // User snowflakes allowed to DM.
+  // DM이 허용된 사용자 스노우플레이크.
   "allowFrom": ["184695080709324800"],
 
-  // Guild channels the bot is active in. Empty object = DM-only.
+  // 봇이 활성화된 길드 채널. 빈 객체인 경우 DM 전용.
   "groups": {
     "846209781206941736": {
-      // true: respond only to @mentions and replies.
+      // true: @멘션 및 답장에만 응답.
       "requireMention": true,
-      // Restrict triggers to these senders. Empty = any member (subject to requireMention).
+      // 이 발신자들로만 트리거를 제한합니다. 비어 있으면 모든 멤버 대상 (requireMention 적용).
       "allowFrom": []
     }
   },
 
-  // Case-insensitive regexes that count as a mention.
+  // 멘션으로 간주할 대소문자 구분 없는 정규식 목록.
   "mentionPatterns": ["^hey claude\\b"],
 
-  // Reaction on receipt. Empty string disables.
+  // 수신 시 반응할 이모지. 빈 문자열로 설정 시 비활성화.
   "ackReaction": "👀",
 
-  // Threading on chunked replies: first | all | off
+  // 분할 응답 시 스레드 설정: first | all | off
   "replyToMode": "first",
 
-  // Split threshold. Discord rejects > 2000.
+  // 분할 기준 문자 수. Discord는 2000자 초과 시 전송을 거부함.
   "textChunkLimit": 2000,
 
-  // length = cut at limit. newline = prefer paragraph boundaries.
+  // length = 한계치에서 자름. newline = 문단 경계 선호.
   "chunkMode": "newline"
 }
 ```

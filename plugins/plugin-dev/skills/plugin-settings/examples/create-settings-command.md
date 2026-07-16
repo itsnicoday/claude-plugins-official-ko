@@ -1,17 +1,17 @@
 ---
-description: "Create plugin settings file with user preferences"
+description: "사용자 설정으로 플러그인 설정 파일 생성"
 allowed-tools: ["Write", "AskUserQuestion"]
 ---
 
-# Create Plugin Settings
+# 플러그인 설정 생성 (Create Plugin Settings)
 
-This command helps users create a `.claude/my-plugin.local.md` settings file.
+이 명령어는 사용자가 `.claude/my-plugin.local.md` 설정 파일을 생성할 수 있도록 도와줍니다.
 
-## Steps
+## 단계 (Steps)
 
-### Step 1: Ask User for Preferences
+### 1단계: 사용자에게 기본 설정 요청 (Step 1: Ask User for Preferences)
 
-Use AskUserQuestion to gather configuration:
+AskUserQuestion을 사용하여 구성을 수집합니다:
 
 ```json
 {
@@ -54,16 +54,16 @@ Use AskUserQuestion to gather configuration:
 }
 ```
 
-### Step 2: Parse Answers
+### 2단계: 답변 파싱 (Step 2: Parse Answers)
 
-Extract answers from AskUserQuestion result:
+AskUserQuestion 결과에서 답변을 추출합니다:
 
 - answers["0"]: enabled (Yes/No)
 - answers["1"]: mode (Strict/Standard/Lenient)
 
-### Step 3: Create Settings File
+### 3단계: 설정 파일 생성 (Step 3: Create Settings File)
 
-Use Write tool to create `.claude/my-plugin.local.md`:
+Write 도구를 사용하여 `.claude/my-plugin.local.md`를 생성합니다:
 
 ```markdown
 ---
@@ -80,19 +80,19 @@ Your plugin is configured with <mode> validation mode.
 To modify settings, edit this file and restart Claude Code.
 ```
 
-### Step 4: Inform User
+### 4단계: 사용자에게 정보 제공 (Step 4: Inform User)
 
-Tell the user:
-- Settings file created at `.claude/my-plugin.local.md`
-- Current configuration summary
-- How to edit manually if needed
-- Reminder: Restart Claude Code for changes to take effect
-- Settings file is gitignored (won't be committed)
+사용자에게 다음 사항을 안내합니다:
+- `.claude/my-plugin.local.md`에 설정 파일이 생성됨
+- 현재 구성 요약
+- 필요한 경우 수동으로 편집하는 방법
+- 주의: 변경 사항을 적용하려면 Claude Code를 재시작해야 함
+- 설정 파일은 gitignore 대상임 (커밋되지 않음)
 
-## Implementation Notes
+## 구현 참고 사항 (Implementation Notes)
 
-Always validate user input before writing:
-- Check mode is valid
-- Validate numeric fields are numbers
-- Ensure paths don't have traversal attempts
-- Sanitize any free-text fields
+작성하기 전에 항상 사용자 입력을 검증하십시오:
+- 모드가 유효한지 확인
+- 숫자 필드가 숫자인지 검증
+- 경로에 디렉토리 탐색(traversal) 시도가 없는지 확인
+- 자유 텍스트 필드 정제(sanitize)

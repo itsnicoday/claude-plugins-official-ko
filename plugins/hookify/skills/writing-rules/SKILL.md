@@ -1,18 +1,18 @@
 ---
 name: writing-hookify-rules
-description: This skill should be used when the user asks to "create a hookify rule", "write a hook rule", "configure hookify", "add a hookify rule", or needs guidance on hookify rule syntax and patterns.
+description: 사용자가 "hookify 규칙 생성", "훅 규칙 작성", "hookify 설정", "hookify 규칙 추가"를 요청하거나 hookify 규칙 구문 및 패턴에 대한 안내가 필요할 때 이 스킬을 사용해야 합니다.
 version: 0.1.0
 ---
 
-# Writing Hookify Rules
+# Hookify 규칙 작성
 
-## Overview
+## 개요
 
-Hookify rules are markdown files with YAML frontmatter that define patterns to watch for and messages to show when those patterns match. Rules are stored in `.claude/hookify.{rule-name}.local.md` files.
+Hookify 규칙은 감시할 패턴과 해당 패턴이 일치할 때 보여줄 메시지를 정의하는 YAML 프론트매터가 포함된 마크다운 파일입니다. 규칙은 `.claude/hookify.{rule-name}.local.md` 파일에 저장됩니다.
 
-## Rule File Format
+## 규칙 파일 형식
 
-### Basic Structure
+### 기본 구조
 
 ```markdown
 ---
@@ -22,48 +22,48 @@ event: bash|file|stop|prompt|all
 pattern: regex-pattern-here
 ---
 
-Message to show Claude when this rule triggers.
-Can include markdown formatting, warnings, suggestions, etc.
+이 규칙이 트리거될 때 Claude에게 보여줄 메시지.
+마크다운 서식, 경고, 제안 등을 포함할 수 있습니다.
 ```
 
-### Frontmatter Fields
+### 프론트매터 필드
 
-**name** (required): Unique identifier for the rule
-- Use kebab-case: `warn-dangerous-rm`, `block-console-log`
-- Be descriptive and action-oriented
-- Start with verb: warn, prevent, block, require, check
+**name** (필수): 규칙의 고유 식별자
+- kebab-case 사용: `warn-dangerous-rm`, `block-console-log`
+- 설명적이고 작업 지향적으로 작성
+- 동사로 시작: warn, prevent, block, require, check
 
-**enabled** (required): Boolean to activate/deactivate
-- `true`: Rule is active
-- `false`: Rule is disabled (won't trigger)
-- Can toggle without deleting rule
+**enabled** (필수): 활성화/비활성화를 위한 불리언(Boolean) 값
+- `true`: 규칙 활성화 상태
+- `false`: 규칙 비활성화 상태 (트리거되지 않음)
+- 규칙을 삭제하지 않고도 전환할 수 있음
 
-**event** (required): Which hook event to trigger on
-- `bash`: Bash tool commands
-- `file`: Edit, Write, MultiEdit tools
-- `stop`: When agent wants to stop
-- `prompt`: When user submits a prompt
-- `all`: All events
+**event** (필수): 트리거할 훅 이벤트
+- `bash`: Bash 도구 명령어
+- `file`: Edit, Write, MultiEdit 도구
+- `stop`: 에이전트가 중단하고자 할 때
+- `prompt`: 사용자가 프롬프트를 제출할 때
+- `all`: 모든 이벤트
 
-**action** (optional): What to do when rule matches
-- `warn`: Show message but allow operation (default)
-- `block`: Prevent operation (PreToolUse) or stop session (Stop events)
-- If omitted, defaults to `warn`
+**action** (선택): 규칙이 일치할 때 취할 조치
+- `warn`: 메시지를 표시하지만 작업을 허용 (기본값)
+- `block`: 작업 차단(PreToolUse) 또는 세션 중단(Stop 이벤트)
+- 생략할 경우 기본값은 `warn`
 
-**pattern** (simple format): Regex pattern to match
-- Used for simple single-condition rules
-- Matches against command (bash) or new_text (file)
-- Python regex syntax
+**pattern** (단순 형식): 일치시킬 정규식 패턴
+- 단순한 단일 조건 규칙에 사용됨
+- 명령어(bash) 또는 new_text(file)와 매칭
+- Python 정규식 구문
 
-**Example:**
+**예시:**
 ```yaml
 event: bash
 pattern: rm\s+-rf
 ```
 
-### Advanced Format (Multiple Conditions)
+### 고급 형식 (다중 조건)
 
-For complex rules with multiple conditions:
+여러 조건이 있는 복잡한 규칙의 경우:
 
 ```markdown
 ---
@@ -79,56 +79,56 @@ conditions:
     pattern: API_KEY
 ---
 
-You're adding an API key to a .env file. Ensure this file is in .gitignore!
+.env 파일에 API 키를 추가하고 있습니다. 이 파일이 .gitignore에 포함되어 있는지 확인하세요!
 ```
 
-**Condition fields:**
-- `field`: Which field to check
-  - For bash: `command`
-  - For file: `file_path`, `new_text`, `old_text`, `content`
-- `operator`: How to match
-  - `regex_match`: Regex pattern matching
-  - `contains`: Substring check
-  - `equals`: Exact match
-  - `not_contains`: Substring must NOT be present
-  - `starts_with`: Prefix check
-  - `ends_with`: Suffix check
-- `pattern`: Pattern or string to match
+**조건 필드:**
+- `field`: 확인할 필드
+  - bash의 경우: `command`
+  - file의 경우: `file_path`, `new_text`, `old_text`, `content`
+- `operator`: 매칭 방법
+  - `regex_match`: 정규식 패턴 매칭
+  - `contains`: 부분 문자열 확인
+  - `equals`: 정확히 일치
+  - `not_contains`: 부분 문자열이 포함되어 있지 않아야 함
+  - `starts_with`: 접두사 확인
+  - `ends_with`: 접미사 확인
+- `pattern`: 일치시킬 패턴 또는 문자열
 
-**All conditions must match for rule to trigger.**
+**규칙이 트리거되려면 모든 조건이 일치해야 합니다.**
 
-## Message Body
+## 메시지 본문
 
-The markdown content after frontmatter is shown to Claude when the rule triggers.
+프론트매터 이후의 마크다운 콘텐츠는 규칙이 트리거될 때 Claude에게 보여집니다.
 
-**Good messages:**
-- Explain what was detected
-- Explain why it's problematic
-- Suggest alternatives or best practices
-- Use formatting for clarity (bold, lists, etc.)
+**좋은 메시지 예시:**
+- 감지된 내용을 설명합니다
+- 그것이 왜 문제가 되는지 설명합니다
+- 대안 또는 모범 사례를 제안합니다
+- 명확성을 위해 서식(굵은 글씨, 목록 등)을 사용합니다
 
-**Example:**
+**예시:**
 ```markdown
-⚠️ **Console.log detected!**
+⚠️ **Console.log 감지됨!**
 
-You're adding console.log to production code.
+프로덕션 코드에 console.log를 추가하고 있습니다.
 
-**Why this matters:**
-- Debug logs shouldn't ship to production
-- Console.log can expose sensitive data
-- Impacts browser performance
+**이것이 중요한 이유:**
+- 디버그 로그는 프로덕션에 배포되어서는 안 됩니다
+- Console.log는 민감한 데이터를 노출할 수 있습니다
+- 브라우저 성능에 영향을 줍니다
 
-**Alternatives:**
-- Use a proper logging library
-- Remove before committing
-- Use conditional debug builds
+**대안:**
+- 적절한 로깅 라이브러리를 사용하세요
+- 커밋하기 전에 제거하세요
+- 조건부 디버그 빌드를 사용하세요
 ```
 
-## Event Type Guide
+## 이벤트 유형 가이드
 
-### bash Events
+### bash 이벤트
 
-Match Bash command patterns:
+Bash 명령어 패턴과 일치:
 
 ```markdown
 ---
@@ -136,17 +136,17 @@ event: bash
 pattern: sudo\s+|rm\s+-rf|chmod\s+777
 ---
 
-Dangerous command detected!
+위험한 명령어가 감지되었습니다!
 ```
 
-**Common patterns:**
-- Dangerous commands: `rm\s+-rf`, `dd\s+if=`, `mkfs`
-- Privilege escalation: `sudo\s+`, `su\s+`
-- Permission issues: `chmod\s+777`, `chown\s+root`
+**공통 패턴:**
+- 위험한 명령어: `rm\s+-rf`, `dd\s+if=`, `mkfs`
+- 권한 상승: `sudo\s+`, `su\s+`
+- 권한 설정 문제: `chmod\s+777`, `chown\s+root`
 
-### file Events
+### file 이벤트
 
-Match Edit/Write/MultiEdit operations:
+Edit/Write/MultiEdit 작업과 일치:
 
 ```markdown
 ---
@@ -154,10 +154,10 @@ event: file
 pattern: console\.log\(|eval\(|innerHTML\s*=
 ---
 
-Potentially problematic code pattern detected!
+잠재적으로 문제가 될 수 있는 코드 패턴이 감지되었습니다!
 ```
 
-**Match on different fields:**
+**다른 필드 매칭:**
 ```markdown
 ---
 event: file
@@ -170,18 +170,18 @@ conditions:
     pattern: console\.log\(
 ---
 
-Console.log in TypeScript file!
+TypeScript 파일에 console.log 존재!
 ```
 
-**Common patterns:**
-- Debug code: `console\.log\(`, `debugger`, `print\(`
-- Security risks: `eval\(`, `innerHTML\s*=`, `dangerouslySetInnerHTML`
-- Sensitive files: `\.env$`, `credentials`, `\.pem$`
-- Generated files: `node_modules/`, `dist/`, `build/`
+**공통 패턴:**
+- 디버그 코드: `console\.log\(`, `debugger`, `print\(`
+- 보안 위험: `eval\(`, `innerHTML\s*=`, `dangerouslySetInnerHTML`
+- 민감한 파일: `\.env$`, `credentials`, `\.pem$`
+- 생성된 파일: `node_modules/`, `dist/`, `build/`
 
-### stop Events
+### stop 이벤트
 
-Match when agent wants to stop (completion checks):
+에이전트가 중단하고자 할 때 일치 (완료 검사):
 
 ```markdown
 ---
@@ -189,20 +189,20 @@ event: stop
 pattern: .*
 ---
 
-Before stopping, verify:
-- [ ] Tests were run
-- [ ] Build succeeded
-- [ ] Documentation updated
+중단하기 전에 다음을 확인하세요:
+- [ ] 테스트 실행 여부
+- [ ] 빌드 성공 여부
+- [ ] 문서 업데이트 여부
 ```
 
-**Use for:**
-- Reminders about required steps
-- Completion checklists
-- Process enforcement
+**용도:**
+- 필요한 단계에 대한 리마인더
+- 완료 체크리스트
+- 프로세스 강제 적용
 
-### prompt Events
+### prompt 이벤트
 
-Match user prompt content (advanced):
+사용자 프롬프트 콘텐츠 일치 (고급):
 
 ```markdown
 ---
@@ -213,122 +213,122 @@ conditions:
     pattern: deploy to production
 ---
 
-Production deployment checklist:
-- [ ] Tests passing?
-- [ ] Reviewed by team?
-- [ ] Monitoring ready?
+프로덕션 배포 체크리스트:
+- [ ] 테스트 통과 여부?
+- [ ] 팀의 리뷰를 거쳤는지?
+- [ ] 모니터링이 준비되었는지?
 ```
 
-## Pattern Writing Tips
+## 패턴 작성 팁
 
-### Regex Basics
+### 정규식 기초
 
-**Literal characters:** Most characters match themselves
-- `rm` matches "rm"
-- `console.log` matches "console.log"
+**리터럴 문자**: 대부분의 문자는 자기 자신과 일치합니다
+- `rm`은 "rm"과 일치합니다
+- `console.log`는 "console.log"와 일치합니다
 
-**Special characters need escaping:**
-- `.` (any char) → `\.` (literal dot)
-- `(` `)` → `\(` `\)` (literal parens)
-- `[` `]` → `\[` `\]` (literal brackets)
+**이스케이프가 필요한 특수 문자:**
+- `.` (모든 문자) → `\.` (리터럴 점)
+- `(` `)` → `\(` `\)` (리터럴 괄호)
+- `[` `]` → `\[` `\]` (리터럴 대괄호)
 
-**Common metacharacters:**
-- `\s` - whitespace (space, tab, newline)
-- `\d` - digit (0-9)
-- `\w` - word character (a-z, A-Z, 0-9, _)
-- `.` - any character
-- `+` - one or more
-- `*` - zero or more
-- `?` - zero or one
-- `|` - OR
+**공통 메타문자:**
+- `\s` - 공백 (띄어쓰기, 탭, 줄바꿈)
+- `\d` - 숫자 (0-9)
+- `\w` - 단어 문자 (a-z, A-Z, 0-9, _)
+- `.` - 모든 문자
+- `+` - 하나 이상
+- `*` - 0개 이상
+- `?` - 0개 또는 1개
+- `|` - 또는(OR)
 
-**Examples:**
+**예시:**
 ```
-rm\s+-rf         Matches: rm -rf, rm  -rf
-console\.log\(   Matches: console.log(
-(eval|exec)\(    Matches: eval( or exec(
-chmod\s+777      Matches: chmod 777, chmod  777
-API_KEY\s*=      Matches: API_KEY=, API_KEY =
+rm\s+-rf         매칭 대상: rm -rf, rm  -rf
+console\.log\(   매칭 대상: console.log(
+(eval|exec)\(    매칭 대상: eval( 또는 exec(
+chmod\s+777      매칭 대상: chmod 777, chmod  777
+API_KEY\s*=      매칭 대상: API_KEY=, API_KEY =
 ```
 
-### Testing Patterns
+### 패턴 테스트
 
-Test regex patterns before using:
+사용하기 전에 정규식 패턴을 테스트하세요:
 
 ```bash
 python3 -c "import re; print(re.search(r'your_pattern', 'test text'))"
 ```
 
-Or use online regex testers (regex101.com with Python flavor).
+혹은 온라인 정규식 테스터(Python 버전의 regex101.com)를 사용하세요.
 
-### Common Pitfalls
+### 자주 발생하는 실수
 
-**Too broad:**
+**너무 광범위함:**
 ```yaml
-pattern: log    # Matches "log", "login", "dialog", "catalog"
+pattern: log    # "log", "login", "dialog", "catalog"와 일치
 ```
-Better: `console\.log\(|logger\.`
+더 나은 방법: `console\.log\(|logger\.`
 
-**Too specific:**
+**너무 구체적임:**
 ```yaml
-pattern: rm -rf /tmp  # Only matches exact path
+pattern: rm -rf /tmp  # 정확히 이 경로에만 일치
 ```
-Better: `rm\s+-rf`
+더 나은 방법: `rm\s+-rf`
 
-**Escaping issues:**
-- YAML quoted strings: `"pattern"` requires double backslashes `\\s`
-- YAML unquoted: `pattern: \s` works as-is
-- **Recommendation**: Use unquoted patterns in YAML
+**이스케이프 문제:**
+- 따옴표가 있는 YAML 문자열: `"pattern"`은 이중 백슬래시 `\\s`가 필요합니다
+- 따옴표가 없는 YAML: `pattern: \s`는 그대로 작동합니다
+- **권장 사항**: YAML에서는 따옴표를 사용하지 않는 패턴을 권장합니다
 
-## File Organization
+## 파일 구성
 
-**Location:** All rules in `.claude/` directory
-**Naming:** `.claude/hookify.{descriptive-name}.local.md`
-**Gitignore:** Add `.claude/*.local.md` to `.gitignore`
+**위치**: 모든 규칙은 `.claude/` 디렉터리에 위치합니다
+**이름**: `.claude/hookify.{설명적인-이름}.local.md`
+**Gitignore**: `.gitignore`에 `.claude/*.local.md`를 추가합니다
 
-**Good names:**
+**올바른 이름 예시:**
 - `hookify.dangerous-rm.local.md`
 - `hookify.console-log.local.md`
 - `hookify.require-tests.local.md`
 - `hookify.sensitive-files.local.md`
 
-**Bad names:**
-- `hookify.rule1.local.md` (not descriptive)
-- `hookify.md` (missing .local)
-- `danger.local.md` (missing hookify prefix)
+**잘못된 이름 예시:**
+- `hookify.rule1.local.md` (설명적이지 않음)
+- `hookify.md` (.local 누락)
+- `danger.local.md` (hookify 접두사 누락)
 
-## Workflow
+## 워크플로우
 
-### Creating a Rule
+### 규칙 생성하기
 
-1. Identify unwanted behavior
-2. Determine which tool is involved (Bash, Edit, etc.)
-3. Choose event type (bash, file, stop, etc.)
-4. Write regex pattern
-5. Create `.claude/hookify.{name}.local.md` file in project root
-6. Test immediately - rules are read dynamically on next tool use
+1. 원치 않는 동작을 식별합니다
+2. 어떤 도구가 관련되어 있는지 확인합니다 (Bash, Edit 등)
+3. 이벤트 유형을 선택합니다 (bash, file, stop 등)
+4. 정규식 패턴을 작성합니다
+5. 프로젝트 루트에 `.claude/hookify.{name}.local.md` 파일을 생성합니다
+6. 즉시 테스트합니다 - 규칙은 다음 도구 사용 시 동적으로 읽힙니다
 
-### Refining a Rule
+### 규칙 개선하기
 
-1. Edit the `.local.md` file
-2. Adjust pattern or message
-3. Test immediately - changes take effect on next tool use
+1. `.local.md` 파일을 편집합니다
+2. 패턴 또는 메시지를 조정합니다
+3. 즉시 테스트합니다 - 변경 사항은 다음 도구 사용 시 반영됩니다
 
-### Disabling a Rule
+### 규칙 비활성화하기
 
-**Temporary:** Set `enabled: false` in frontmatter
-**Permanent:** Delete the `.local.md` file
+**임시**: 프론트매터에서 `enabled: false`로 설정합니다
+**영구**: `.local.md` 파일을 삭제합니다
 
-## Examples
+## 예시
 
-See `${CLAUDE_PLUGIN_ROOT}/examples/` for complete examples:
-- `dangerous-rm.local.md` - Block dangerous rm commands
-- `console-log-warning.local.md` - Warn about console.log
-- `sensitive-files-warning.local.md` - Warn about editing .env files
+전체 예시는 `${CLAUDE_PLUGIN_ROOT}/examples/`를 확인하세요:
+- `dangerous-rm.local.md` - 위험한 rm 명령어 차단
+- `console-log-warning.local.md` - console.log에 대한 경고
+- `sensitive-files-warning.local.md` - .env 파일 편집에 대한 경고
 
-## Quick Reference
+## 빠른 참조
 
-**Minimum viable rule:**
+**최소 작동 가능 규칙:**
 ```markdown
 ---
 name: my-rule
@@ -337,10 +337,10 @@ event: bash
 pattern: dangerous_command
 ---
 
-Warning message here
+여기에 경고 메시지 작성
 ```
 
-**Rule with conditions:**
+**조건이 있는 규칙:**
 ```markdown
 ---
 name: my-rule
@@ -355,20 +355,20 @@ conditions:
     pattern: any
 ---
 
-Warning message
+경고 메시지
 ```
 
-**Event types:**
-- `bash` - Bash commands
-- `file` - File edits
-- `stop` - Completion checks
-- `prompt` - User input
-- `all` - All events
+**이벤트 유형:**
+- `bash` - Bash 명령어
+- `file` - 파일 편집
+- `stop` - 완료 검사
+- `prompt` - 사용자 입력
+- `all` - 모든 이벤트
 
-**Field options:**
+**필드 옵션:**
 - Bash: `command`
 - File: `file_path`, `new_text`, `old_text`, `content`
 - Prompt: `user_prompt`
 
-**Operators:**
+**연산자:**
 - `regex_match`, `contains`, `equals`, `not_contains`, `starts_with`, `ends_with`

@@ -1,20 +1,20 @@
 # Claude Code Setup Plugin
 
-Analyze codebases and recommend tailored Claude Code automations - hooks, skills, MCP servers, and more.
+코드베이스를 분석하여 hook, skill, MCP 서버 등 맞춤형 Claude Code 자동화를 추천합니다.
 
-## What It Does
+## 주요 기능
 
-Claude uses this skill to scan your codebase and recommend the top 1-2 automations in each category:
+Claude는 이 skill을 사용하여 코드베이스를 스캔하고 각 카테고리별로 가장 적합한 1~2개의 자동화를 추천합니다:
 
-- **MCP Servers** - External integrations (context7 for docs, Playwright for frontend)
-- **Skills** - Packaged expertise (Plan agent, frontend-design)
-- **Hooks** - Automatic actions (auto-format, auto-lint, block sensitive files)
-- **Subagents** - Specialized reviewers (security, performance, accessibility)
-- **Slash Commands** - Quick workflows (/test, /pr-review, /explain)
+- **MCP Servers** - 외부 통합 도구 (문서용 context7, 프론트엔드용 Playwright 등)
+- **Skills** - 패키지화된 전문 지식 (Plan 에이전트, frontend-design)
+- **Hooks** - 자동 실행 액션 (auto-format, auto-lint, 민감 파일 차단 등)
+- **Subagents** - 전문 리뷰어 (보안, 성능, 웹 접근성 등)
+- **Slash Commands** - 빠른 워크플로우 (/test, /pr-review, /explain)
 
-This skill is **read-only** - it analyzes but doesn't modify files.
+이 skill은 **읽기 전용(read-only)**이며, 분석만 수행하고 파일을 수정하지는 않습니다.
 
-## Usage
+## 사용법
 
 ```
 "recommend automations for this project"
@@ -24,6 +24,6 @@ This skill is **read-only** - it analyzes but doesn't modify files.
 
 <img src="automation-recommender-example.png" alt="Automation recommender analyzing a codebase and providing tailored recommendations" width="600">
 
-## Author
+## 작성자
 
 Isabella He (isabella@anthropic.com)

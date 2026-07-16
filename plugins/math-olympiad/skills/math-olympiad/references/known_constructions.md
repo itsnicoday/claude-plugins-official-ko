@@ -1,46 +1,25 @@
-# Construction Patterns
+# 구성 패턴 (Construction Patterns)
 
-Methodological patterns for finding optimal constructions. No specific problem
-answers.
+최적의 구성을 찾기 위한 방법론적 패턴들입니다. 특정 문제에 대한 정답을 담고 있지 않습니다.
 
-## Spread vs cluster
+## 분산 vs 밀집 (Spread vs cluster)
 
-For optimization problems over permutations/configurations: the **symmetric
-choice (identity, diagonal, regular spacing) is often the worst case, not the
-best**. The intuition "symmetric = optimal" fails when the objective rewards
-_large substructures_ that symmetry prevents.
+순열/배치에 관한 최적화 문제에서: **대칭적 선택 (항등 사상, 대각선 배치, 규칙적 간격 등)은 최상의 케이스가 아니라 최악의 케이스인 경우가 많습니다.** "대칭 = 최적"이라는 직관은 목표 함수가 대칭성에 의해 가로막히는 *큰 하부 구조*에 보상을 제공할 때 성립하지 않습니다.
 
-**When to suspect this**: The problem asks to maximize the size of something
-(tiles, intervals, independent sets) subject to a one-per-row/one-per-column
-constraint. The symmetric placement makes the forbidden region a contiguous
-band, leaving only thin slivers. Spreading the forbidden positions leaves fat
-windows.
+**해당 패턴을 의심해 볼 때**: 문제에서 행당 1개/열당 1개 제약 조건 하에 무언가(타일, 구간, 독립 집합 등)의 크기를 극대화할 것을 요구하는 경우입니다. 대칭적 배치를 하면 금지된 영역이 연속된 띠 형태로 묶이게 되어 얇은 조각들만 남습니다. 금지된 위치들을 분산시키면 더 넓은 유효 공간을 확보할 수 있습니다.
 
-**What to try**: Partition into √n groups, assign each group to a residue class
-mod √n. Within a group, place in reverse order. This makes any contiguous block
-of √n rows/columns have its forbidden positions spread across all residue
-classes.
+**시도해 볼 방법**: 대상을 √n 개의 그룹으로 분할하고, 각 그룹을 mod √n 의 잉여류(residue class)에 할당합니다. 그룹 내에서는 역순으로 배치합니다. 이렇게 하면 임의의 연속된 √n 개의 행/열 블록이 가질 수 있는 금지된 위치들이 모든 잉여류에 걸쳐 고르게 분산됩니다.
 
-## Moment curve for distinctness
+## 고유성을 위한 모먼트 곡선 (Moment curve for distinctness)
 
-When you need n objects in ℝ^k where "any k are independent" (or similar
-genericity), the moment curve `(1, t, t², ..., t^{k-1})` at n distinct parameter
-values gives this for free. Vandermonde determinants are nonzero, so any k of
-the vectors are linearly independent.
+ℝ^k 에서 "임의의 k개가 독립적"인(또는 이와 유사한 일반성(genericity)을 지닌) n개의 객체가 필요한 경우, n개의 구별되는 매개변수 값들에 대한 모먼트 곡선 `(1, t, t², ..., t^{k-1})` 을 적용하면 이를 쉽게 충족할 수 있습니다. 방데르몽드 행렬식(Vandermonde determinants)이 0이 아니므로, 이 벡터들 중 임의의 k개를 골라도 선형 독립입니다.
 
-**Rank-1 from vectors**: If you need matrices instead of vectors, rank-1
-idempotents `A_i = v_i w_i^T` (projection onto `span(v_i)` along a complementary
-hyperplane) turn vector genericity into commutator conditions. `[A_i, A_j] = 0`
-iff a specific determinant vanishes.
+**벡터로부터의 랭크-1 행렬 생성**: 벡터 대신 행렬이 필요한 경우, 랭크-1 멱등행렬 `A_i = v_i w_i^T` (보대수적 초평면을 따르는 `span(v_i)` 로의 사영)를 이용해 벡터의 일반성을 교환자(commutator) 조건으로 변환할 수 있습니다. `[A_i, A_j] = 0` 은 특정 행렬식이 0이 되는 것과 동치입니다.
 
-## When brute-force reveals √n
+## 브루트포스가 √n을 암시할 때 (When brute-force reveals √n)
 
-If brute-forcing n=2..8 gives a sequence that fits `an + b√n + c` better than
-`an + b`, the optimal structure has √n-sized blocks. Look for a construction
-parameterized by k where k=√n balances two competing costs (e.g., k things each
-of size n/k).
+n=2부터 8까지 브루트포스로 구한 수열이 `an + b` 보다 `an + b√n + c` 형태에 더 잘 맞아떨어진다면, 최적의 구조는 크기가 √n 인 블록들을 포함하고 있습니다. k가 서로 대립하는 두 비용의 균형을 맞추는(예: 각각 크기가 n/k인 k개의 요소), k=√n 으로 매개변수화된 구성을 찾아보십시오.
 
-## Avoid: storing specific answers here
+## 금지 사항: 구체적인 정답 기록 금지 (Avoid: storing specific answers here)
 
-This file is for construction _techniques_, not solutions. If you find yourself
-writing "the answer to Problem X is Y," delete it.
+이 파일은 구성 *기법*을 정리하기 위한 곳이지 정답을 적기 위한 곳이 아닙니다. 만약 "X 문제의 정답은 Y이다"라는 내용을 적고 있다면 삭제하십시오.

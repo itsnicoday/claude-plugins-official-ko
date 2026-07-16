@@ -1,39 +1,39 @@
-# Design Playground Template
+# 디자인 플레이그라운드 템플릿 (Design Playground Template)
 
-Use this template when the playground is about visual design decisions: components, layouts, spacing, color, typography, animation, responsive behavior.
+컴포넌트, 레이아웃, 여백, 색상, 타이포그래피, 애니메이션, 반응형 레이아웃 등 시각적 디자인 결정 사항과 관련된 플레이그라운드를 빌드할 때 이 템플릿을 사용하십시오.
 
-## Layout
+## 레이아웃
 
 ```
 +-------------------+----------------------+
 |                   |                      |
-|  Controls         |  Live component/     |
-|  grouped by:      |  layout preview      |
-|  • Spacing        |  (renders in a       |
-|  • Color          |   mock page or       |
-|  • Typography     |   isolated card)     |
-|  • Shadow/Border  |                      |
-|  • Interaction    |                      |
+|  컨트롤 영역       |  실시간 컴포넌트/    |
+|  그룹화 기준:     |  레이아웃 미리보기   |
+|  • 여백           |  (가상 페이지 또는   |
+|  • 색상           |   단독 카드로        |
+|  • 타이포그래피   |   렌더링)            |
+|  • 그림자/테두리  |                      |
+|  • 상호작용       |                      |
 |                   +----------------------+
-|                   |  Prompt output       |
-|                   |  [ Copy Prompt ]     |
+|                   |  프롬프트 출력       |
+|                   |  [ 프롬프트 복사 ]   |
 +-------------------+----------------------+
 ```
 
-## Control types by decision
+## 결정 사항에 따른 컨트롤 유형
 
-| Decision | Control | Example |
+| 결정 사항 | 컨트롤 유형 | 예시 |
 |---|---|---|
-| Sizes, spacing, radius | Slider | border-radius 0–24px |
-| On/off features | Toggle | show border, hover effect |
-| Choosing from a set | Dropdown | font-family, easing curve |
-| Colors | Hue + saturation + lightness sliders | shadow color, accent |
-| Layout structure | Clickable cards | sidebar-left / top-nav / no-nav |
-| Responsive behavior | Viewport-width slider | watch grid reflow at breakpoints |
+| 크기, 여백, 반경 | 슬라이더 | 테두리 반경 0–24px |
+| 기능 On/Off | 토글 | 테두리 표시 여부, 호버 효과 |
+| 세트 내 선택 | 드롭다운 | 글꼴 계열, 감쇠 곡선(easing curve) |
+| 색상 | 색상(Hue)+채도(Saturation)+명도(Lightness) 슬라이더 | 그림자 색상, 강조색 |
+| 레이아웃 구조 | 클릭 가능한 카드 | sidebar-left / top-nav / no-nav |
+| 반응형 레이아웃 | 뷰포트 너비 슬라이더 | 중단점(breakpoints)에 따른 그리드 배치 재정렬 확인 |
 
-## Preview rendering
+## 미리보기 렌더링
 
-Apply state values directly to a preview element's inline styles:
+상태 값을 미리보기 요소의 인라인 스타일(inline style)에 직접 반영합니다:
 
 ```javascript
 function renderPreview() {
@@ -46,22 +46,22 @@ function renderPreview() {
 }
 ```
 
-Show the preview on both light and dark backgrounds if relevant. Include a context toggle.
+해당 사항이 있는 경우 미리보기를 라이트 배경과 다크 배경 모두에서 보여주십시오. 컨텍스트 토글 버튼을 포함하십시오.
 
-## Prompt output for design
+## 디자인 프롬프트 출력
 
-Frame it as a direction to a developer, not a spec sheet:
+단순한 스펙 시트 나열이 아닌 개발자에게 내리는 지시문 형태로 작성하십시오:
 
 > "Update the card to feel soft and elevated: 12px border-radius, 24px horizontal padding, a medium box-shadow (0 4px 12px rgba(0,0,0,0.1)). On hover, lift it with translateY(-1px) and deepen the shadow slightly."
 
-If the user is working in Tailwind, suggest Tailwind classes. If raw CSS, use CSS properties.
+사용자가 Tailwind를 사용하는 경우 Tailwind 클래스를 제안하십시오. 순수 CSS를 사용하는 경우 CSS 속성명을 제안하십시오.
 
-## Example topics
+## 예시 주제
 
-- Button style explorer (radius, padding, weight, hover/active states)
-- Card component (shadow depth, radius, content layout, image)
-- Layout builder (sidebar width, content max-width, header height, grid)
-- Typography scale (base size, ratio, line heights across h1-body-caption)
-- Color palette generator (primary hue, derive secondary/accent/surface)
-- Dashboard density (airy → compact slider that scales everything proportionally)
-- Modal/dialog (width, overlay opacity, entry animation, corner radius)
+- 버튼 스타일 탐색기 (반경, 여백, 가중치, 호버/액티브 상태)
+- 카드 컴포넌트 (그림자 깊이, 반경, 콘텐츠 레이아웃, 이미지)
+- 레이아웃 빌더 (사이드바 너비, 콘텐츠 최대 너비, 헤더 높이, 그리드)
+- 타이포그래피 스케일 (h1-body-caption에 걸친 기준 크기, 비율, 줄 높이)
+- 색상 팔레트 생성기 (기본 색상, 보조/강조/표면 색상 도출)
+- 대시보드 밀도 (여유로움 → 조밀함 슬라이더로 모든 요소를 비율에 맞게 스케일 조정)
+- 모달/다이얼로그 (너비, 오버레이 불투명도, 진입 애니메이션, 테두리 반경)

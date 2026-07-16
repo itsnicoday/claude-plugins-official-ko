@@ -1,206 +1,135 @@
-# Verifier Patterns — Olympiad Subset
+# 검증기 패턴 — 올림피아드 서브셋 (Verifier Patterns — Olympiad Subset)
 
-For a verifier with **no tools, only reasoning**. Each pattern is a mental check
-you can run on a candidate proof. These are the specific ways proofs go wrong
-that self-verification misses. (Source: 59 patterns from real research sessions;
-these 13 need no grep/fetch/compute.)
+**도구 없이 추론만** 사용하는 검증기를 위한 문서입니다. 각 패턴은 후보 증명에 대해 실행할 수 있는 두뇌 체크 방법입니다. 이는 자가 검증이 종종 놓치기 쉬운, 증명이 잘못되는 구체적인 경로들입니다. (출처: 실제 연구 세션에서 나타난 59개 패턴 중 grep/fetch/compute 등의 도구가 필요 없는 13개 패턴을 선별함.)
 
-Run #18 and #19 after any positive finding. Run #40 on any proof that feels too
-short.
+긍정적인 발견이 있을 때마다 #18 및 #19를 실행하십시오. 너무 짧게 느껴지는 증명에는 #40을 실행하십시오.
 
 ---
 
-### Pattern 4: Would it prove a famous open problem?
+### 패턴 4: 유명한 난제까지 증명해 버리는가? (Pattern 4: Would it prove a famous open problem?)
 
-**The check**: Specialize the claimed theorem to the most famous object in its
-class (ζ(s), the Ramsey number, the Collatz map). Does the specialization settle
-a known open problem?
+**검사 방법**: 주장된 정리를 해당 부류에서 가장 유명한 대상(ζ(s), 램지 수, 콜라츠 사상 등)에 특수화하여 적용해 보십시오. 그렇게 특수화한 명제가 알려진 난제를 해결해 버립니까?
 
-**What it catches**: A bound "for all Dirichlet series with property P" that,
-applied to ζ, would prove Lindelöf — the proof treated arithmetic input as
-generic.
+**감지되는 오류**: "성질 P를 만족하는 모든 디리클레 급수에 대한" 바운드를 구했는데, 이를 ζ에 대입하면 린델뢰프 가설(Lindelöf)이 증명되는 경우 — 즉, 증명 과정에서 산술적 입력을 그냥 일반적인(generic) 대상으로 뭉뚱그려 처리한 것입니다.
 
-**How to run it**: Find the step where the argument uses a generic property.
-Ask: does ζ (or the canonical hard instance) actually have this property? The
-gap is always where it doesn't.
+**수행 방법**: 논증이 일반적인 성질을 사용하는 단계를 찾으십시오. 그리고 질문하십시오: ζ (또는 대표적인 까다로운 반례 대상)가 실제로 이 성질을 가집니까? 공백은 항상 그 성질이 성립하지 않는 지점에 존재합니다.
 
 ---
 
-### Pattern 5: Outside the hypothesis class
+### 패턴 5: 가정 클래스를 벗어남 (Pattern 5: Outside the hypothesis class)
 
-**The check**: For each example claimed to satisfy a theorem, re-derive the
-hypotheses from the definition — don't trust the label.
+**검사 방법**: 어떤 정리를 만족한다고 주장하는 각 예시에 대해, 그 레이블을 맹신하지 말고 정의로부터 직접 가정을 재유도해 보십시오.
 
-**What it catches**: "f is entire of order ≤1, so by Thm 3.1…" — but Thm 3.1
-needs f analytic in a _full disk_ around 0; a natural boundary on the imaginary
-axis blocks it.
+**감지되는 오류**: "f는 차수가 1 이하인 전해석 함수(entire)이므로, 정리 3.1에 의해..." — 그러나 정리 3.1은 0을 중심으로 하는 *전체 원판(full disk)* 내에서 f가 해석적이어야 합니다. 허수축 상의 자연 경계가 이를 가로막고 있을 수 있습니다.
 
-**How to run it**: Write out the theorem's hypothesis verbatim. For each claimed
-instance, check inclusion from scratch. Watch for near-synonyms ("bounded" vs
-"bounded on the line"; "entire" vs "analytic on a domain").
+**수행 방법**: 정리의 가정을 문자 그대로(verbatim) 적어보십시오. 각 대상에 대해 그 조건에 포함되는지 처음부터 점검하십시오. 유사어에 주의하십시오 ("유계(bounded)" vs "직선 상에서 유계"; "전해석(entire)" vs "정역 상에서 해석적").
 
 ---
 
-### Pattern 6: Divergent sum behind analytic continuation
+### 패턴 6: 해석적 연속 뒤에 숨은 발산급수 (Pattern 6: Divergent sum behind analytic continuation)
 
-**The check**: When a divergent-looking sum is "bounded by ζ(s)" or similar,
-evaluate the bounding function at the boundary of the claimed range.
+**검사 방법**: 발산하는 것처럼 보이는 급수가 "ζ(s)에 의해 상계(bounded)가 결정된다"는 등의 주장이 있을 때, 주장된 범위의 경계에서 상계 함수값을 계산해 보십시오.
 
-**What it catches**: "Σ 1/n ≤ ζ(1)" — but ζ(1) is a pole. The analytic
-continuation of a sum is not the sum.
+**감지되는 오류**: "Σ 1/n ≤ ζ(1)" — 하지만 ζ(1)은 극(pole)입니다. 급수의 해석적 연속(analytic continuation)은 그 급수 자체가 아닙니다.
 
-**How to run it**: Mentally substitute the boundary value of the parameter into
-the bounding expression. A pole or ∞ there means the original sum diverges,
-regardless of what the continued function says elsewhere.
+**수행 방법**: 상계 식의 매개변수에 경계값을 머릿속으로 대입해 보십시오. 그 지점에서 극(pole)이나 ∞가 나타난다면, 연속 함수가 다른 곳에서 무엇이라 말하든 원래 급수는 발산하는 것입니다.
 
 ---
 
-### Pattern 10: Same keywords, different theorem
+### 패턴 10: 동일한 키워드, 다른 정리 (Pattern 10: Same keywords, different theorem)
 
-**The check**: When a cited theorem has the right _words_ but the fit feels off
-— check pointwise vs averaged, uniform vs a.e., finite vs asymptotic.
+**검사 방법**: 인용된 정리가 겉보기에는 적절한 *단어*를 담고 있으나 묘하게 맞지 않는 느낌이 들 때 — 점별(pointwise) vs 평균(averaged), 균등(uniform) vs 거의 어디서나(a.e.), 유한(finite) vs 점근적(asymptotic) 등의 조건이 일치하는지 확인하십시오.
 
-**What it catches**: Invoking "Fourier decay ⇒ bound" for a pointwise estimate,
-when the cited decay theorem needs curvature and you only have it on average.
+**감지되는 오류**: 점별 추정(pointwise estimate)을 위해 "푸리에 감쇄 ⇒ 바운드"를 인용했는데, 해당 감쇄 정리에는 곡률(curvature) 조건이 필요한 반면 당신이 가진 조건은 오직 평균값에 대해서만 성립하는 경우입니다.
 
-**How to run it**: State precisely what the proof _needs_ (pointwise? for all x?
-with what uniformity?). State what the cited theorem _gives_. Sometimes the
-weaker version is enough and this _closes_ a gap; sometimes the gap is real.
+**수행 방법**: 증명에 '정확히 필요한 것'(점별인가? 모든 x에 대해서인가? 균등성은 어떠한가?)을 진술하십시오. 그리고 인용된 정리가 '제공하는 것'을 적으십시오. 가끔 더 약한 버전으로도 충분하여 공백이 메워지기도 하지만, 실질적인 결함으로 드러나기도 합니다.
 
 ---
 
-### Pattern 17: Test past the first nontrivial block
+### 패턴 17: 최초의 유의미한 블록 너머를 테스트하라 (Pattern 17: Test past the first nontrivial block)
 
-**The check**: Before accepting a pattern from small cases, identify where the
-structure first becomes nontrivial. Confirm the pattern holds _past_ that
-threshold.
+**검사 방법**: 소규모 사례로부터 규칙성(패턴)을 유도하여 받아들이기 전에, 구조가 처음으로 단순하지 않아지는(nontrivial) 지점을 식별하십시오. 그 임계값 *너머*에서도 해당 패턴이 유지되는지 확인하십시오.
 
-**What it catches**: "Checked m = 1, 2, 3: all blocks have rank 1." But m ≤ 3
-gives only 1×2 blocks — rank 1 is forced. First 2×2 appears at m = 4, and there
-the claim fails.
+**감지되는 오류**: "m = 1, 2, 3인 경우를 확인한 결과 모든 블록의 랭크는 1이다." 하지만 m ≤ 3에서는 오직 1×2 크기의 블록만 만들어지므로 랭크 1이 강제됩니다. 최초의 2×2 블록은 m = 4에서 나타나며, 거기서 주장은 어긋나게 됩니다.
 
-**How to run it**: Ask "what makes the small cases easy?" Find the parameter
-value where that degeneracy disappears. The claim must survive at least one case
-beyond it.
+**수행 방법**: "소규모 사례들을 쉽게 만드는 요인이 무엇인가?"라고 질문하십시오. 그러한 퇴화(degeneracy)가 사라지는 매개변수 값을 찾으십시오. 주장은 그 값보다 최소 하나 더 큰 사례에서도 유효해야 합니다.
 
 ---
 
-### Pattern 18: Tautological reduction
+### 패턴 18: 동어반복적 단순화 (Pattern 18: Tautological reduction)
 
-**The check**: When a reduction chain ends at "estimate X would finish it,"
-substitute the chain's own already-proven identities into X.
+**검사 방법**: 단순화 체인의 결말이 "추정값 X만 보이면 끝난다"에 도달했을 때, 그 체인이 이미 증명한 항등식들을 X에 대입해 보십시오.
 
-**What it catches**: "Suffices to show ∫|P|² ≤ C·H." But the chain itself proved
-∫|P|² = H + 2Re(OD') _exactly_. So X is just the original conjecture plus a
-cosmetic shift — not a reduction.
+**감지되는 오류**: "∫|P|² ≤ C·H 임을 보이는 것으로 충분하다." 그러나 체인 자체에 의해 ∫|P|² = H + 2Re(OD')가 *정확히* 증명되었습니다. 따라서 X는 원래 추측에 겉포장만 바꾼 것에 불과하며, 실질적인 단순화가 아닙니다.
 
-**How to run it**: Take each identity the chain proved along the way and plug it
-into the "final gap." If you recover the starting conjecture (or something at
-least as strong), the chain went in a circle.
+**수행 방법**: 체인을 전개하며 증명한 각 항등식을 "최종 공백"에 대입해 보십시오. 원래의 추측(또는 그 이상의 명제)을 다시 얻게 된다면, 그 전개는 제자리를 맴돈 것입니다.
 
 ---
 
-### Pattern 19: Derived obstruction vs base obstruction
+### 패턴 19: 유도된 장애물 vs 기저 장애물 (Pattern 19: Derived obstruction vs base obstruction)
 
-**The check**: When the same obstruction kills 3+ independent approaches,
-compute the disputed property on the _original_ object — before any reduction.
+**검사 방법**: 동일한 수학적 장애물(obstruction)이 3개 이상의 서로 다른 접근법을 가로막을 때, 단순화를 거치기 전의 *원래* 대상에 대해 문제의 성질을 계산해 보십시오.
 
-**What it catches**: "det(Hessian) = 0, ruled surface, decoupling fails" — for
-the phase log(2πm−θ). But the _base_ phase is nθ − t·log(n), and _its_ Hessian
-has det = −1. The obstruction lived in the proxy.
+**감지되는 오류**: 위상(phase) log(2πm-θ)에 대해 "det(Hessian) = 0이므로 선선면(ruled surface)이며 디커플링이 실패한다"고 판단했습니다. 그러나 *기저(base)* 위상은 nθ - t·log(n)이며, 그 헤시안(Hessian)의 det = -1입니다. 장애물은 단지 대리물(proxy)에만 존재했던 것입니다.
 
-**How to run it**: Name the object the obstruction is _about_. Is it the thing
-you started with, or something a reduction produced? Go back to the start and
-check directly.
+**수행 방법**: 장애물이 '어떤 대상에 관한 것'인지 지명하십시오. 처음 시작한 대상입니까, 아니면 단순화 과정에서 파생된 대상입니까? 처음 단계로 돌아가 직접 검증하십시오.
 
 ---
 
-### Pattern 22: Absolute-sum gives O(K); compute the mean first
+### 패턴 22: 절대값 합은 O(K)를 준다; 평균을 먼저 계산하라 (Pattern 22: Absolute-sum gives O(K); compute the mean first)
 
-**The check**: Before accepting that Σₖ Xₖ = O(1) is "too hard because |Xₖ|
-summed gives O(K)," compute the mean of Xₖ over the varying parameter.
+**검사 방법**: Σₖ Xₖ = O(1)이 "각 항의 절대값의 합 |Xₖ|이 O(K)이므로 증명하기 너무 어렵다"고 판단하기 전에, 변화하는 매개변수에 대해 Xₖ의 평균을 먼저 계산해 보십시오.
 
-**What it catches**: Weyl equidistribution gives mean(Xₖ) = 0 _exactly_. So Σ Xₖ
-is a fluctuation sum — the target is Var = O(1), and half the conjecture falls
-in one line.
+**감지되는 오류**: 바일 등분포 정리(Weyl equidistribution)에 의해 Xₖ의 평균은 *정확히* 0이 됩니다. 따라서 Σ Xₖ는 요동의 합(fluctuation sum)이며, 목표치는 분산 Var = O(1)이 되므로 전체 추측의 절반이 한 줄 만에 해결됩니다.
 
-**How to run it**: Separate Xₖ into mean + fluctuation. If
-orthogonality/equidistribution forces the mean to zero, you were never fighting
-K terms of size 1 — you were fighting √K terms (or better). Rewrite the target.
+**수행 방법**: Xₖ를 평균과 요동으로 분리하십시오. 직교성이나 등분포성에 의해 평균이 0으로 강제된다면, 당신은 크기가 1인 K개의 항과 싸우는 것이 아닙니다 — 크기가 √K(혹은 그 이하)인 항들과 싸우는 것입니다. 목표를 재정의하십시오.
 
 ---
 
-### Pattern 23: Formula's scope never stated
+### 패턴 23: 공식의 적용 범위가 명시되지 않음 (Pattern 23: Formula's scope never stated)
 
-**The check**: For any identity used in the proof, ask: was this proved for the
-general case, or for a special case that the author silently generalized?
+**검사 방법**: 증명에 사용된 임의의 항등식에 대해 다음을 물어보십시오: 이것이 일반적인 경우에 대해 증명된 것인가, 아니면 작성자가 은근슬쩍 일반화한 특수 케이스에 대한 것인가?
 
-**What it catches**: "κ₄ = 3d − 1" was derived for 2-piece Cantor sets. The
-proof applies it to an m-piece set, where the real formula involves additive
-energy and can differ by a constant factor.
+**감지되는 오류**: "κ₄ = 3d - 1"은 2-조각 칸토어 집합에 대해 유도된 식입니다. 증명에서는 이를 m-조각 집합에 대입하여 사용했는데, 실제 공식은 가산적 에너지(additive energy)와 얽혀 있어 상수 배만큼 차이가 날 수 있습니다.
 
-**How to run it**: Trace the identity to where it was first introduced. What
-were the standing assumptions _there_? Check that those assumptions still hold
-at the point of use.
+**수행 방법**: 해당 항등식이 처음 소개된 곳을 역추적하십시오. *그 당시* 전제 조건은 무엇이었습니까? 사용되는 지점에서도 그 전제 조건들이 여전히 유효한지 확인하십시오.
 
 ---
 
-### Pattern 35: Count quantifiers before diagonalizing
+### 패턴 35: 대각선 논법 적용 전에 한정기호 개수를 세라 (Pattern 35: Count quantifiers before diagonalizing)
 
-**The check**: Before "diagonalize against class C using property P," ask
-whether _certifying_ P is an ∃-statement or a ∀-statement.
+**검사 방법**: "성질 P를 사용하여 클래스 C에 대해 대각선 논법(diagonalize)을 적용한다"고 주장하기 전에, P를 *증명(certifying)*하는 명제가 존재(∃) 명제인지 모든(∀) 명제인지 질문해 보십시오.
 
-**What it catches**: "Find an x not computed by any small circuit" — but
-verifying "no small circuit computes x" is a ∀ over circuits. Your diagonalizer
-is in Σ₂, not NP. (This is _why_ Kannan gives Σ₂ᴾ ⊄ SIZE, not NP ⊄ SIZE.)
+**감지되는 오류**: "작은 회로에 의해 계산되지 않는 x를 찾는다" — 하지만 "어떤 작은 회로도 x를 계산할 수 없음"을 검증하는 것은 회로들에 대한 모든(∀) 조건입니다. 당신의 대각선 논법 식은 NP가 아니라 Σ₂ 계층에 속합니다. (이것이 칸난(Kannan)의 정리가 NP ⊄ SIZE가 아닌 Σ₂ᴾ ⊄ SIZE를 이끌어내는 *이유*입니다.)
 
-**How to run it**: Write the diagonalization as a formula. Count alternations.
-If you need ∀∃ to describe the witness, you've jumped a level in the hierarchy.
+**수행 방법**: 대각화 과정을 수식으로 적으십시오. 교대(alternations) 횟수를 세십시오. 증거(witness)를 기술하는 데 ∀∃가 필요하다면, 당신은 이미 위계(hierarchy)의 한 단계를 뛰어넘은 것입니다.
 
 ---
 
-### Pattern 40: One-line-proof-too-clean
+### 패턴 40: 지나치게 깔끔한 한 줄 증명 (Pattern 40: One-line-proof-too-clean)
 
-**The check**: Extract the proof's key step as a lemma in _full generality_ —
-not specialized to the objects at hand. Try a 2×2 counterexample to the general
-lemma.
+**검사 방법**: 증명의 핵심 단계를 현재 대상에 특수화하지 말고 *가장 일반화된* 형태의 보조정리로 추출해 내십시오. 그리고 그 일반 보조정리에 대해 2×2 반례를 적용해 보십시오.
 
-**What it catches**: "rank depends only on monomial support" — but [[1,1],[1,1]]
-has rank 1 and [[1,1],[1,−1]] has rank 2 with the same support. The general
-lemma is false; the specific case holds because sgn(π) = f(S)·g(T) factors.
-_That's_ the real proof.
+**감지되는 오류**: "랭크는 단항식 서포트(support)에만 의존한다" — 하지만 [[1,1],[1,1]]은 랭크가 1이고 [[1,1],[1,−1]]은 랭크가 2이며 서포트는 동일합니다. 일반 보조정리는 거짓입니다. 구체적인 사례가 참인 이유는 sgn(π) = f(S)·g(T)로 인수분해되기 때문입니다. *그 인수분해가* 진짜 증명입니다.
 
-**How to run it**: If the general lemma dies but the specific conclusion
-survives numerically, there's hidden structure. Find it. The real proof goes
-through _that_, not the false lemma.
+**수행 방법**: 만약 일반 보조정리는 틀렸는데 구체적인 결과는 수치적으로 참을 유지한다면, 거기에는 숨겨진 특별한 구조가 존재합니다. 그것을 찾으십시오. 진짜 증명은 그 틀린 보조정리가 아니라 *그 숨겨진 구조*를 통해 완성됩니다.
 
 ---
 
-### Pattern 58: Quantifier direction on domain size
+### 패턴 58: 도메인 크기에 따른 한정기호의 방향 (Pattern 58: Quantifier direction on domain size)
 
-**The check**: Before claiming one statement is "strictly stronger" than another
-because its domain is smaller — check whether the quantifier is ∀ or ∃.
+**검사 방법**: 어떤 명제의 도메인이 더 작다는 이유로 그것이 다른 명제보다 "엄격하게 더 강하다"고 주장하기 전에 — 한정기호가 ∀인지 ∃인지 확인하십시오.
 
-**What it catches**: "∀ S ∈ D, φ(S)" over a _smaller_ D is _weaker_ (fewer
-obligations). "∃ S ∈ D, φ(S)" over smaller D is _stronger_ (fewer candidates).
-Backwards strength claims swap these.
+**감지되는 오류**: 더 *작은* D에 대한 "∀ S ∈ D, φ(S)"는 더 *약한* 명제입니다 (충족해야 할 조건이 더 적음). 더 작은 D에 대한 "∃ S ∈ D, φ(S)"는 더 *강한* 명제입니다 (후보가 더 적음). 논리적 강도에 대한 잘못된 주장은 이를 뒤바꿔서 생각하곤 합니다.
 
-**How to run it**: Say the statement out loud with the quantifier explicit.
-Shrinking the domain under ∀ drops requirements. Shrinking under ∃ drops
-witnesses. Only one direction is "harder."
+**수행 방법**: 한정기호를 명시적으로 드러내어 명제를 소리 내어 읽어보십시오. ∀ 아래에서 도메인을 축소하면 요구사항이 빠집니다. ∃ 아래에서 도메인을 축소하면 증거(witnesses)가 빠집니다. 오직 한 방향만 "더 까다로운" 증명이 됩니다.
 
 ---
 
-### Pattern 60: Easiest-interpretation trap
+### 패턴 60: 가장 쉬운 해석의 함정 (Pattern 60: Easiest-interpretation trap)
 
-**The check**: Before solving, write down 2–3 readings of the problem statement.
-Flag whichever one makes the problem trivial.
+**검사 방법**: 풀기 전에 문제의 서술에 대해 2~3가지 해석을 작성해 보십시오. 문제를 아주 사소하게(trivial) 만들어 버리는 해석이 있다면 표시해 두십시오.
 
-**What it catches**: 63 "technically correct" solutions; only 13 "meaningfully
-correct." The gap: solving the easiest grammatically-valid reading instead of
-the intended one. Olympiad problems often _plant_ an easy misreading.
+**감지되는 오류**: 63개의 "기술적으로는 맞는" 풀이가 있었으나, "실질적으로 맞는" 풀이는 단 13개뿐인 현상입니다. 결함의 이유: 의도된 올바른 해석 대신, 문법적으로만 유효하고 가장 풀기 쉬운 왜곡된 해석을 골라 풀었기 때문입니다. 올림피아드 문제는 종종 이러한 쉬운 오독을 유도하도록 *설계*되어 있습니다.
 
-**How to run it**: Ask "under which reading is this a real problem?" If your
-interpretation makes it a one-liner and the problem is worth 7 points, you've
-probably chosen wrong. Solve the hard reading; note the easy one only as a
-remark.
+**수행 방법**: "어떤 해석을 적용해야 진짜 문제가 되는가?"라고 질문하십시오. 만약 당신의 해석으로 인해 그것이 한 줄짜리 증명이 되어버리는데 문제 배점은 7점이라면, 당신은 높은 확률로 잘못 생각한 것입니다. 더 어려운 해석을 기준으로 해결하시고, 쉬운 오독은 주석 형태로만 가볍게 언급하십시오.

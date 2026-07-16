@@ -1,276 +1,276 @@
-# MCP Server Recommendations
+# MCP 서버 추천
 
-MCP (Model Context Protocol) servers extend Claude's capabilities by connecting to external tools and services.
+MCP(Model Context Protocol) 서버는 외부 도구 및 서비스에 연결하여 Claude의 기능을 확장합니다.
 
-**Note**: These are common MCP servers. Use web search to find MCP servers specific to the codebase's services and integrations.
+**참고**: 아래는 일반적인 MCP 서버들입니다. 코드베이스의 서비스 및 연동 환경에 특화된 MCP 서버를 찾으려면 웹 검색을 활용하십시오.
 
-## Setup & Team Sharing
+## 설정 및 팀 공유 (Setup & Team Sharing)
 
-**Connection methods:**
-1. **Project config** (`.mcp.json`) - Available only in that directory
-2. **Global config** (`~/.claude.json`) - Available across all projects
-3. **Checked-in `.mcp.json`** - Available to entire team (recommended!)
+**연결 방법:**
+1. **프로젝트 설정** (`.mcp.json`) - 해당 디렉토리에서만 사용 가능
+2. **글로벌 설정** (`~/.claude.json`) - 모든 프로젝트에서 사용 가능
+3. **Git에 커밋된 `.mcp.json`** - 전체 팀원이 함께 사용 가능 (추천!)
 
-**Tip**: Check `.mcp.json` into git so your whole team gets the same MCP servers.
+**팁**: `.mcp.json`을 Git에 커밋하여 전체 팀원이 동일한 MCP 서버 설정을 공유하도록 하십시오.
 
-**Debugging**: Use `claude --mcp-debug` to identify configuration issues.
+**디버깅**: `claude --mcp-debug` 명령어를 사용하여 설정 문제를 식별하십시오.
 
-## Documentation & Knowledge
+## 문서 및 지식 (Documentation & Knowledge)
 
 ### context7
-**Best for**: Projects using popular libraries/SDKs where you want Claude to code with up-to-date documentation
+**적합한 용도**: 대중적인 라이브러리나 SDK를 사용하는 프로젝트에서 Claude가 최신 문서를 참조하여 코딩하기를 원할 때
 
-| Recommend When | Examples |
+| 추천 시점 | 예시 |
 |----------------|----------|
-| Using React, Vue, Angular | Frontend frameworks |
-| Using Express, FastAPI, Django | Backend frameworks |
-| Using Prisma, Drizzle | ORMs |
-| Using Stripe, Twilio, SendGrid | Third-party APIs |
-| Using AWS SDK, Google Cloud | Cloud SDKs |
-| Using LangChain, OpenAI SDK | AI/ML libraries |
+| React, Vue, Angular 사용 시 | 프론트엔드 프레임워크 |
+| Express, FastAPI, Django 사용 시 | 백엔드 프레임워크 |
+| Prisma, Drizzle 사용 시 | ORM |
+| Stripe, Twilio, SendGrid 사용 시 | 제3자(Third-party) API |
+| AWS SDK, Google Cloud 사용 시 | 클라우드 SDK |
+| LangChain, OpenAI SDK 사용 시 | AI/ML 라이브러리 |
 
-**Value**: Claude fetches live documentation instead of relying on training data, reducing hallucinated APIs and outdated patterns.
+**효과**: 학습 데이터에만 의존하지 않고 실시간 최신 문서를 가져옴으로써, 존재하지 않는(hallucinated) API나 오래된 코드 패턴 작성을 방지합니다.
 
 ---
 
-## Browser & Frontend
+## 브라우저 및 프론트엔드 (Browser & Frontend)
 
 ### Playwright MCP
-**Best for**: Frontend projects needing browser automation, testing, or screenshots
+**적합한 용도**: 브라우저 자동화, 테스트, 스크린샷 캡처 등이 필요한 프론트엔드 프로젝트
 
-| Recommend When | Examples |
+| 추천 시점 | 예시 |
 |----------------|----------|
-| React/Vue/Angular app | UI component testing |
-| E2E tests needed | User flow validation |
-| Visual regression testing | Screenshot comparisons |
-| Debugging UI issues | See what user sees |
-| Form testing | Multi-step workflows |
+| React/Vue/Angular 앱 | UI 컴포넌트 테스트 |
+| E2E 테스트 필요 시 | 사용자 흐름 검증 |
+| 시각적 회귀 테스트 필요 시 | 스크린샷 비교 |
+| UI 이슈 디버깅 | 사용자 화면 확인 |
+| 폼(Form) 입력 테스트 | 다단계 워크플로우 테스트 |
 
-**Value**: Claude can interact with your running app, take screenshots, fill forms, and verify UI behavior.
+**효과**: Claude가 실행 중인 앱을 조작하고 스크린샷을 찍거나, 폼을 채우고 UI 동작을 직접 검증할 수 있습니다.
 
 ### Puppeteer MCP
-**Best for**: Headless browser automation, web scraping
+**적합한 용도**: 헤드리스(Headless) 브라우저 자동화, 웹 스크래핑
 
-| Recommend When | Examples |
+| 추천 시점 | 예시 |
 |----------------|----------|
-| PDF generation from HTML | Report generation |
-| Web scraping tasks | Data extraction |
-| Headless testing | CI environments |
+| HTML 기반 PDF 생성 | 리포트 생성 |
+| 웹 스크래핑 작업 | 데이터 추출 |
+| 헤드리스 테스트 | CI 환경 |
 
 ---
 
-## Databases
+## 데이터베이스 (Databases)
 
 ### Supabase MCP
-**Best for**: Projects using Supabase for backend/database
+**적합한 용도**: 백엔드 또는 데이터베이스로 Supabase를 사용하는 프로젝트
 
-| Recommend When | Examples |
+| 추천 시점 | 예시 |
 |----------------|----------|
-| Supabase project detected | `@supabase/supabase-js` in deps |
-| Auth + database needs | User management apps |
-| Real-time features | Live data sync |
+| Supabase 프로젝트 감지 시 | 종속성 패키지에 `@supabase/supabase-js` 포함 |
+| 인증 및 데이터베이스 필요 시 | 사용자 관리 앱 |
+| 실시간(Real-time) 기능 필요 시 | 실시간 데이터 동기화 |
 
-**Value**: Claude can query tables, manage auth, and interact with Supabase storage directly.
+**효과**: Claude가 테이블을 조회하고 인증을 관리하며, Supabase 스토리지와 직접 연동할 수 있습니다.
 
 ### Convex MCP
-**Best for**: Projects using Convex as the backend (reactive database + server functions + auth + storage + scheduling, all on one platform)
+**적합한 용도**: 백엔드로 Convex를 사용하는 프로젝트 (반응형 DB, 서버 함수, 인증, 스토리지를 단일 플랫폼에서 제공)
 
-| Recommend When | Examples |
+| 추천 시점 | 예시 |
 |----------------|----------|
-| Convex project detected | `convex` in deps, `convex/` directory present, `convex.json` at repo root |
-| Real-time / reactive UI | `useQuery` / `useMutation` / `useAction` from `convex/react` |
-| Mobile + Convex | `convex/react-native` in deps |
-| AI / chat / agent features on Convex | `@convex-dev/agent` in deps |
+| Convex 프로젝트 감지 시 | 종속성 패키지에 `convex` 포함, `convex/` 디렉토리 존재, 루트에 `convex.json` 존재 |
+| 실시간 / 반응형 UI | `convex/react`에서 `useQuery` / `useMutation` / `useAction` 사용 |
+| 모바일 + Convex | 종속성 패키지에 `convex/react-native` 포함 |
+| Convex 기반 AI / 채팅 / 에이전트 기능 | 종속성 패키지에 `@convex-dev/agent` 포함 |
 
-**Value**: Claude can introspect the live deployment (tables, function specs, env vars, logs) and execute queries/mutations against it via tools like `tables`, `function-spec`, `data`, `run-once-query`, `logs`, `env list/set/get`. Run via `npx convex mcp start`.
+**효과**: Claude가 live 배포 환경(테이블, 함수 스펙, 환경 변수, 로그)을 성찰하고, `tables`, `function-spec`, `data`, `run-once-query`, `logs`, `env list/set/get` 등의 도구를 통해 쿼리나 뮤테이션을 실행할 수 있습니다. `npx convex mcp start`를 통해 실행합니다.
 
 ### PostgreSQL MCP
-**Best for**: Direct PostgreSQL database access
+**적합한 용도**: PostgreSQL 데이터베이스에 직접 연결
 
-| Recommend When | Examples |
+| 추천 시점 | 예시 |
 |----------------|----------|
-| Raw PostgreSQL usage | No ORM layer |
-| Database migrations | Schema management |
-| Data analysis tasks | Complex queries |
-| Debugging data issues | Inspect actual data |
+| 순수 PostgreSQL 사용 시 | ORM 레이어 없음 |
+| DB 마이그레이션 | 스키마 관리 |
+| 데이터 분석 작업 | 복잡한 쿼리 조회 |
+| 데이터 이슈 디버깅 | 실제 데이터 확인 |
 
 ### Neon MCP
-**Best for**: Neon serverless Postgres users
+**적합한 용도**: Neon 서버리스 Postgres 사용자
 
 ### Turso MCP
-**Best for**: Turso/libSQL edge database users
+**적합한 용도**: Turso/libSQL edge 데이터베이스 사용자
 
 ---
 
-## Version Control & DevOps
+## 버전 관리 및 DevOps (Version Control & DevOps)
 
 ### GitHub MCP
-**Best for**: GitHub-hosted repositories needing issue/PR integration
+**적합한 용도**: GitHub 호스팅 저장소의 이슈 및 PR 연동
 
-| Recommend When | Examples |
+| 추천 시점 | 예시 |
 |----------------|----------|
-| GitHub repository | `.git` with GitHub remote |
-| Issue-driven development | Reference issues in commits |
-| PR workflows | Review, merge operations |
-| GitHub Actions | CI/CD pipeline access |
-| Release management | Tag and release automation |
+| GitHub 저장소 | GitHub 원격 저장소가 설정된 `.git` |
+| 이슈 기반 개발 | 커밋 시 이슈 번호 참조 |
+| PR 워크플로우 | 리뷰 및 머지(Merge) 작업 |
+| GitHub Actions | CI/CD 파이프라인 접근 |
+| 릴리스 관리 | 태그 및 릴리스 자동화 |
 
-**Value**: Claude can create issues, review PRs, check workflow runs, and manage releases.
+**효과**: Claude가 이슈 생성, PR 리뷰, 워크플로우 실행 확인, 릴리스 관리를 수행할 수 있습니다.
 
 ### GitLab MCP
-**Best for**: GitLab-hosted repositories
+**적합한 용도**: GitLab 호스팅 저장소
 
 ### Linear MCP
-**Best for**: Teams using Linear for issue tracking
+**적합한 용도**: Linear로 이슈를 추적하는 팀
 
-| Recommend When | Examples |
+| 추천 시점 | 예시 |
 |----------------|----------|
-| Linear workspace | Issue references like `ABC-123` |
-| Sprint planning | Backlog management |
-| Issue creation from code | Auto-create issues for TODOs |
+| Linear 워크스페이스 | `ABC-123` 형태의 이슈 번호 참조 |
+| 스프린트 계획 | 백로그 관리 |
+| 코드에서 이슈 생성 | TODO 주석을 분석하여 이슈 자동 생성 |
 
 ---
 
-## Cloud Infrastructure
+## 클라우드 인프라 (Cloud Infrastructure)
 
 ### AWS MCP
-**Best for**: AWS infrastructure management
+**적합한 용도**: AWS 인프라 관리
 
-| Recommend When | Examples |
+| 추천 시점 | 예시 |
 |----------------|----------|
-| AWS SDK in dependencies | `@aws-sdk/*` packages |
-| Infrastructure as code | Terraform, CDK, SAM |
-| Lambda development | Serverless functions |
-| S3, DynamoDB usage | Cloud data services |
+| 종속성 패키지에 AWS SDK 포함 | `@aws-sdk/*` 패키 |
+| 코드형 인프라 (IaC) | Terraform, CDK, SAM |
+| Lambda 개발 | 서버리스 함수 |
+| S3, DynamoDB 사용 | 클라우드 데이터 서비스 |
 
 ### Cloudflare MCP
-**Best for**: Cloudflare Workers, Pages, R2, D1
+**적합한 용도**: Cloudflare Workers, Pages, R2, D1
 
-| Recommend When | Examples |
+| 추천 시점 | 예시 |
 |----------------|----------|
-| Cloudflare Workers | Edge functions |
-| Pages deployment | Static site hosting |
-| R2 storage | Object storage |
-| D1 database | Edge SQL database |
+| Cloudflare Workers | 에지(Edge) 함수 |
+| Pages 배포 | 정적 사이트 호스팅 |
+| R2 스토리지 | 객체 스토리지 |
+| D1 데이터베이스 | 에지 SQL 데이터베이스 |
 
 ### Vercel MCP
-**Best for**: Vercel deployment and configuration
+**적합한 용도**: Vercel 배포 및 설정
 
 ---
 
-## Monitoring & Observtic
+## 모니터링 및 관측성 (Monitoring & Observability)
 
 ### Sentry MCP
-**Best for**: Error tracking and debugging
+**적합한 용도**: 에러 추적 및 디버깅
 
-| Recommend When | Examples |
+| 추천 시점 | 예시 |
 |----------------|----------|
-| Sentry configured | `@sentry/*` in deps |
-| Production debugging | Investigate errors |
-| Error patterns | Group similar issues |
-| Release tracking | Correlate deploys with errors |
+| Sentry 설정 시 | 종속성 패키지에 `@sentry/*` 포함 |
+| 운영 환경 디버깅 | 에러 분석 |
+| 에러 패턴 분석 | 유사 에러 그룹화 |
+| 릴리스 추적 | 배포와 에러 발생 시점 연계 |
 
-**Value**: Claude can investigate Sentry issues, find root causes, and suggest fixes.
+**효과**: Claude가 Sentry 이슈를 조사하고, 근본 원인을 찾아 해결책을 제시할 수 있습니다.
 
 ### Datadog MCP
-**Best for**: APM, logs, and metrics
+**적합한 용도**: APM, 로그, 메트릭 모니터링
 
 ---
 
-## Communication
+## 커뮤니케이션 (Communication)
 
 ### Slack MCP
-**Best for**: Slack workspace integration
+**적합한 용도**: Slack 워크스페이스 연동
 
-| Recommend When | Examples |
+| 추천 시점 | 예시 |
 |----------------|----------|
-| Team uses Slack | Send notifications |
-| Deployment notifications | Alert channels |
-| Incident response | Post updates |
+| Slack 사용 팀 | 알림 발송 |
+| 배포 알림 | 알림 채널 구성 |
+| 인시던트 대응 | 업데이트 정보 공유 |
 
 ### Notion MCP
-**Best for**: Notion workspace for documentation
+**적합한 용도**: Notion 워크스페이스 기반 문서 관리
 
-| Recommend When | Examples |
+| 추천 시점 | 예시 |
 |----------------|----------|
-| Notion for docs | Read/update pages |
-| Knowledge base | Search documentation |
-| Meeting notes | Create summaries |
+| Notion을 문서 도구로 사용 | 페이지 읽기/수정 |
+| 기술 지식 보관소 | 문서 검색 |
+| 회의록 작성 | 회의록 요약본 생성 |
 
 ---
 
-## File & Data
+## 파일 및 데이터 (File & Data)
 
 ### Filesystem MCP
-**Best for**: Enhanced file operations beyond built-in tools
+**적합한 용도**: 내장 도구 이상의 향상된 파일 조작 기능 제공
 
-| Recommend When | Examples |
+| 추천 시점 | 예시 |
 |----------------|----------|
-| Complex file operations | Batch processing |
-| File watching | Monitor changes |
-| Advanced search | Custom patterns |
+| 복잡한 파일 작업 | 일괄 처리(Batch processing) |
+| 파일 모니터링 | 변경 사항 감시 |
+| 고급 검색 | 커스텀 검색 패턴 적용 |
 
 ### Memory MCP
-**Best for**: Persistent memory across sessions
+**적합한 용도**: 세션 간 유지되는 영구 메모리 제공
 
-| Recommend When | Examples |
+| 추천 시점 | 예시 |
 |----------------|----------|
-| Long-running projects | Remember context |
-| User preferences | Store settings |
-| Learning patterns | Build knowledge |
+| 장기 프로젝트 | 컨텍스트 기억 |
+| 사용자 선호도 설정 | 환경 설정 저장 |
+| 학습 패턴 누적 | 기술 지식 축적 |
 
-**Value**: Claude remembers project context, decisions, and patterns across conversations.
+**효과**: Claude가 여러 대화에 걸쳐 프로젝트 컨텍스트, 결정 사항, 코딩 패턴을 기억합니다.
 
 ---
 
-## Containers & DevOps
+## 컨테이너 및 DevOps (Containers & DevOps)
 
 ### Docker MCP
-**Best for**: Container management
+**적합한 용도**: 컨테이너 관리
 
-| Recommend When | Examples |
+| 추천 시점 | 예시 |
 |----------------|----------|
-| Docker Compose file | Container orchestration |
-| Dockerfile present | Build images |
-| Container debugging | Inspect logs, exec |
+| Docker Compose 파일 존재 | 컨테이너 오케스트레이션 |
+| Dockerfile 존재 | 이미지 빌드 |
+| 컨테이너 디버깅 | 로그 확인, exec 명령 실행 |
 
 ### Kubernetes MCP
-**Best for**: Kubernetes cluster management
+**적합한 용도**: Kubernetes 클러스터 관리
 
-| Recommend When | Examples |
+| 추천 시점 | 예시 |
 |----------------|----------|
-| K8s manifests | Deploy, scale pods |
-| Helm charts | Package management |
-| Cluster debugging | Pod logs, status |
+| K8s manifest 파일 | 파드(Pod) 배포 및 스케일링 |
+| Helm 차트 | 패키지 관리 |
+| 클러스터 디버깅 | 파드 로그, 상태 정보 확인 |
 
 ---
 
 ## AI & ML
 
 ### Exa MCP
-**Best for**: Web search and research
+**적합한 용도**: 웹 검색 및 조사
 
-| Recommend When | Examples |
+| 추천 시점 | 예시 |
 |----------------|----------|
-| Research tasks | Find current info |
-| Competitive analysis | Market research |
-| Documentation gaps | Find examples |
+| 정보 조사 작업 | 최신 정보 검색 |
+| 경쟁 분석 | 시장 조사 |
+| 부족한 기술 문서 보완 | 코드 예제 검색 |
 
 ---
 
-## Quick Reference: Detection Patterns
+## 빠른 참조: 감지 패턴 (Quick Reference: Detection Patterns)
 
-| Look For | Suggests MCP Server |
+| 감지 조건 | 추천 MCP 서버 |
 |----------|-------------------|
-| Popular npm packages | context7 |
+| 대중적인 npm 패키지 | context7 |
 | React/Vue/Next.js | Playwright MCP |
 | `@supabase/supabase-js` | Supabase MCP |
-| `convex` in deps, `convex/` directory, or `convex.json` | Convex MCP |
-| `pg` or `postgres` | PostgreSQL MCP |
-| GitHub remote | GitHub MCP |
-| `.linear` or Linear refs | Linear MCP |
+| 종속성 패키지에 `convex`, `convex/` 디렉토리, 또는 `convex.json` | Convex MCP |
+| `pg` 또는 `postgres` | PostgreSQL MCP |
+| GitHub 원격 저장소 | GitHub MCP |
+| `.linear` 또는 Linear 관련 코드 | Linear MCP |
 | `@aws-sdk/*` | AWS MCP |
 | `@sentry/*` | Sentry MCP |
 | `docker-compose.yml` | Docker MCP |
-| Slack webhook URLs | Slack MCP |
-| `@anthropic-ai/sdk` | context7 for Anthropic docs |
+| Slack 웹훅 URL | Slack MCP |
+| `@anthropic-ai/sdk` | Anthropic 문서용 context7 |

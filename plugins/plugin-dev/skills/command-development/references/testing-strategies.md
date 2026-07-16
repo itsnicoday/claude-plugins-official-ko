@@ -1,28 +1,28 @@
-# Command Testing Strategies
+# 명령어 테스트 전략 (Command Testing Strategies)
 
-Comprehensive strategies for testing slash commands before deployment and distribution.
+배포 및 배포 전 슬래시 명령어를 테스트하기 위한 종합 전략입니다.
 
-## Overview
+## 개요
 
-Testing commands ensures they work correctly, handle edge cases, and provide good user experience. A systematic testing approach catches issues early and builds confidence in command reliability.
+명령어를 테스트함으로써 제대로 작동하는지, 예외 상황(edge cases)을 잘 처리하는지, 우수한 사용자 경험(UX)을 주는지 확인할 수 있습니다. 체계적인 테스트 접근 방식은 이슈를 일찍 포착하고 명령어의 신뢰도를 높여줍니다.
 
-## Testing Levels
+## 테스트 단계 (Testing Levels)
 
-### Level 1: Syntax and Structure Validation
+### 1단계: 구문 및 구조 검증
 
-**What to test:**
-- YAML frontmatter syntax
-- Markdown format
-- File location and naming
+**테스트 항목:**
+- YAML 프론트매터 구문
+- 마크다운 형식
+- 파일 위치 및 명명 규칙
 
-**How to test:**
+**테스트 방법:**
 
 ```bash
 # Validate YAML frontmatter
 head -n 20 .claude/commands/my-command.md | grep -A 10 "^---"
 
 # Check for closing frontmatter marker
-head -n 20 .claude/commands/my-command.md | grep -c "^---" # Should be 2
+head -n 20 .claude/commands/my-command.md | grep -c "^---" # 2가 나와야 함
 
 # Verify file has .md extension
 ls .claude/commands/*.md
@@ -31,7 +31,7 @@ ls .claude/commands/*.md
 test -f .claude/commands/my-command.md && echo "Found" || echo "Missing"
 ```
 
-**Automated validation script:**
+**자동 검증 스크립트:**
 
 ```bash
 #!/bin/bash
@@ -70,14 +70,14 @@ fi
 echo "✓ Command file structure valid"
 ```
 
-### Level 2: Frontmatter Field Validation
+### 2단계: 프론트매터 필드 검증
 
-**What to test:**
-- Field types correct
-- Values in valid ranges
-- Required fields present (if any)
+**테스트 항목:**
+- 올바른 필드 타입
+- 유효 범위 내의 값
+- 필수 필드 존재 여부 (있는 경우)
 
-**Validation script:**
+**검증 스크립트:**
 
 ```bash
 #!/bin/bash
@@ -106,7 +106,7 @@ fi
 # Check 'allowed-tools' field format
 if echo "$FRONTMATTER" | grep -q "^allowed-tools:"; then
   echo "✓ allowed-tools field present"
-  # Could add more sophisticated validation here
+  # 필요에 따라 정교한 검증 로직 추가 가능
 fi
 
 # Check 'description' length
@@ -123,14 +123,14 @@ fi
 echo "✓ Frontmatter fields valid"
 ```
 
-### Level 3: Manual Command Invocation
+### 3단계: 수동 명령어 호출 테스트
 
-**What to test:**
-- Command appears in `/help`
-- Command executes without errors
-- Output is as expected
+**테스트 항목:**
+- 명령어가 `/help` 도움말 목록에 표시되는지
+- 명령어 실행 시 에러가 나지 않는지
+- 출력이 예상대로 나오는지
 
-**Test procedure:**
+**테스트 절차:**
 
 ```bash
 # 1. Start Claude Code
@@ -138,41 +138,41 @@ claude --debug
 
 # 2. Check command appears in help
 > /help
-# Look for your command in the list
+# 도움말 목록에서 개발한 명령어 이름을 찾아봅니다.
 
 # 3. Invoke command without arguments
 > /my-command
-# Check for reasonable error or behavior
+# 수용 가능한 에러나 기본 반응이 나오는지 확인합니다.
 
 # 4. Invoke with valid arguments
 > /my-command arg1 arg2
-# Verify expected behavior
+# 정상적으로 동작하는지 검사합니다.
 
 # 5. Check debug logs
 tail -f ~/.claude/debug-logs/latest
-# Look for errors or warnings
+# 에러나 경고가 발생하는지 모니터링합니다.
 ```
 
-### Level 4: Argument Testing
+### 4단계: 인자(Argument) 테스트
 
-**What to test:**
-- Positional arguments work ($1, $2, etc.)
-- $ARGUMENTS captures all arguments
-- Missing arguments handled gracefully
-- Invalid arguments detected
+**테스트 항목:**
+- 위치 인자가 잘 동작하는지 ($1, $2 등)
+- $ARGUMENTS가 모든 인자를 잘 캡처하는지
+- 누락된 인자를 우아하게 처리하는지
+- 잘못된 인자를 잘 감지해내는지
 
-**Test matrix:**
+**테스트 매트릭스:**
 
-| Test Case | Command | Expected Result |
-|-----------|---------|-----------------|
-| No args | `/cmd` | Graceful handling or useful message |
-| One arg | `/cmd arg1` | $1 substituted correctly |
-| Two args | `/cmd arg1 arg2` | $1 and $2 substituted |
-| Extra args | `/cmd a b c d` | All captured or extras ignored appropriately |
-| Special chars | `/cmd "arg with spaces"` | Quotes handled correctly |
-| Empty arg | `/cmd ""` | Empty string handled |
+| 테스트 케이스 | 명령어 | 예상 결과 |
+|---------------|--------|-----------|
+| 인자 없음 | `/cmd` | 예외 상황의 부드러운 처리 및 사용법 안내 출력 |
+| 단일 인자 | `/cmd arg1` | $1 위치에 정상 치환됨 |
+| 두 개의 인자 | `/cmd arg1 arg2` | $1 및 $2 위치에 각각 정상 치환됨 |
+| 초과 인자 | `/cmd a b c d` | 전체가 정상 캡처되거나, 초과분이 적절히 무시됨 |
+| 특수 문자 | `/cmd "arg with spaces"` | 따옴표가 정상적으로 처리되어 전달됨 |
+| 빈 인자 | `/cmd ""` | 빈 문자열에 맞게 정상 처리됨 |
 
-**Test script:**
+**테스트 스크립트:**
 
 ```bash
 #!/bin/bash
@@ -185,76 +185,76 @@ echo
 
 echo "Test 1: No arguments"
 echo "  Command: /$COMMAND"
-echo "  Expected: [describe expected behavior]"
+echo "  Expected: [예상 동작 기술]"
 echo "  Manual test required"
 echo
 
 echo "Test 2: Single argument"
 echo "  Command: /$COMMAND test-value"
-echo "  Expected: 'test-value' appears in output"
+echo "  Expected: 'test-value'가 출력에 표시됨"
 echo "  Manual test required"
 echo
 
 echo "Test 3: Multiple arguments"
 echo "  Command: /$COMMAND arg1 arg2 arg3"
-echo "  Expected: All arguments used appropriately"
+echo "  Expected: 모든 인자가 쓰임새에 맞게 적절히 처리됨"
 echo "  Manual test required"
 echo
 
 echo "Test 4: Special characters"
 echo "  Command: /$COMMAND \"value with spaces\""
-echo "  Expected: Entire phrase captured"
+echo "  Expected: 공백을 포함한 문구 전체가 하나의 인자로 캡처됨"
 echo "  Manual test required"
 ```
 
-### Level 5: File Reference Testing
+### 5단계: 파일 참조 테스트
 
-**What to test:**
-- @ syntax loads file contents
-- Non-existent files handled
-- Large files handled appropriately
-- Multiple file references work
+**테스트 항목:**
+- `@` 구문이 파일 내용을 올바르게 로드하는지
+- 존재하지 않는 파일이 주어졌을 때 잘 처리하는지
+- 대용량 파일을 적절히 제어하는지
+- 여러 파일 참조가 정상 작동하는지
 
-**Test procedure:**
+**테스트 절차:**
 
 ```bash
-# Create test files
+# 임시 테스트 파일 생성
 echo "Test content" > /tmp/test-file.txt
 echo "Second file" > /tmp/test-file-2.txt
 
-# Test single file reference
+# 단일 파일 참조 테스트
 > /my-command /tmp/test-file.txt
-# Verify file content is read
+# 파일 내용을 올바르게 읽는지 검증합니다.
 
-# Test non-existent file
+# 존재하지 않는 파일 테스트
 > /my-command /tmp/nonexistent.txt
-# Verify graceful error handling
+# 에러를 부드럽게 핸들링하는지 확인합니다.
 
-# Test multiple files
+# 다중 파일 참조 테스트
 > /my-command /tmp/test-file.txt /tmp/test-file-2.txt
-# Verify both files processed
+# 두 파일 모두 누락 없이 처리되는지 검사합니다.
 
-# Test large file
+# 대용량 파일 테스트
 dd if=/dev/zero of=/tmp/large-file.bin bs=1M count=100
 > /my-command /tmp/large-file.bin
-# Verify reasonable behavior (may truncate or warn)
+# 대용량 파일에 대해 경고를 띄우거나 적절히 자르는 등 안정성을 유지하는지 확인합니다.
 
-# Cleanup
+# 정리
 rm /tmp/test-file*.txt /tmp/large-file.bin
 ```
 
-### Level 6: Bash Execution Testing
+### 6단계: Bash 실행 테스트
 
-**What to test:**
-- !` commands execute correctly
-- Command output included in prompt
-- Command failures handled
-- Security: only allowed commands run
+**테스트 항목:**
+- `!` 명령어가 올바르게 실행되는지
+- 명령어 출력이 프롬프트에 포함되는지
+- 명령어 실행 실패를 감지하는지
+- 보안: 허용된 명령어만 실행되는지
 
-**Test procedure:**
+**테스트 절차:**
 
 ```bash
-# Create test command with bash execution
+# Bash 실행 구문이 포함된 테스트 명령어 생성
 cat > .claude/commands/test-bash.md << 'EOF'
 ---
 description: Test bash execution
@@ -267,14 +267,14 @@ Test output: !`echo "Hello from bash"`
 Analysis of output above...
 EOF
 
-# Test in Claude Code
+# Claude Code에서 테스트 실행
 > /test-bash
-# Verify:
-# 1. Date appears correctly
-# 2. Echo output appears
-# 3. No errors in debug logs
+# 다음 사항을 확인합니다:
+# 1. 날짜 정보가 정상적으로 나타남
+# 2. echo 문구 내용이 출력됨
+# 3. 디버그 로그에 에러 흔적이 없음
 
-# Test with disallowed command (should fail or be blocked)
+# 허용되지 않은 금지 명령어 테스트 (차단되거나 실패해야 함)
 cat > .claude/commands/test-forbidden.md << 'EOF'
 ---
 description: Test forbidden command
@@ -285,64 +285,64 @@ Trying forbidden: !`ls -la /`
 EOF
 
 > /test-forbidden
-# Verify: Permission denied or appropriate error
+# 확인: 권한 에러(Permission denied) 등 적절한 오류 처리가 수행됨
 ```
 
-### Level 7: Integration Testing
+### 7단계: 통합 테스트
 
-**What to test:**
-- Commands work with other plugin components
-- Commands interact correctly with each other
-- State management works across invocations
-- Workflow commands execute in sequence
+**테스트 항목:**
+- 명령어가 다른 플러그인 구성 요소와 유기적으로 잘 작동하는지
+- 명령어끼리 상호작용이 올바르게 이루어지는지
+- 여러 실행 간에 상태 관리가 작동하는지
+- 워크플로우 명령어가 순차적으로 실행되는지
 
-**Test scenarios:**
+**테스트 시나리오:**
 
-**Scenario 1: Command + Hook Integration**
+**시나리오 1: 명령어 + 훅 통합**
 
 ```bash
-# Setup: Command that triggers a hook
-# Test: Invoke command, verify hook executes
+# 설정: 훅을 트리거하는 명령어 준비
+# 테스트: 명령어를 실행하여 훅이 정상 트리거되는지 검증
 
-# Command: .claude/commands/risky-operation.md
-# Hook: PreToolUse that validates the operation
+# 명령어 파일: .claude/commands/risky-operation.md
+# 훅 파일: 해당 작업을 사전에 감사 및 제어하는 PreToolUse 훅
 
 > /risky-operation
-# Verify: Hook executes and validates before command completes
+# 검증: 명령어가 실행을 끝내기 전, 훅이 정상 가동되어 검증을 마침
 ```
 
-**Scenario 2: Command Sequence**
+**시나리오 2: 명령어 시퀀스**
 
 ```bash
-# Setup: Multi-command workflow
+# 설정: 다단계 워크플로우 시퀀스 구성
 > /workflow-init
-# Verify: State file created
+# 검증: 상태 기록 파일이 정상 생성됨
 
 > /workflow-step2
-# Verify: State file read, step 2 executes
+# 검증: 기존 상태 파일을 성공적으로 읽어와 다음 단계로 연동됨
 
 > /workflow-complete
-# Verify: State file cleaned up
+# 검증: 최종 처리를 마치고 상태 파일이 깔끔하게 지워짐
 ```
 
-**Scenario 3: Command + MCP Integration**
+**시나리오 3: 명령어 + MCP 통합**
 
 ```bash
-# Setup: Command uses MCP tools
-# Test: Verify MCP server accessible
+# 설정: MCP 도구를 사용하는 명령어 구성
+# 테스트: MCP 서버에 접근 가능한지 검증
 
 > /mcp-command
-# Verify:
-# 1. MCP server starts (if stdio)
-# 2. Tool calls succeed
-# 3. Results included in output
+# 검증:
+# 1. MCP 서버가 정상 시작됨 (stdio 연결 형태 등)
+# 2. 도구 호출(Tool calls)이 성공적으로 수행됨
+# 3. 획득한 결과가 출력물에 반영됨
 ```
 
-## Automated Testing Approaches
+## 자동화 테스트 접근 방식 (Automated Testing Approaches)
 
-### Command Test Suite
+### 명령어 테스트 스위트 (Command Test Suite)
 
-Create a test suite script:
+테스트 스위트 스크립트 작성:
 
 ```bash
 #!/bin/bash
@@ -359,7 +359,7 @@ for cmd_file in "$TEST_DIR"/*.md; do
   cmd_name=$(basename "$cmd_file" .md)
   echo "Testing: $cmd_name"
 
-  # Validate structure
+  # 구조 검사
   if ./validate-command.sh "$cmd_file"; then
     echo "  ✓ Structure valid"
   else
@@ -367,7 +367,7 @@ for cmd_file in "$TEST_DIR"/*.md; do
     ((FAILED_TESTS++))
   fi
 
-  # Validate frontmatter
+  # 프론트매터 검사
   if ./validate-frontmatter.sh "$cmd_file"; then
     echo "  ✓ Frontmatter valid"
   else
@@ -385,9 +385,9 @@ echo "Failed: $FAILED_TESTS"
 exit $FAILED_TESTS
 ```
 
-### Pre-Commit Hook
+### Pre-Commit 훅
 
-Validate commands before committing:
+커밋하기 전에 명령어를 검증합니다:
 
 ```bash
 #!/bin/bash
@@ -414,9 +414,9 @@ done
 echo "✓ All commands valid"
 ```
 
-### Continuous Testing
+### 지속적 테스트 (Continuous Testing)
 
-Test commands in CI/CD:
+CI/CD 환경에서 명령어를 테스트합니다:
 
 ```yaml
 # .github/workflows/test-commands.yml
@@ -451,17 +451,17 @@ jobs:
           fi
 ```
 
-## Edge Case Testing
+## 예외 상황(Edge Case) 테스트
 
-### Test Edge Cases
+### 예외 상황 테스트 항목
 
-**Empty arguments:**
+**빈 인자:**
 ```bash
 > /cmd ""
 > /cmd '' ''
 ```
 
-**Special characters:**
+**특수 문자:**
 ```bash
 > /cmd "arg with spaces"
 > /cmd arg-with-dashes
@@ -470,12 +470,12 @@ jobs:
 > /cmd 'arg with "quotes"'
 ```
 
-**Long arguments:**
+**너무 긴 인자:**
 ```bash
 > /cmd $(python -c "print('a' * 10000)")
 ```
 
-**Unusual file paths:**
+**특이한 파일 경로:**
 ```bash
 > /cmd ./file
 > /cmd ../file
@@ -483,22 +483,22 @@ jobs:
 > /cmd "/path with spaces/file"
 ```
 
-**Bash command edge cases:**
+**Bash 명령어 예외 상황:**
 ```markdown
-# Commands that might fail
+# 실패 가능성이 높은 명령어들
 !`exit 1`
 !`false`
 !`command-that-does-not-exist`
 
-# Commands with special output
+# 내용이 특이한 출력 결과들
 !`echo ""`
 !`cat /dev/null`
 !`yes | head -n 1000000`
 ```
 
-## Performance Testing
+## 성능 테스트 (Performance Testing)
 
-### Response Time Testing
+### 응답 시간 테스트
 
 ```bash
 #!/bin/bash
@@ -513,7 +513,7 @@ for i in {1..5}; do
   echo "Run $i:"
   START=$(date +%s%N)
 
-  # Invoke command (manual step - record time)
+  # 명령어 호출 안내 (종료 시간은 수동 체크가 필요함)
   echo "  Invoke: /$COMMAND"
   echo "  Start time: $START"
   echo "  (Record end time manually)"
@@ -523,41 +523,41 @@ done
 echo "Analyze results:"
 echo "  - Average response time"
 echo "  - Variance"
-echo "  - Acceptable threshold: < 3 seconds for fast commands"
+echo "  - Acceptable threshold: 빠른 명령어의 경우 3초 미만"
 ```
 
-### Resource Usage Testing
+### 리소스 사용량 테스트
 
 ```bash
-# Monitor Claude Code during command execution
-# In terminal 1:
+# 명령어 실행 중 Claude Code 프로세스 추적
+# 터미널 1:
 claude --debug
 
-# In terminal 2:
+# 터미널 2:
 watch -n 1 'ps aux | grep claude'
 
-# Execute command and observe:
-# - Memory usage
-# - CPU usage
-# - Process count
+# 명령어를 실행하며 다음 지표를 모니터링:
+# - 메모리 사용량
+# - CPU 사용량
+# - 프로세스 개수
 ```
 
-## User Experience Testing
+## 사용자 경험(UX) 테스트
 
-### Usability Checklist
+### 사용성 체크리스트
 
-- [ ] Command name is intuitive
-- [ ] Description is clear in `/help`
-- [ ] Arguments are well-documented
-- [ ] Error messages are helpful
-- [ ] Output is formatted readably
-- [ ] Long-running commands show progress
-- [ ] Results are actionable
-- [ ] Edge cases have good UX
+- [ ] 명령어 이름이 직관적이고 기억하기 쉬움
+- [ ] 설명이 `/help` 목록에 올바르게 잘 표시됨
+- [ ] 예상되는 인자(arguments)들이 친절히 설명됨
+- [ ] 에러 메시지가 구체적이고 대안을 포함하여 유용함
+- [ ] 가독성을 높일 수 있는 텍스트 포맷팅이 출력에 적용됨
+- [ ] 실행 시간이 긴 명령어의 경우 진행률(progress)을 보여줌
+- [ ] 분석 또는 체크 결과가 명확하고 실행 가능한 가이드를 제공함
+- [ ] 오류 상황이나 예외 처리 시 좋은 UX가 가미되어 있음
 
-### User Acceptance Testing
+### 사용자 인수 테스트
 
-Recruit testers:
+베타 테스터 구성 및 테스트 가이드 배포:
 
 ```markdown
 # Testing Guide for Beta Testers
@@ -568,135 +568,135 @@ Recruit testers:
 
 1. **Basic usage:**
    - Run: `/my-new-command`
-   - Expected: [describe]
+   - Expected: [상세 동작 기술]
    - Rate clarity: 1-5
 
 2. **With arguments:**
    - Run: `/my-new-command arg1 arg2`
-   - Expected: [describe]
+   - Expected: [상세 동작 기술]
    - Rate usefulness: 1-5
 
 3. **Error case:**
    - Run: `/my-new-command invalid-input`
-   - Expected: Helpful error message
+   - Expected: 유용한 오류 메시지 출력
    - Rate error message: 1-5
 
 ### Feedback Questions
 
-1. Was the command easy to understand?
-2. Did the output meet your expectations?
-3. What would you change?
-4. Would you use this command regularly?
+1. 명령어가 직관적이고 쉽게 이해되셨나요?
+2. 출력 결과가 본래 의도와 잘 들어맞았나요?
+3. 개선하거나 수정하고 싶으신 부분이 있으신가요?
+4. 앞으로 이 명령어를 일상에서 자주 사용하실 생각이 있으신가요?
 ```
 
-## Testing Checklist
+## 테스트 체크리스트
 
-Before releasing a command:
+명령어 릴리즈 전 체크리스트:
 
-### Structure
-- [ ] File in correct location
-- [ ] Correct .md extension
-- [ ] Valid YAML frontmatter (if present)
-- [ ] Markdown syntax correct
+### 구조 검증
+- [ ] 파일이 올바른 위치에 저장됨
+- [ ] 파일 확장자가 `.md`인지 확인
+- [ ] 프론트매터의 YAML 형식에 에러가 없음
+- [ ] 마크다운 구문이 제대로 렌더링됨
 
-### Functionality
-- [ ] Command appears in `/help`
-- [ ] Description is clear
-- [ ] Command executes without errors
-- [ ] Arguments work as expected
-- [ ] File references work
-- [ ] Bash execution works (if used)
+### 기능 검증
+- [ ] 명령어가 `/help` 도움말 목록에 정상 등록됨
+- [ ] 설명이 목적에 맞게 작성됨
+- [ ] 실행 시 예외 에러 없이 정상적으로 마침
+- [ ] 각 매개변수 인자들이 적절하게 해석됨
+- [ ] 파일 참조가 성공적으로 파일 내용을 로드함
+- [ ] Bash 실행 구문(`!`)이 의도대로 동작함
 
-### Edge Cases
-- [ ] Missing arguments handled
-- [ ] Invalid arguments detected
-- [ ] Non-existent files handled
-- [ ] Special characters work
-- [ ] Long inputs handled
+### 예외 상황 처리
+- [ ] 누락된 인자(arguments)가 부드럽게 무시되거나 에러 안내됨
+- [ ] 비정상적인 인자를 감지하여 차단함
+- [ ] 존재하지 않는 파일 참조 시 에러가 명시됨
+- [ ] 입력값에 포함된 특수 문자가 정상적으로 탈출(escape) 처리됨
+- [ ] 너무 긴 입력값에도 무너지지 않고 안정적으로 버팀
 
-### Integration
-- [ ] Works with other commands
-- [ ] Works with hooks (if applicable)
-- [ ] Works with MCP (if applicable)
-- [ ] State management works
+### 통합 연동
+- [ ] 연계된 다른 명령어들과 함께 잘 맞물림
+- [ ] 훅(hooks) 작동과 충돌 없이 잘 연계됨
+- [ ] MCP 서버를 올바르게 호출함
+- [ ] 런타임 간 상태 보존 파일이 정상 갱신 및 유지됨
 
-### Quality
-- [ ] Performance acceptable
-- [ ] No security issues
-- [ ] Error messages helpful
-- [ ] Output formatted well
-- [ ] Documentation complete
+### 품질 지표
+- [ ] 실행 속도가 적정 수준을 만족함
+- [ ] 명령어 사용으로 인한 보안 취약점이 감지되지 않음
+- [ ] 에러 메시지가 실제 복구에 도움이 되도록 구체적임
+- [ ] 결과 텍스트가 가독성 높게 표시됨
+- [ ] 동반 매뉴얼 및 문서 작성이 성실하게 완료됨
 
-### Distribution
-- [ ] Tested by others
-- [ ] Feedback incorporated
-- [ ] README updated
-- [ ] Examples provided
+### 배포 준비
+- [ ] 제3자를 통해 로컬 동작 검증을 거침
+- [ ] 테스트 피드백 사항이 코드에 성실히 반영됨
+- [ ] 동반 README 파일 갱신 완료
+- [ ] 예시 코드 검증 완료
 
-## Debugging Failed Tests
+## 실패한 테스트 디버깅 (Debugging Failed Tests)
 
-### Common Issues and Solutions
+### 일반적인 문제 및 해결책
 
-**Issue: Command not appearing in /help**
+**문제: 명령어가 /help에 나타나지 않음**
 
 ```bash
-# Check file location
+# 파일 위치 확인
 ls -la .claude/commands/my-command.md
 
-# Check permissions
+# 권한 권장 설정 적용
 chmod 644 .claude/commands/my-command.md
 
-# Check syntax
+# 파일 내 구문 에러 검사
 head -n 20 .claude/commands/my-command.md
 
-# Restart Claude Code
+# Claude Code 재시작 후 확인
 claude --debug
 ```
 
-**Issue: Arguments not substituting**
+**문제: 인자가 대체(substitution)되지 않음**
 
 ```bash
-# Verify syntax
+# 파일 내 인자 치환 기호 검증
 grep '\$1' .claude/commands/my-command.md
 grep '\$ARGUMENTS' .claude/commands/my-command.md
 
-# Test with simple command first
+# 아주 간단한 예시로 치환 로직 단독 테스트
 echo "Test: \$1 and \$2" > .claude/commands/test-args.md
 ```
 
-**Issue: Bash commands not executing**
+**문제: Bash 명령어가 실행되지 않음**
 
 ```bash
-# Check allowed-tools
+# allowed-tools 선언 내역 검증
 grep "allowed-tools" .claude/commands/my-command.md
 
-# Verify command syntax
+# 명령어 실행 기호 검사
 grep '!\`' .claude/commands/my-command.md
 
-# Test command manually
+# 해당 셸 명령어가 터미널 내에서 작동 가능한지 단독 실행
 date
 echo "test"
 ```
 
-**Issue: File references not working**
+**문제: 파일 참조가 작동하지 않음**
 
 ```bash
-# Check @ syntax
+# @ 기호 사용법 검증
 grep '@' .claude/commands/my-command.md
 
-# Verify file exists
+# 참조하려는 파일이 실제로 해당 경로에 존재하는지 단독 확인
 ls -la /path/to/referenced/file
 
-# Check permissions
+# 파일 권한 확인
 chmod 644 /path/to/referenced/file
 ```
 
-## Best Practices
+## 베스트 프랙티스
 
-1. **Test early, test often**: Validate as you develop
-2. **Automate validation**: Use scripts for repeatable checks
-3. **Test edge cases**: Don't just test the happy path
-4. **Get feedback**: Have others test before wide release
-5. **Document tests**: Keep test scenarios for regression testing
-6. **Monitor in production**: Watch for issues after release
-7. **Iterate**: Improve based on real usage data
+1. **일찍 테스트하고, 자주 테스트하세요**: 개발하는 과정에서 꾸준히 검증을 진행하세요.
+2. **검증 자동화**: 반복적인 검사를 위해 검증 스크립트를 사용하세요.
+3. **예외 상황 테스트**: 정상 작동 경로(happy path)만 테스트하지 마세요.
+4. **피드백 받기**: 널리 배포하기 전에 다른 사람들이 테스트해 보게 하세요.
+5. **테스트 문서화**: 회귀 테스트(regression testing)를 위해 테스트 시나리오를 기록해 둡니다.
+6. **운영 환경 모니터링**: 릴리즈 후 발생할 수 있는 문제를 모니터링합니다.
+7. **지속적인 보완**: 실제 사용 데이터를 바탕으로 개선해 나갑니다.

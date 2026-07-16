@@ -1,12 +1,12 @@
-# Deploy to Cloudflare Workers
+# Cloudflare Workers에 배포하기
 
-Fastest path from zero to a live `https://` MCP URL. Free tier, no credit card to start, two commands to deploy.
+작동 중인 `https://` MCP URL을 가장 신속하게 확보할 수 있는 방법입니다. 무료 플랜을 제공하며 시작할 때 신용카드가 필요 없고, 명령어 두 개만으로 배포할 수 있습니다.
 
-**Trade-off:** This is a Workers-native scaffold, not a deploy target for the Express scaffold in `remote-http-scaffold.md`. Different runtime. If you need portability across hosts, stick with Express. If you just want it live, start here.
+**주의 사항(Trade-off):** 이 방식은 Workers 전용 스캐폴딩이며, `remote-http-scaffold.md`에 설명된 Express 스캐폴딩의 배포 대상이 아닙니다. 런타임 환경이 서로 다릅니다. 다양한 호스트 환경 간의 이식성(portability)이 중요하다면 Express 방식을 고수하십시오. 우선 라이브로 배포해 동작을 보고 싶다면 여기서 시작하십시오.
 
 ---
 
-## Bootstrap
+## 프로젝트 초기화 (Bootstrap)
 
 ```bash
 npm create cloudflare@latest -- my-mcp-server \
@@ -14,13 +14,13 @@ npm create cloudflare@latest -- my-mcp-server \
 cd my-mcp-server
 ```
 
-This pulls a minimal template with the right deps (`agents`, `zod`) and a working `wrangler.jsonc`.
+이 명령어는 적합한 종속성(`agents`, `zod`)과 바로 사용 가능한 `wrangler.jsonc` 설정 파일이 포함된 초소형 템플릿을 내려받습니다.
 
 ---
 
 ## `src/index.ts`
 
-Replace the template's calculator example with your tools. Use `registerTool()` (same API as the Express scaffold — the `McpServer` instance is identical):
+템플릿에 들어 있는 계산기 예제 코드를 여러분의 도구로 대체하십시오. Express 스캐폴딩과 완전히 동일한 API 형태의 `registerTool()`을 사용합니다 (`McpServer` 인스턴스는 동일함):
 
 ```typescript
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -63,13 +63,13 @@ export default {
 };
 ```
 
-`McpAgent` is Cloudflare's wrapper — it handles the streamable-HTTP transport, session routing, and Durable Object plumbing. Your code only touches `this.server`, which is the same `McpServer` class from the SDK. Everything in `tool-design.md` and `server-capabilities.md` applies unchanged.
+`McpAgent`는 Cloudflare가 제공하는 래퍼 클래스로, streamable-HTTP 전송 계층과 세션 라우팅, Durable Object 인프라 구성을 대신 처리해 줍니다. 개발자 코드는 오직 SDK의 `McpServer` 클래스인 `this.server`만 다루면 됩니다. `tool-design.md`와 `server-capabilities.md`에 설명된 모든 디자인 원칙이 똑같이 적용됩니다.
 
 ---
 
 ## `wrangler.jsonc`
 
-The template ships this. The Durable Objects block is **boilerplate** — `McpAgent` uses DO for session state. You don't interact with it directly.
+템플릿에 기본적으로 포함된 파일입니다. Durable Objects 블록은 상용구(boilerplate) 코드로, `McpAgent`가 세션 상태를 저장하기 위해 내부적으로 DO를 사용합니다. 개발자가 이 영역을 직접 건드릴 필요는 없습니다.
 
 ```jsonc
 {
@@ -84,23 +84,23 @@ The template ships this. The Durable Objects block is **boilerplate** — `McpAg
 }
 ```
 
-If you rename the `MyMCP` class, update both `new_sqlite_classes` and `class_name` to match.
+만약 `MyMCP` 클래스 이름을 바꾸는 경우에는 `new_sqlite_classes`와 `class_name`에 적힌 이름도 함께 수정하십시오.
 
 ---
 
-## Run and deploy
+## 실행 및 배포 (Run and deploy)
 
 ```bash
 npx wrangler dev     # → http://localhost:8787/mcp
 npx wrangler deploy  # → https://my-mcp-server.<account>.workers.dev/mcp
 ```
 
-`wrangler deploy` prints the live URL. That's the URL users paste into Claude.
+`wrangler deploy` 명령어가 실행을 완료하면 라이브 URL을 출력합니다. 사용자가 Claude에 등록할 주소가 바로 이 URL입니다.
 
-Secrets (upstream API keys): `npx wrangler secret put UPSTREAM_API_KEY`, then read `env.UPSTREAM_API_KEY` inside `init()`.
+비밀 키 설정(외부 API 키 등): `npx wrangler secret put UPSTREAM_API_KEY`를 실행한 후, `init()` 메서드 안에서 `env.UPSTREAM_API_KEY` 값으로 읽어오십시오.
 
 ---
 
 ## OAuth
 
-Cloudflare ships `@cloudflare/workers-oauth-provider` — a drop-in that handles the authorization server side (CIMD/DCR endpoints, token issuance, consent UI). It wraps your `McpAgent` and gates `/mcp` behind a token check. See `auth.md` for the protocol details; the CF template `cloudflare/ai/demos/remote-mcp-github-oauth` shows the wiring.
+Cloudflare는 인증 서버 동작(CIMD/DCR 엔드포인트 제공, 토큰 발행, 동의 UI 렌더링)을 간편하게 해주는 `@cloudflare/workers-oauth-provider` 패키지를 제공합니다. 이 패키지는 `McpAgent`를 감싸서 `/mcp` 경로 접근 시 토큰 검증 과정을 적용합니다. 프로토콜 상세 사양은 `auth.md`를 참고하십시오. 구체적인 설정 연결 방식은 Cloudflare의 `cloudflare/ai/demos/remote-mcp-github-oauth` 템플릿을 참고하시면 됩니다.

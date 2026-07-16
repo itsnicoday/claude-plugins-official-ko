@@ -4,27 +4,24 @@ description: Guide for creating effective skills. This skill should be used when
 license: Complete terms in LICENSE.txt
 ---
 
-# Skill Creator
+# 스킬 제작기 (Skill Creator)
 
-This skill provides guidance for creating effective skills.
+이 스킬은 효과적인 스킬을 제작하기 위한 지침을 제공합니다.
 
-## About Skills
+## 스킬 소개 (About Skills)
 
-Skills are modular, self-contained packages that extend Claude's capabilities by providing
-specialized knowledge, workflows, and tools. Think of them as "onboarding guides" for specific
-domains or tasks—they transform Claude from a general-purpose agent into a specialized agent
-equipped with procedural knowledge that no model can fully possess.
+스킬은 전문 지식, 워크플로우 및 도구 통합을 제공하여 Claude의 기능을 확장하는 모듈식의 독립적인 패키지입니다. 특정 분야나 작업에 대한 "온보딩 가이드"라고 생각하면 됩니다. 모델이 완전히 보유할 수 없는 절차적 지식을 장착하여 Claude를 범용 에이전트에서 특화된 에이전트로 변환해 줍니다.
 
-### What Skills Provide
+### 스킬이 제공하는 것 (What Skills Provide)
 
-1. Specialized workflows - Multi-step procedures for specific domains
-2. Tool integrations - Instructions for working with specific file formats or APIs
-3. Domain expertise - Company-specific knowledge, schemas, business logic
-4. Bundled resources - Scripts, references, and assets for complex and repetitive tasks
+1. 전문 워크플로우 - 특정 분야를 위한 다단계 절차
+2. 도구 통합 - 특정 파일 형식이나 API로 작업하기 위한 지침
+3. 도메인 전문 지식 - 회사 고유의 지식, 스키마, 비즈니스 로직
+4. 번들 리소스 - 복잡하고 반복적인 작업을 위한 스크립트, 참조 자료 및 자산(에셋)
 
-### Anatomy of a Skill
+### 스킬의 구성 (Anatomy of a Skill)
 
-Every skill consists of a required SKILL.md file and optional bundled resources:
+모든 스킬은 필수 파일인 `SKILL.md`와 선택 사항인 번들 리소스로 구성됩니다:
 
 ```
 skill-name/
@@ -39,171 +36,171 @@ skill-name/
     └── assets/           - Files used in output (templates, icons, fonts, etc.)
 ```
 
-#### SKILL.md (required)
+#### SKILL.md (필수)
 
-**Metadata Quality:** The `name` and `description` in YAML frontmatter determine when Claude will use the skill. Be specific about what the skill does and when to use it. Use the third-person (e.g. "This skill should be used when..." instead of "Use this skill when...").
+**메타데이터 품질:** YAML 프론트매터의 `name`과 `description`은 Claude가 언제 이 스킬을 사용할지 결정합니다. 스킬이 수행하는 작업과 사용 시기를 구체적으로 명시하세요. 3인칭을 사용하세요(예: "이 스킬은 ~할 때 사용해야 합니다..." 사용. "이럴 때 이 스킬을 사용하세요..."는 피함).
 
-#### Bundled Resources (optional)
+#### 번들 리소스 (선택 사항) (Bundled Resources (optional))
 
-##### Scripts (`scripts/`)
+##### 스크립트 (`scripts/`)
 
-Executable code (Python/Bash/etc.) for tasks that require deterministic reliability or are repeatedly rewritten.
+결정론적인 신뢰성이 필요하거나 반복적으로 재작성되는 작업을 위한 실행 가능한 코드(Python/Bash 등)입니다.
 
-- **When to include**: When the same code is being rewritten repeatedly or deterministic reliability is needed
-- **Example**: `scripts/rotate_pdf.py` for PDF rotation tasks
-- **Benefits**: Token efficient, deterministic, may be executed without loading into context
-- **Note**: Scripts may still need to be read by Claude for patching or environment-specific adjustments
+- **포함할 시기**: 동일한 코드가 반복해서 재작성되거나 결정론적인 신뢰성이 필요할 때
+- **예시**: PDF 회전 작업을 위한 `scripts/rotate_pdf.py`
+- **장점**: 토큰 효율성, 결정론적 동작, 컨텍스트에 로드하지 않고도 실행 가능할 수 있음
+- **참고**: 스크립트는 여전히 패치 적용이나 환경별 조정을 위해 Claude가 읽어야 할 수 있습니다.
 
-##### References (`references/`)
+##### 참조 (`references/`)
 
-Documentation and reference material intended to be loaded as needed into context to inform Claude's process and thinking.
+Claude의 프로세스와 사고에 정보를 제공하기 위해 필요에 따라 컨텍스트에 로드되도록 고안된 문서 및 참조 자료입니다.
 
-- **When to include**: For documentation that Claude should reference while working
-- **Examples**: `references/finance.md` for financial schemas, `references/mnda.md` for company NDA template, `references/policies.md` for company policies, `references/api_docs.md` for API specifications
-- **Use cases**: Database schemas, API documentation, domain knowledge, company policies, detailed workflow guides
-- **Benefits**: Keeps SKILL.md lean, loaded only when Claude determines it's needed
-- **Best practice**: If files are large (>10k words), include grep search patterns in SKILL.md
-- **Avoid duplication**: Information should live in either SKILL.md or references files, not both. Prefer references files for detailed information unless it's truly core to the skill—this keeps SKILL.md lean while making information discoverable without hogging the context window. Keep only essential procedural instructions and workflow guidance in SKILL.md; move detailed reference material, schemas, and examples to references files.
+- **포함할 시기**: Claude가 작업 중에 참조해야 하는 문서의 경우
+- **예시**: 금융 스키마를 위한 `references/finance.md`, 회사 NDA 템플릿을 위한 `references/mnda.md`, 회사 정책을 위한 `references/policies.md`, API 사양을 위한 `references/api_docs.md`
+- **사용 사례**: 데이터베이스 스키마, API 문서, 도메인 지식, 회사 정책, 세부 워크플로우 가이드
+- **장점**: `SKILL.md`를 가볍게 유지하며, Claude가 필요하다고 판단할 때만 로드됨
+- **권장 사항**: 파일이 큰 경우(>10k 단어), `SKILL.md`에 grep 검색 패턴을 포함하세요.
+- **중복 방지**: 정보는 `SKILL.md` 또는 참조 파일 중 하나에만 있어야 하며, 양쪽에 모두 있어서는 안 됩니다. 세부 정보는 컨텍스트 창을 독점하지 않으면서도 정보를 검색할 수 있도록 `SKILL.md`보다는 참조 파일에 두는 것을 권장합니다. `SKILL.md`에는 필수적인 절차 지침과 워크플로우 안내만 남겨두고, 세부 참조 자료, 스키마, 예시는 참조 파일로 이동하세요.
 
-##### Assets (`assets/`)
+##### 에셋 (`assets/`)
 
-Files not intended to be loaded into context, but rather used within the output Claude produces.
+컨텍스트에 로드하기 위한 것이 아니라, Claude가 생성하는 출력물 내에서 사용하기 위한 파일입니다.
 
-- **When to include**: When the skill needs files that will be used in the final output
-- **Examples**: `assets/logo.png` for brand assets, `assets/slides.pptx` for PowerPoint templates, `assets/frontend-template/` for HTML/React boilerplate, `assets/font.ttf` for typography
-- **Use cases**: Templates, images, icons, boilerplate code, fonts, sample documents that get copied or modified
-- **Benefits**: Separates output resources from documentation, enables Claude to use files without loading them into context
+- **포함할 시기**: 스킬이 최종 출력물에 사용될 파일을 필요로 할 때
+- **예시**: 브랜드 자산을 위한 `assets/logo.png`, 파워포인트 템플릿을 위한 `assets/slides.pptx`, HTML/React 보일러플레이트를 위한 `assets/frontend-template/`, 타이포그래피를 위한 `assets/font.ttf`
+- **사용 사례**: 템플릿, 이미지, 아이콘, 보일러플레이트 코드, 폰트, 복사되거나 수정되는 샘플 문서
+- **장점**: 출력 리소스를 문서와 분리하여 Claude가 파일을 컨텍스트에 로드하지 않고도 사용할 수 있도록 함
 
-### Progressive Disclosure Design Principle
+### 점진적 공개 설계 원칙 (Progressive Disclosure Design Principle)
 
-Skills use a three-level loading system to manage context efficiently:
+스킬은 컨텍스트를 효율적으로 관리하기 위해 3단계 로딩 시스템을 사용합니다:
 
-1. **Metadata (name + description)** - Always in context (~100 words)
-2. **SKILL.md body** - When skill triggers (<5k words)
-3. **Bundled resources** - As needed by Claude (Unlimited*)
+1. **메타데이터 (name + description)** - 항상 컨텍스트에 있음 (~100 단어)
+2. **SKILL.md 본문** - 스킬이 트리거될 때 (<5k 단어)
+3. **번들 리소스** - Claude가 필요할 때 (제한 없음*)
 
-*Unlimited because scripts can be executed without reading into context window.
+*스크립트는 컨텍스트 창을 읽지 않고도 실행할 수 있으므로 제한이 없습니다.
 
-## Skill Creation Process
+## 스킬 제작 프로세스 (Skill Creation Process)
 
-To create a skill, follow the "Skill Creation Process" in order, skipping steps only if there is a clear reason why they are not applicable.
+스킬을 제작하려면 "스킬 제작 프로세스"를 순서대로 따르며, 적용할 수 없는 명확한 이유가 있는 경우에만 단계를 건너뜁니다.
 
-### Step 1: Understanding the Skill with Concrete Examples
+### 1단계: 구체적인 예시를 통한 스킬 이해 (Step 1: Understanding the Skill with Concrete Examples)
 
-Skip this step only when the skill's usage patterns are already clearly understood. It remains valuable even when working with an existing skill.
+스킬의 사용 패턴이 이미 명확히 이해된 경우에만 이 단계를 건너뜁니다. 기존 스킬을 작업할 때도 이 단계는 여전히 유용합니다.
 
-To create an effective skill, clearly understand concrete examples of how the skill will be used. This understanding can come from either direct user examples or generated examples that are validated with user feedback.
+효과적인 스킬을 제작하려면 스킬이 어떻게 사용될지에 대한 구체적인 예시를 명확히 이해해야 합니다. 이러한 이해는 직접적인 사용자 예시나 사용자 피드백으로 검증된 생성된 예시를 통해 얻을 수 있습니다.
 
-For example, when building an image-editor skill, relevant questions include:
+예를 들어, 이미지 편집기(image-editor) 스킬을 구축할 때 관련된 질문은 다음과 같습니다:
 
-- "What functionality should the image-editor skill support? Editing, rotating, anything else?"
-- "Can you give some examples of how this skill would be used?"
-- "I can imagine users asking for things like 'Remove the red-eye from this image' or 'Rotate this image'. Are there other ways you imagine this skill being used?"
-- "What would a user say that should trigger this skill?"
+- "이미지 편집기 스킬은 어떤 기능을 지원해야 하나요? 편집, 회전, 그 외에 다른 기능이 있나요?"
+- "이 스킬이 어떻게 사용될지에 대한 예시를 들어주실 수 있나요?"
+- "사용자가 '이 이미지에서 적목 현상을 제거해줘' 또는 '이 이미지를 회전해줘'와 같은 요청을 할 것 같습니다. 그 외에 생각하시는 사용 방식이 있나요?"
+- "사용자가 어떤 말을 했을 때 이 스킬이 트리거되어야 하나요?"
 
-To avoid overwhelming users, avoid asking too many questions in a single message. Start with the most important questions and follow up as needed for better effectiveness.
+사용자에게 부담을 주지 않으려면 한 메시지에서 너무 많은 질문을 하지 마세요. 가장 중요한 질문부터 시작하고 더 나은 효과를 위해 필요에 따라 후속 질문을 하세요.
 
-Conclude this step when there is a clear sense of the functionality the skill should support.
+스킬이 지원해야 하는 기능에 대한 명확한 방향이 잡히면 이 단계를 완료합니다.
 
-### Step 2: Planning the Reusable Skill Contents
+### 2단계: 재사용 가능한 스킬 콘텐츠 계획 (Step 2: Planning the Reusable Skill Contents)
 
-To turn concrete examples into an effective skill, analyze each example by:
+구체적인 예시를 효과적인 스킬로 전환하기 위해 각 예시를 다음과 같이 분석합니다:
 
-1. Considering how to execute on the example from scratch
-2. Identifying what scripts, references, and assets would be helpful when executing these workflows repeatedly
+1. 처음부터 예시를 어떻게 실행할지 고려하기
+2. 이러한 워크플로우를 반복해서 실행할 때 어떤 스크립트, 참조 자료, 에셋이 도움이 될지 식별하기
 
-Example: When building a `pdf-editor` skill to handle queries like "Help me rotate this PDF," the analysis shows:
+예시: "이 PDF 회전을 도와줘"와 같은 쿼리를 처리하기 위해 `pdf-editor` 스킬을 구축할 때 분석 결과는 다음과 같습니다:
 
-1. Rotating a PDF requires re-writing the same code each time
-2. A `scripts/rotate_pdf.py` script would be helpful to store in the skill
+1. PDF를 회전하려면 매번 동일한 코드를 재작성해야 합니다.
+2. 스킬에 `scripts/rotate_pdf.py` 스크립트를 저장해 두면 유용할 것입니다.
 
-Example: When designing a `frontend-webapp-builder` skill for queries like "Build me a todo app" or "Build me a dashboard to track my steps," the analysis shows:
+예시: "할 일(todo) 앱을 만들어줘" 또는 "내 걸음 수를 추적할 대시보드를 만들어줘"와 같은 쿼리를 위해 `frontend-webapp-builder` 스킬을 설계할 때 분석 결과는 다음과 같습니다:
 
-1. Writing a frontend webapp requires the same boilerplate HTML/React each time
-2. An `assets/hello-world/` template containing the boilerplate HTML/React project files would be helpful to store in the skill
+1. 프론트엔드 웹앱을 작성하려면 매번 동일한 보일러플레이트 HTML/React가 필요합니다.
+2. 보일러플레이트 HTML/React 프로젝트 파일이 포함된 `assets/hello-world/` 템플릿을 스킬에 저장해 두면 유용할 것입니다.
 
-Example: When building a `big-query` skill to handle queries like "How many users have logged in today?" the analysis shows:
+예시: "오늘 로그인한 사용자는 몇 명인가요?"와 같은 쿼리를 처리하기 위해 `big-query` 스킬을 구축할 때 분석 결과는 다음과 같습니다:
 
-1. Querying BigQuery requires re-discovering the table schemas and relationships each time
-2. A `references/schema.md` file documenting the table schemas would be helpful to store in the skill
+1. BigQuery를 쿼리하려면 매번 테이블 스키마와 관계를 재검색해야 합니다.
+2. 테이블 스키마를 문서화한 `references/schema.md` 파일을 스킬에 저장해 두면 유용할 것입니다.
 
-To establish the skill's contents, analyze each concrete example to create a list of the reusable resources to include: scripts, references, and assets.
+스킬 콘텐츠를 설정하려면 각 구체적인 예시를 분석하여 스크립트, 참조 자료 및 에셋을 포함할 재사용 가능한 리소스 목록을 만듭니다.
 
-### Step 3: Initializing the Skill
+### 3단계: 스킬 초기화 (Step 3: Initializing the Skill)
 
-At this point, it is time to actually create the skill.
+이 시점에서 실제로 스킬을 생성할 차례입니다.
 
-Skip this step only if the skill being developed already exists, and iteration or packaging is needed. In this case, continue to the next step.
+개발 중인 스킬이 이미 존재하고 반복 개선이나 패키징만 필요한 경우에만 이 단계를 건너뜁니다. 이 경우 다음 단계로 이동합니다.
 
-When creating a new skill from scratch, always run the `init_skill.py` script. The script conveniently generates a new template skill directory that automatically includes everything a skill requires, making the skill creation process much more efficient and reliable.
+처음부터 새 스킬을 만들 때는 항상 `init_skill.py` 스크립트를 실행하십시오. 이 스크립트는 스킬이 필요로 하는 모든 것을 자동으로 포함하는 새로운 템플릿 스킬 디렉토리를 편리하게 생성하므로, 스킬 생성 프로세스를 훨씬 효율적이고 안정적으로 만들어 줍니다.
 
-Usage:
+사용법:
 
 ```bash
 scripts/init_skill.py <skill-name> --path <output-directory>
 ```
 
-The script:
+이 스크립트는 다음을 수행합니다:
 
-- Creates the skill directory at the specified path
-- Generates a SKILL.md template with proper frontmatter and TODO placeholders
-- Creates example resource directories: `scripts/`, `references/`, and `assets/`
-- Adds example files in each directory that can be customized or deleted
+- 지정된 경로에 스킬 디렉토리를 생성합니다.
+- 올바른 프론트매터와 TODO 플레이스홀더가 포함된 `SKILL.md` 템플릿을 생성합니다.
+- 예시 리소스 디렉토리(`scripts/`, `references/`, `assets/`)를 생성합니다.
+- 각 디렉토리에 맞춤화하거나 삭제할 수 있는 예시 파일을 추가합니다.
 
-After initialization, customize or remove the generated SKILL.md and example files as needed.
+초기화 후에는 필요에 따라 생성된 `SKILL.md`와 예시 파일을 수정하거나 제거합니다.
 
-### Step 4: Edit the Skill
+### 4단계: 스킬 편집 (Step 4: Edit the Skill)
 
-When editing the (newly-generated or existing) skill, remember that the skill is being created for another instance of Claude to use. Focus on including information that would be beneficial and non-obvious to Claude. Consider what procedural knowledge, domain-specific details, or reusable assets would help another Claude instance execute these tasks more effectively.
+(새로 생성되었거나 기존의) 스킬을 편집할 때, 이 스킬은 Claude의 다른 인스턴스가 사용하기 위해 만들어지는 것임을 기억하십시오. Claude에게 유익하고 분명하지 않은 정보를 포함하는 데 집중하십시오. 다른 Claude 인스턴스가 이러한 작업을 더 효과적으로 실행하는 데 도움이 될 절차적 지식, 도메인 특정 세부 정보 또는 재사용 가능한 에셋이 무엇인지 고려하십시오.
 
-#### Start with Reusable Skill Contents
+#### 재사용 가능한 스킬 콘텐츠부터 시작하기
 
-To begin implementation, start with the reusable resources identified above: `scripts/`, `references/`, and `assets/` files. Note that this step may require user input. For example, when implementing a `brand-guidelines` skill, the user may need to provide brand assets or templates to store in `assets/`, or documentation to store in `references/`.
+구현을 시작하려면 위에서 식별한 재사용 가능한 리소스(`scripts/`, `references/`, `assets/` 파일)부터 시작하십시오. 이 단계는 사용자의 입력이 필요할 수 있습니다. 예를 들어, `brand-guidelines` 스킬을 구현할 때 사용자는 `assets/`에 저장할 브랜드 자산이나 템플릿, 또는 `references/`에 저장할 문서를 제공해야 할 수 있습니다.
 
-Also, delete any example files and directories not needed for the skill. The initialization script creates example files in `scripts/`, `references/`, and `assets/` to demonstrate structure, but most skills won't need all of them.
+또한 스킬에 필요하지 않은 예시 파일과 디렉토리는 삭제하십시오. 초기화 스크립트는 구조를 보여주기 위해 `scripts/`, `references/`, `assets/`에 예시 파일을 만들지만, 대부분의 스킬에는 이 모든 파일이 필요하지는 않습니다.
 
-#### Update SKILL.md
+#### SKILL.md 업데이트
 
-**Writing Style:** Write the entire skill using **imperative/infinitive form** (verb-first instructions), not second person. Use objective, instructional language (e.g., "To accomplish X, do Y" rather than "You should do X" or "If you need to do X"). This maintains consistency and clarity for AI consumption.
+**작성 스타일:** 2인칭이 아닌 **명령형/부정사형**(동사 먼저 시작하는 지침)을 사용하여 전체 스킬을 작성하십시오. 객관적이고 교육적인 언어를 사용하십시오(예: "X를 수행해야 합니다" 또는 "X를 수행해야 하는 경우" 대신 "X를 달성하려면 Y를 수행하십시오"). 이는 AI가 활용할 때 일관성과 명확성을 유지하게 해줍니다.
 
-To complete SKILL.md, answer the following questions:
+`SKILL.md`를 작성하려면 다음 질문에 답하십시오:
 
-1. What is the purpose of the skill, in a few sentences?
-2. When should the skill be used?
-3. In practice, how should Claude use the skill? All reusable skill contents developed above should be referenced so that Claude knows how to use them.
+1. 몇 문장으로 요약한 스킬의 목적은 무엇인가요?
+2. 스킬은 언제 사용해야 하나요?
+3. 실제로 Claude는 스킬을 어떻게 사용해야 하나요? 위에서 개발한 모든 재사용 가능한 스킬 콘텐츠는 Claude가 어떻게 사용하는지 알 수 있도록 참조되어야 합니다.
 
-### Step 5: Packaging a Skill
+### 5단계: 스킬 패키징 (Step 5: Packaging a Skill)
 
-Once the skill is ready, it should be packaged into a distributable zip file that gets shared with the user. The packaging process automatically validates the skill first to ensure it meets all requirements:
+스킬이 준비되면 사용자에게 공유할 배포 가능한 zip 파일로 패키징해야 합니다. 패키징 프로세스는 먼저 스킬을 자동으로 검증하여 모든 요구 사항을 충족하는지 확인합니다:
 
 ```bash
 scripts/package_skill.py <path/to/skill-folder>
 ```
 
-Optional output directory specification:
+선택 사항인 출력 디렉토리 지정:
 
 ```bash
 scripts/package_skill.py <path/to/skill-folder> ./dist
 ```
 
-The packaging script will:
+패키징 스크립트는 다음을 수행합니다:
 
-1. **Validate** the skill automatically, checking:
-   - YAML frontmatter format and required fields
-   - Skill naming conventions and directory structure
-   - Description completeness and quality
-   - File organization and resource references
+1. **자동 검증**, 다음 사항을 확인합니다:
+   - YAML 프론트매터 형식 및 필수 필드
+   - 스킬 이름 규칙 및 디렉토리 구조
+   - 설명의 완전성 및 품질
+   - 파일 구성 및 리소스 참조
 
-2. **Package** the skill if validation passes, creating a zip file named after the skill (e.g., `my-skill.zip`) that includes all files and maintains the proper directory structure for distribution.
+2. 검증이 통과되면 스킬을 **패키징**하여 배포를 위해 모든 파일을 포함하고 올바른 디렉토리 구조를 유지하는 스킬 이름을 딴 zip 파일(예: `my-skill.zip`)을 생성합니다.
 
-If validation fails, the script will report the errors and exit without creating a package. Fix any validation errors and run the packaging command again.
+검증에 실패하면 스크립트는 에러를 보고하고 패키지를 만들지 않고 종료합니다. 검증 에러를 수정하고 패키징 명령어를 다시 실행하십시오.
 
-### Step 6: Iterate
+### 6단계: 반복 개선 (Step 6: Iterate)
 
-After testing the skill, users may request improvements. Often this happens right after using the skill, with fresh context of how the skill performed.
+스킬을 테스트한 후 사용자가 개선 사항을 요청할 수 있습니다. 이는 종종 스킬을 사용한 직후, 스킬이 어떻게 작동했는지에 대한 생생한 컨텍스트가 있을 때 발생합니다.
 
-**Iteration workflow:**
-1. Use the skill on real tasks
-2. Notice struggles or inefficiencies
-3. Identify how SKILL.md or bundled resources should be updated
-4. Implement changes and test again
+**반복 워크플로우:**
+1. 실제 작업에 스킬 사용
+2. 문제점이나 비효율성 발견
+3. `SKILL.md` 또는 번들 리소스를 어떻게 업데이트해야 하는지 파악
+4. 변경 사항을 구현하고 다시 테스트

@@ -1,10 +1,10 @@
-# Complete Agent Examples
+# 완성된 에이전트 예시 (Complete Agent Examples)
 
-Full, production-ready agent examples for common use cases. Use these as templates for your own agents.
+흔한 유스케이스들을 위해 준비된 바로 사용 가능한 완전한 에이전트 예시들입니다. 귀하의 에이전트를 만들기 위한 템플릿으로 사용해 보십시오.
 
-## Example 1: Code Review Agent
+## 예시 1: 코드 리뷰 에이전트 (Code Review Agent)
 
-**File:** `agents/code-reviewer.md`
+**파일:** `agents/code-reviewer.md`
 
 ```markdown
 ---
@@ -86,9 +86,9 @@ You are an expert code quality reviewer specializing in identifying issues, secu
 - Large changeset: Focus on most impactful files first
 ```
 
-## Example 2: Test Generator Agent
+## 예시 2: 테스트 생성기 에이전트 (Test Generator Agent)
 
-**File:** `agents/test-generator.md`
+**파일:** `agents/test-generator.md`
 
 ```markdown
 ---
@@ -168,9 +168,9 @@ describe('[module name]', () => {
 - Untestable code: Suggest refactoring for testability
 ```
 
-## Example 3: Documentation Generator
+## 예시 3: 문서 생성기 (Documentation Generator)
 
-**File:** `agents/docs-generator.md`
+**파일:** `agents/docs-generator.md`
 
 ```markdown
 ---
@@ -238,9 +238,9 @@ Create documentation in project's standard format:
 - Unclear behavior: Document observable behavior, note assumptions
 ```
 
-## Example 4: Security Analyzer
+## 예시 4: 보안 분석기 (Security Analyzer)
 
-**File:** `agents/security-analyzer.md`
+**파일:** `agents/security-analyzer.md`
 
 ```markdown
 ---
@@ -315,43 +315,43 @@ You are an expert security analyst specializing in identifying vulnerabilities a
 - Out of scope items: Note but don't deep-dive
 ```
 
-## Customization Tips
+## 커스터마이징 팁 (Customization Tips)
 
-### Adapt to Your Domain
+### 귀하의 도메인에 맞추기 (Adapt to Your Domain)
 
-Take these templates and customize:
-- Change domain expertise (e.g., "Python expert" vs "React expert")
-- Adjust process steps for your specific workflow
-- Modify output format to match your needs
-- Add domain-specific quality standards
-- Include technology-specific checks
+이 템플릿들을 가져와 맞춤 조정하십시오:
+- 도메인 전문성 변경 (예: "Python 전문가" vs "React 전문가")
+- 특정 워크플로우에 맞게 프로세스 단계 조정
+- 요구사항에 맞게 출력 형식 수정
+- 도메인별 품질 표준 추가
+- 기술별 검사 포함
 
-### Adjust Tool Access
+### 도구 액세스 조정하기 (Adjust Tool Access)
 
-Restrict or expand based on agent needs:
-- **Read-only agents**: `["Read", "Grep", "Glob"]`
-- **Generator agents**: `["Read", "Write", "Grep"]`
-- **Executor agents**: `["Read", "Write", "Bash", "Grep"]`
-- **Full access**: Omit tools field
+에이전트 필요에 따라 제한하거나 확장하십시오:
+- **읽기 전용 에이전트**: `["Read", "Grep", "Glob"]`
+- **생성기 에이전트**: `["Read", "Write", "Grep"]`
+- **실행기 에이전트**: `["Read", "Write", "Bash", "Grep"]`
+- **전체 액세스**: tools 필드 생략
 
-### Customize Colors
+### 색상 맞춤 설정 (Customize Colors)
 
-Choose colors that match agent purpose:
-- **Blue**: Analysis, review, investigation
-- **Cyan**: Documentation, information
-- **Green**: Generation, creation, success-oriented
-- **Yellow**: Validation, warnings, caution
-- **Red**: Security, critical analysis, errors
-- **Magenta**: Refactoring, transformation, creative
+에이전트 목적에 맞는 색상을 선택하십시오:
+- **Blue (파란색)**: 분석, 리뷰, 조사
+- **Cyan (청록색)**: 문서화, 정보
+- **Green (초록색)**: 생성, 작성, 성공 지향적 작업
+- **Yellow (노란색)**: 검증, 경고, 주의
+- **Red (빨간색)**: 보안, 중요 분석, 오류
+- **Magenta (자홍색)**: 리팩토링, 변환, 창의적 작업
 
-## Using These Templates
+## 이 템플릿 사용하기 (Using These Templates)
 
-1. Copy template that matches your use case
-2. Replace placeholders with your specifics
-3. Customize process steps for your domain
-4. Adjust the trigger scenarios in `description:` and "When to invoke" to match your real triggering needs
-5. Validate with `scripts/validate-agent.sh`
-6. Test triggering with real scenarios
-7. Iterate based on agent performance
+1. 유스케이스에 맞는 템플릿을 복사합니다.
+2. 자리표시자(placeholders)를 귀하의 구체적인 내용으로 교체합니다.
+3. 귀하의 도메인에 맞게 프로세스 단계를 맞춤 설정합니다.
+4. 실제 트리거 요구사항에 맞게 `description:` 및 "When to invoke"의 트리거 시나리오를 조정합니다.
+5. `scripts/validate-agent.sh`를 사용해 검증합니다.
+6. 실제 시나리오로 트리거링을 테스트합니다.
+7. 에이전트 성능에 기초하여 지속적으로 개선(반복)합니다.
 
-These templates provide battle-tested starting points. Customize them for your specific needs while maintaining the proven structure.
+이 템플릿들은 실전에서 검증된 출발점을 제공합니다. 검증된 구조를 유지하면서 귀하의 특정 요구사항에 맞게 맞춤화해 보십시오.

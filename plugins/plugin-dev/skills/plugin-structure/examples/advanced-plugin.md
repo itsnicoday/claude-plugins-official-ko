@@ -1,8 +1,8 @@
-# Advanced Plugin Example
+# 고급 플러그인 예시 (Advanced Plugin Example)
 
-A complex, enterprise-grade plugin with MCP integration and advanced organization.
+MCP 통합 및 고급 구성을 특징으로 하는 엔터프라이즈급의 복잡한 플러그인 사례.
 
-## Directory Structure
+## 디렉토리 구조 (Directory Structure)
 
 ```
 enterprise-devops/
@@ -98,7 +98,7 @@ enterprise-devops/
         └── service.yaml
 ```
 
-## File Contents
+## 파일 내용 (File Contents)
 
 ### .claude-plugin/plugin.json
 
@@ -195,13 +195,13 @@ Trigger CI/CD build pipeline and monitor progress in real-time.
    - Validate configuration files
 
 2. **Trigger**: Start build via MCP server
-   \`\`\`javascript
+   ```javascript
    // Uses github-actions MCP server
    const build = await tools.github_actions_trigger_workflow({
      workflow: 'build.yml',
      ref: currentBranch
    })
-   \`\`\`
+   ```
 
 3. **Monitor**: Track build progress
    - Display real-time logs
@@ -289,22 +289,22 @@ Uses multiple MCP servers:
 ## Monitoring Integration
 
 Integrates with monitoring tools via lib:
-\`\`\`javascript
+```javascript
 const { DatadogClient } = require('${CLAUDE_PLUGIN_ROOT}/lib/integrations/datadog')
 const metrics = await DatadogClient.getMetrics(service, timeRange)
-\`\`\`
+```
 
 ## Notification Integration
 
 Sends updates via Slack and PagerDuty:
-\`\`\`javascript
+```javascript
 const { SlackClient } = require('${CLAUDE_PLUGIN_ROOT}/lib/integrations/slack')
 await SlackClient.notify({
   channel: '#deployments',
   message: 'Deployment started',
   metadata: deploymentPlan
 })
-\`\`\`
+```
 ```
 
 ### skills/kubernetes-ops/SKILL.md
@@ -380,23 +380,23 @@ Use external secret management (Vault, AWS Secrets Manager) for production.
 ### Rolling Update
 
 Default strategy, gradual replacement:
-\`\`\`yaml
+```yaml
 strategy:
   type: RollingUpdate
   rollingUpdate:
     maxSurge: 1
     maxUnavailable: 0
-\`\`\`
+```
 
 **When to use**: Standard deployments, minor updates
 
 ### Recreate
 
 Stop all pods, then create new ones:
-\`\`\`yaml
+```yaml
 strategy:
   type: Recreate
-\`\`\`
+```
 
 **When to use**: Stateful apps that can't run multiple versions
 
@@ -425,7 +425,7 @@ Gradually roll out to subset of users:
 ### Resource Requests and Limits
 
 Always set for production workloads:
-\`\`\`yaml
+```yaml
 resources:
   requests:
     memory: "256Mi"
@@ -433,7 +433,7 @@ resources:
   limits:
     memory: "512Mi"
     cpu: "500m"
-\`\`\`
+```
 
 **Requests**: Guaranteed resources
 **Limits**: Maximum allowed resources
@@ -441,7 +441,7 @@ resources:
 ### Health Checks
 
 Essential for reliability:
-\`\`\`yaml
+```yaml
 livenessProbe:
   httpGet:
     path: /health
@@ -455,7 +455,7 @@ readinessProbe:
     port: 8080
   initialDelaySeconds: 5
   periodSeconds: 5
-\`\`\`
+```
 
 **Liveness**: Restart unhealthy pods
 **Readiness**: Remove unready pods from service
@@ -487,23 +487,23 @@ readinessProbe:
 ### Debugging Commands
 
 Get pod details:
-\`\`\`bash
+```bash
 kubectl describe pod <name>
 kubectl logs <name>
 kubectl logs <name> --previous  # logs from crashed container
-\`\`\`
+```
 
 Execute commands in pod:
-\`\`\`bash
+```bash
 kubectl exec -it <name> -- /bin/sh
 kubectl exec <name> -- env
-\`\`\`
+```
 
 Check resource usage:
-\`\`\`bash
+```bash
 kubectl top nodes
 kubectl top pods
-\`\`\`
+```
 
 ## Security Best Practices
 
@@ -515,7 +515,7 @@ kubectl top pods
 - Use security contexts
 
 Example:
-\`\`\`yaml
+```yaml
 securityContext:
   runAsNonRoot: true
   runAsUser: 1000
@@ -523,12 +523,12 @@ securityContext:
   capabilities:
     drop:
       - ALL
-\`\`\`
+```
 
 ### Network Policies
 
 Restrict pod communication:
-\`\`\`yaml
+```yaml
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -542,7 +542,7 @@ spec:
       - podSelector:
           matchLabels:
             app: frontend
-\`\`\`
+```
 
 ### Secrets Management
 
@@ -564,7 +564,7 @@ spec:
 ### Horizontal Pod Autoscaling
 
 Automatically scale based on metrics:
-\`\`\`yaml
+```yaml
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -583,26 +583,26 @@ spec:
         target:
           type: Utilization
           averageUtilization: 70
-\`\`\`
+```
 
 ## MCP Server Integration
 
 This skill works with the kubernetes MCP server for operations:
 
 **List pods**:
-\`\`\`javascript
+```javascript
 const pods = await tools.k8s_list_pods({ namespace: 'default' })
-\`\`\`
+```
 
 **Get pod logs**:
-\`\`\`javascript
+```javascript
 const logs = await tools.k8s_get_logs({ pod: 'api-xyz', container: 'app' })
-\`\`\`
+```
 
 **Apply manifests**:
-\`\`\`javascript
+```javascript
 const result = await tools.k8s_apply_manifest({ file: 'deployment.yaml' })
-\`\`\`
+```
 
 ## Detailed References
 
@@ -621,9 +621,9 @@ For copy-paste examples:
 ## Validation Scripts
 
 For manifest validation:
-\`\`\`bash
+```bash
 bash ${CLAUDE_PLUGIN_ROOT}/skills/kubernetes-ops/scripts/validate-manifest.sh deployment.yaml
-\`\`\`
+```
 ```
 
 ### hooks/hooks.json
@@ -696,70 +696,70 @@ bash ${CLAUDE_PLUGIN_ROOT}/skills/kubernetes-ops/scripts/validate-manifest.sh de
 }
 ```
 
-## Key Features
+## 주요 기능 (Key Features)
 
-### Multi-Level Organization
+### 다단계 계층형 구성 (Multi-Level Organization)
 
-**Commands**: Organized by function (CI, monitoring, admin)
-**Agents**: Separated by role (orchestration vs. specialized)
-**Skills**: Rich resources (references, examples, scripts)
+**명령어**: 기능별 구성 (CI, 모니터링, 관리)
+**에이전트**: 역할 분리 (오케스트레이션 vs. 특화 에이전트)
+**스킬**: 풍부한 리소스 지원 (references, examples, scripts)
 
-### MCP Integration
+### MCP 통합 (MCP Integration)
 
-Three custom MCP servers:
-- **Kubernetes**: Cluster operations
-- **Terraform**: Infrastructure provisioning
-- **GitHub Actions**: CI/CD automation
+세 가지 맞춤형 MCP 서버:
+- **Kubernetes**: 클러스터 오퍼레이션
+- **Terraform**: 인프라 프로비저닝
+- **GitHub Actions**: CI/CD 자동화
 
-### Shared Libraries
+### 공유 라이브러리 (Shared Libraries)
 
-Reusable code in `lib/`:
-- **Core**: Common utilities (logging, config, auth)
-- **Integrations**: External services (Slack, Datadog)
-- **Utils**: Helper functions (retry, validation)
+`lib/` 하위의 재사용 가능한 코드:
+- **Core**: 공통 유틸리티 (로깅, 구성 관리, 인증)
+- **Integrations**: 외부 서비스 연동 (Slack, Datadog)
+- **Utils**: 헬퍼 함수 (재시도, 검증)
 
-### Configuration Management
+### 구성 정보 관리 (Configuration Management)
 
-Environment-specific configs in `config/`:
-- **Environments**: Per-environment settings
-- **Templates**: Reusable deployment templates
+`config/` 하위의 환경별 구성 정보:
+- **Environments**: 환경별 개별 설정
+- **Templates**: 재사용 가능한 배포 템플릿
 
-### Security Automation
+### 보안 자동화 (Security Automation)
 
-Multiple security hooks:
-- Secret scanning before writes
-- Permission validation on session start
-- Configuration auditing on completion
+다중 보안 훅:
+- 쓰기(Write) 동작 이전 비밀값 스캐닝
+- 세션 시작(SessionStart) 시 권한 검증
+- 완료(Stop) 시 구성 감사(Audit)
 
-### Monitoring Integration
+### 모니터링 통합 (Monitoring Integration)
 
-Built-in monitoring via lib integrations:
-- Datadog for metrics
-- PagerDuty for alerts
-- Slack for notifications
+lib 연동을 통한 내장 모니터링:
+- Datadog을 통한 메트릭 조회
+- PagerDuty를 통한 경보 알림
+- Slack을 통한 공지 알림
 
-## Use Cases
+## 사용 사례 (Use Cases)
 
-1. **Multi-environment deployments**: Orchestrated rollouts across dev/staging/prod
-2. **Infrastructure as code**: Terraform automation with state management
-3. **CI/CD automation**: Build, test, deploy pipelines
-4. **Monitoring and observability**: Integrated metrics and alerting
-5. **Security enforcement**: Automated security scanning and validation
-6. **Team collaboration**: Slack notifications and status updates
+1. **다중 환경 배포**: 개발/스테이징/프로덕션 환경 전반의 오케스트레이션 배포
+2. **IaC(Infrastructure as Code)**: 상태 관리 기능이 포함된 Terraform 자동화
+3. **CI/CD 자동화**: 빌드, 테스트 및 배포 파이프라인
+4. **모니터링 및 관측 가능성**: 메트릭 및 경보 연동
+5. **보안 지침 준수**: 자동 보안 스캐닝 및 검증
+6. **팀 협업**: Slack 알림 및 상태 업데이트
 
-## When to Use This Pattern
+## 이 패턴의 사용 시기 (When to Use This Pattern)
 
-- Large-scale enterprise deployments
-- Multiple environment management
-- Complex CI/CD workflows
-- Integrated monitoring requirements
-- Security-critical infrastructure
-- Team collaboration needs
+- 대규모 엔터프라이즈 환경 배포
+- 다중 환경 관리
+- 복잡한 CI/CD 워크플로우 운영
+- 종합적인 모니터링 요구 사항이 있을 때
+- 보안이 핵심적인 인프라 환경
+- 긴밀한 팀 협업이 필요할 때
 
-## Scaling Considerations
+## 확장성 고려 사항 (Scaling Considerations)
 
-- **Performance**: Separate MCP servers for parallel operations
-- **Organization**: Multi-level directories for scalability
-- **Maintainability**: Shared libraries reduce duplication
-- **Flexibility**: Environment configs enable customization
-- **Security**: Layered security hooks and validation
+- **성능**: 병렬 처리를 위해 독립적인 MCP 서버 구성
+- **구성**: 확장성을 위해 다단계 디렉토리 레이아웃 선택
+- **유지보수**: 공유 라이브러리를 통해 중복 제거
+- **유연성**: 환경별 구성을 통해 개별 설정 지원
+- **보안**: 계층별 보안 훅 및 세분화된 검증 적용

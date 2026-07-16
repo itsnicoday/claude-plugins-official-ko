@@ -3,121 +3,72 @@ description: Transform one legacy module to the target stack — idiomatic rewri
 argument-hint: <system-dir> <module> <target-stack>
 ---
 
-Transform `legacy/$1` module **`$2`** into **$3**, with proof of behavioral
-equivalence.
+`legacy/$1` 모듈 **`$2`**를 동작 동등성(behavioral equivalence) 검증을 거쳐 **$3**로 전환(transform)합니다.
 
-This is a surgical, single-module transformation — one vertical slice of the
-strangler fig. Output goes to `modernized/$1/$2/`.
+이는 단일 모듈에 대한 외과 수술식 전환 작업(strangler fig 패턴의 수직 슬라이스)입니다. 출력 파일들은 `modernized/$1/$2/` 경로에 저장됩니다.
 
-## Step 0a — Toolchain check (fail fast on target, adapt on legacy)
+## 0a 단계 — 툴체인 점검 (대상 환경에서는 조기 실패, 레거시 환경에서는 적응형 대응)
 
-Verify the build environment **before** planning, not when the tests
-first run:
+설계를 시작하기 **전에** 빌드 환경을 검증하십시오. 테스트가 처음 실행될 때까지 기다리지 마십시오:
 
-- **Target stack ($3) — required.** Runtime, package manager, and test
-  framework all respond (`java -version` + `mvn -v`, `node -v` + `npm -v`,
-  `python3 -V` + `pytest --version`, …). If any are missing, stop and
-  report what to install — the new code and its tests cannot run without
-  them, so a plan gate now would just defer the failure an hour. Suggest
-  `/modernize-preflight $1 $3` for the full readiness report.
-- **Legacy stack — advisory, never a blocker.** Try a syntax-only compile
-  of the module being transformed (e.g. `cobc -fsyntax-only`). Legacy
-  code often *cannot* build locally by nature, not by misconfiguration —
-  CICS/IMS programs have no local translator, and the real runtime may be
-  a mainframe you don't have. A failed or impossible legacy compile does
-  **not** stop the transform; it changes the equivalence strategy:
-  - dual-execution proof is off the table — characterization tests
-    assert against **recorded traces / golden-master fixtures** (real
-    production outputs, captured reports/screens, SME-confirmed
-    examples) instead of live legacy runs
-  - say so explicitly in the Step 0b plan and later in
-    TRANSFORMATION_NOTES.md ("equivalence is trace-based; legacy was not
-    executable in this environment"), so reviewers know the strength of
-    the proof they're approving
+- **대상 스택 ($3) — 필수 사항.** 런타임, 패키지 관리자 및 테스트 프레임워크가 정상적으로 응답해야 합니다 (`java -version` + `mvn -v`, `node -v` + `npm -v`, `python3 -V` + `pytest --version` 등). 누락된 항목이 있으면 작업을 멈추고 무엇을 설치해야 하는지 보고하십시오. 새 코드와 테스트는 해당 도구 없이 실행할 수 없으므로, 지금 설계를 시작해봐야 한 시간 뒤에 실패할 뿐입니다. 종합 준비도 보고서가 필요하면 `/modernize-preflight $1 $3` 명령을 실행해 보라고 제안하십시오.
+- **레거시 스택 — 권장 사항이며 절대 블로커가 아님.** 전환 대상 모듈에 대해 구문 전용 컴파일을 시도해 보십시오 (예: `cobc -fsyntax-only`). 레거시 코드는 설정 오류 때문이 아니라 본질적으로 로컬에서 빌드가 *불가능한* 경우가 많습니다. CICS/IMS 프로그램은 로컬 번역기가 없으며, 실제 런타임은 로컬에 보유하지 않은 메인프레임일 수 있기 때문입니다. 레거시 컴파일이 실패하거나 불가능하더라도 전환 작업이 **중단되지 않습니다**. 대신 동등성 검증 전략을 다음과 같이 변경합니다:
+  - 이중 실행(dual-execution)을 통한 증명은 불가능하므로, 라이브 레거시 실행 대신 **기록된 트레이스(traces) / 골든 마스터 피스처(golden-master fixtures)** (실제 운영 출력값, 캡처된 보고서/화면, SME가 확인한 예시 등)를 기준으로 캐릭터리제이션(characterization) 테스트를 수행합니다.
+  - 이 점을 0b 단계 설계 계획서와 추후 TRANSFORMATION_NOTES.md에 명시적으로 기술하십시오 ("equivalence is trace-based; legacy was not executable in this environment"). 그래야 리뷰어들이 자신이 승인하는 검증 수준의 강도를 인지할 수 있습니다.
 
-## Step 0b — Plan (HITL gate)
+## 0b 단계 — 계획 (HITL 게이트)
 
-**The brief is binding — read it first.** If `analysis/$1/MODERNIZATION_BRIEF.md`
-exists, this transform is one phase (or one module of a phase) of that plan:
-read it before deciding anything below. Find the phase that names this
-command with `$2` in scope, and treat that phase's **scope, entry criteria,
-exit criteria, and any edits the user made to it** as binding on the plan
-you present below. Entry criteria are *gates*, not context: if one is not
-met (a prior phase's exit criteria, an SME sign-off the brief requires),
-meeting it **is** the next step — do not proceed past it and do not silently
-re-plan around it. If the brief exists but no phase covers `$2`, stop and
-ask which phase this is. The user steers execution by editing the brief; a
-brief the execution command never reads cannot steer anything.
+**모더나이제이션 브리프(modernization brief)는 구속력이 있으므로 먼저 읽으십시오.** `analysis/$1/MODERNIZATION_BRIEF.md` 파일이 존재한다면, 이번 전환 작업은 해당 계획의 일환(또는 계획된 단계의 특정 모듈)입니다. 아래의 결정을 내리기 전에 이 브리프를 먼저 읽으십시오. 브리프에서 현재 다루는 `$2` 모듈이 포함된 단계를 찾은 다음, 해당 단계의 **범위(scope), 진입 기준(entry criteria), 진출 기준(exit criteria) 및 사용자가 수정한 모든 편집 사항**을 아래 계획의 구속력 있는 기준으로 취급하십시오. 진입 기준은 단순한 참고 사항이 아니라 넘어야 할 *게이트*입니다. 만약 진입 기준(이전 단계의 진출 기준, 브리프에서 요구하는 SME 승인 등)이 충족되지 않았다면, 이를 충족하는 것 자체가 다음 단계입니다. 이를 무시하고 지나치거나 임의로 다른 계획을 세우지 마십시오. 만약 브리프는 존재하지만 `$2`에 해당하는 단계가 없는 경우, 작업을 멈추고 이것이 어떤 단계에 해당하는지 사용자에게 확인을 요청하십시오. 사용자는 브리프를 편집하여 실행을 조정하므로, 실행 명령이 읽지 않는 브리프는 아무것도 통제할 수 없습니다.
 
-Read the source module and any business rules in `analysis/$1/BUSINESS_RULES.md`
-that reference it. Then present the plan and **stop — write no code until
-the user explicitly approves** (use plan mode if the session supports it):
-- Which source files are in scope
-- The target module structure (packages/classes/files you'll create)
-- Which business rules / behaviors this module implements
-- How you'll prove equivalence (test strategy)
-- Anything ambiguous that needs a human decision NOW
+소스 모듈과 이를 참조하는 `analysis/$1/BUSINESS_RULES.md` 내의 비즈니스 규칙들을 읽으십시오. 그런 다음 계획을 제시하고 **대기하십시오. 사용자가 명시적으로 승인할 때까지는 코드를 작성하지 마십시오** (세션에서 지원하는 경우 계획 모드를 사용하십시오):
+- 범위에 포함되는 소스 파일 목록
+- 대상 모듈 구조 (새로 생성할 패키지/클래/파일 목록)
+- 이 모듈이 구현하는 비즈니스 규칙 / 동작
+- 동등성을 증명하는 방법 (테스트 전략)
+- 현재 시점에서 사람의 결정이 필요한 모호한 사항들
 
-Wait for approval before writing any code.
+코드를 작성하기 전에 승인을 기다리십시오.
 
-## Step 1 — Characterization tests FIRST
+## 1 단계 — 캐릭터리제이션 테스트 우선 작성
 
-Before writing target code, spawn the **test-engineer** subagent:
+대상 코드를 작성하기 전에 **test-engineer** 하위 에이전트를 실행하십시오:
 
-"Write characterization tests for legacy/$1 module $2. Read the source,
-identify every observable behavior, and encode each as a test case with
-concrete input → expected output pairs derived from the legacy logic.
-Target framework: <appropriate for $3>. Write to
-`modernized/$1/$2/src/test/`. These tests define 'done' — the new code
-must pass all of them. Follow your secret-handling rules: no credential
-literal from legacy code becomes a fixture; substitute fake same-shape
-values and read anything genuinely live from environment variables."
+"legacy/$1 모듈 $2에 대한 캐릭터리제이션 테스트를 작성하십시오. 소스 코드를 분석하고, 관찰 가능한 모든 동작을 식별하여 레거시 로직에서 유도된 구체적인 입력 → 예상 출력 쌍을 가진 테스트 케이스로 변환하십시오. 대상 프롬프트 프레임워크: <$3에 적절한 프레임워크>. `modernized/$1/$2/src/test/` 경로에 작성하십시오. 이 테스트들이 완료 기준을 정의하므로, 새 코드는 이 테스트를 모두 통과해야 합니다. 비밀정보 처리 규칙을 준수하십시오. 레거시 코드의 하드코딩된 자격 증명을 테스트 피스처에 그대로 사용하지 마십시오. 가짜 데이터로 대체하고, 실제 라이브 데이터는 환경 변수에서 읽어오도록 만드십시오."
 
-Show the user the test file. Get a 👍 before proceeding.
+사용자에게 테스트 파일을 보여주십시오. 진행하기 전에 👍 승인을 받으십시오.
 
-## Step 2 — Idiomatic transformation
+## 2 단계 — 관용적 전환 (Idiomatic Transformation)
 
-Write the target implementation in `modernized/$1/$2/src/main/`.
+`modernized/$1/$2/src/main/` 경로에 대상 구현 코드를 작성하십시오.
 
-**Critical:** Write code a senior $3 engineer would write from the
-*specification*, not from the legacy structure. Do NOT mirror COBOL paragraphs
-as methods, do NOT preserve legacy variable names like `WS-TEMP-AMT-X`.
-Use the target language's idioms: records/dataclasses, streams, dependency
-injection, proper error types, etc.
+**중요:** 레거시 구조를 그대로 복사하는 것이 아니라 *요구사항 명세*를 기반으로 숙련된 $3 엔지니어가 작성할 법한 코드를 작성하십시오. COBOL 문단을 메서드로 그대로 일대일 매핑하지 마십시오. `WS-TEMP-AMT-X`와 같은 레거시 변수명을 그대로 유지하지 마십시오. 대상 언어의 관용적 표현(records/dataclasses, streams, dependency injection, 고유한 에러 타입 등)을 적극 사용하십시오.
 
-Include: domain model, service logic, API surface (REST controller or
-equivalent), and configuration. Add concise Javadoc/docstrings linking each
-class back to the rule IDs it implements.
+도메인 모델, 서비스 로직, API 레이어 (REST 컨트롤러 또는 그에 상응하는 구조) 및 설정을 포함시키십시오. 각 클래스가 구현한 규칙 ID를 명시하는 간결한 Javadoc/docstring 주석을 추가하십시오.
 
-## Step 3 — Prove it
+## 3 단계 — 검증 및 증명
 
-Run the characterization tests:
+캐릭터리제이션 테스트를 실행합니다:
 ```bash
 cd modernized/$1/$2 && <appropriate test command for $3>
 ```
-Show the output. If anything fails, fix and re-run until green.
+출력 결과를 보여주십시오. 실패하는 항목이 있으면 수정하고 모두 통과(green)할 때까지 다시 실행하십시오.
 
-## Step 4 — Side-by-side review
+## 4 단계 — 나란히 비교 리뷰 (Side-by-side Review)
 
-Generate `modernized/$1/$2/TRANSFORMATION_NOTES.md`:
-- Mapping table: legacy file:lines → target file:lines, per behavior
-- Deliberate deviations from legacy behavior (with rationale)
-- What was NOT migrated (dead code, unreachable branches) and why
-- Follow-ups for the next module that depends on this one
+`modernized/$1/$2/TRANSFORMATION_NOTES.md` 파일을 생성합니다:
+- 매핑 테이블: 동작별 레거시 file:lines → 대상 file:lines
+- 레거시 동작에서 의도적으로 이탈한 부분 (사유 포함)
+- 마이그레이션하지 않은 코드 (데드 코드, 도달 불가능한 브랜치) 및 그 사유
+- 이 모듈에 의존하는 다음 모듈을 위한 후속 작업 안내
 
-Then show a visual diff of one representative behavior, legacy vs modern:
+그런 다음 대표적인 동작 하나를 골라 레거시와 모던 코드의 시각적 diff를 표시합니다:
 ```bash
 delta --side-by-side <(sed -n '<lines>p' legacy/$1/<file>) modernized/$1/$2/src/main/<file>
 ```
-(Fall back to `diff -y --width=160` if `delta` isn't installed.) Never
-pick a credential-bearing line range for this diff, and mask any
-credential-like literal quoted in TRANSFORMATION_NOTES.md — the notes
-live in `modernized/` and get committed.
+(`delta`가 설치되어 있지 않은 경우 `diff -y --width=160`을 사용하십시오.) 이 diff 결과에 자격 증명이 포함된 라인이 나오지 않도록 주의하고, TRANSFORMATION_NOTES.md에 인용된 자격 증명 형태의 리터럴은 모두 마스킹하십시오. 이 메모 파일은 `modernized/` 경로에 저장되어 커밋됩니다.
 
-## Step 5 — Architecture review
+## 5 단계 — 아키텍처 리뷰
 
-Spawn the **architecture-critic** subagent to review the transformed code
-against $3 best practices. Apply any HIGH-severity feedback; list the rest
-in TRANSFORMATION_NOTES.md.
+**architecture-critic** 하위 에이전트를 실행하여 전환된 코드가 $3의 베스트 프랙티스를 따르는지 리뷰합니다. 심각도가 높은(HIGH) 피드백은 코드에 반영하고, 나머지는 TRANSFORMATION_NOTES.md에 기록하십시오.
 
-Report: tests passing, lines of legacy retired, location of artifacts.
+보고할 내용: 테스트 통과 여부, 교체 및 정리된 레거시 코드 라인 수, 산출물 저장 위치.

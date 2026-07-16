@@ -1,3 +1,3 @@
 # skill-creator
 
-Create new skills, improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, update or optimize an existing skill, run evals to test a skill, or benchmark skill performance with variance analysis.
+새로운 스킬을 생성하고, 기존 스킬을 개선하며, 스킬 성능을 측정합니다. 사용자가 처음부터 스킬을 생성하거나, 기존 스킬을 업데이트 또는 최적화하거나, 스킬 테스트를 위한 평가(eval)를 실행하거나, 분산 분석(variance analysis)을 통해 스킬 성능을 벤치마킹하고자 할 때 사용합니다.

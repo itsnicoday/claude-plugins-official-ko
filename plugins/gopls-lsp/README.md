@@ -1,20 +1,20 @@
 # gopls-lsp
 
-Go language server for Claude Code, providing code intelligence, refactoring, and analysis.
+Claude Code를 위한 Go 언어 서버로, 코드 인텔리전스, 리팩터링 및 분석을 제공합니다.
 
-## Supported Extensions
+## 지원하는 확장자
 `.go`
 
-## Installation
+## 설치
 
-Install gopls using the Go toolchain:
+Go 툴체인을 사용하여 gopls를 설치합니다:
 
 ```bash
 go install golang.org/x/tools/gopls@latest
 ```
 
-Make sure `$GOPATH/bin` (or `$HOME/go/bin`) is in your PATH.
+`$GOPATH/bin` (또는 `$HOME/go/bin`)이 PATH에 포함되어 있는지 확인하세요.
 
-## More Information
-- [gopls Documentation](https://pkg.go.dev/golang.org/x/tools/gopls)
-- [GitHub Repository](https://github.com/golang/tools/tree/master/gopls)
+## 추가 정보
+- [gopls 문서](https://pkg.go.dev/golang.org/x/tools/gopls)
+- [GitHub 저장소](https://github.com/golang/tools/tree/master/gopls)

@@ -1,66 +1,44 @@
-# Model Tier Defaults
+# 모델 티어별 기본 설정 (Model Tier Defaults)
 
-Parameters scale with model capability. Budget is not the constraint — the
-constraints are diminishing returns (more voters stop helping past a point) and
-the asymmetric noise floor (Haiku verifiers are individually less reliable, so
-the right response is width not depth).
+파라미터는 모델의 능력에 따라 확장됩니다. 비용(예산)은 제약 조건이 아닙니다. 진짜 제약 조건은 수렴 효과의 한계(일정 시점을 지나면 투표자가 더 많아져도 도움이 되지 않음)와 비대칭적인 노이즈 플로어(Haiku 검증기는 개별 신뢰도가 낮으므로 깊이보다 넓이로 대응해야 함)입니다.
 
 ## Haiku
 
-Width compensates for per-sample noise. Scaffolding is where the leverage is.
+넓이(Width)로 샘플당 발생하는 노이즈를 보완합니다. 스캐폴딩이 곧 지렛대 역할을 수행합니다.
 
-- **Parallel solvers**: 12 (wide fan — each individual solve is weaker, so cast
-  a wider net)
-- **Vote budget**: 7 verifiers, need 5-confirm / 3-refute (pigeonhole exit: stop
-  when outcome decided)
-- **Abstain threshold**: 3 consecutive revise cycles fail
-- **Pattern sweep**: all 12 patterns — Haiku can follow a checklist, the
-  patterns are the scaffold
-- **Presentation pass**: yes, 3 drafts, comparator picks cleanest. Haiku's raw
-  output is rougher, so this matters MORE not less.
-- **Rationale**: The skill's value is highest where the base model is weakest.
-  Give Haiku the full harness. The 3-refute threshold (higher than Sonnet's 2)
-  accounts for Haiku verifiers being individually noisier — don't let 2 confused
-  Haikus kill a correct proof.
+- **병렬 솔버 수 (Parallel solvers)**: 12 (넓은 범위 — 개별 풀이가 더 약하므로 그물을 더 넓게 던집니다)
+- **투표 예산 (Vote budget)**: 7명의 검증기, 5명 확인(confirm) 또는 3명 반박(refute) 필요 (비둘기집 원리 기반 조기 종료: 결과가 확정되면 즉시 중단)
+- **기권 기준 (Abstain threshold)**: 3회 연속 보정(revise) 사이클 실패 시
+- **패턴 스윕 (Pattern sweep)**: 12개 패턴 전체 — Haiku는 체크리스트를 따를 수 있으며, 패턴이 스캐폴딩 역할을 합니다.
+- **프레젠테이션 단계 (Presentation pass)**: 사용함, 3개 초안 중 비교기를 통해 가장 깔끔한 것을 선택. Haiku의 원본 출력은 다소 거칠기 때문에 이 단계의 중요성이 덜하기는커녕 더 높습니다.
+- **설계 배경 (Rationale)**: 베이스 모델이 가장 약한 부분에서 이 스킬의 가치가 가장 극대화됩니다. Haiku에게 풀 하네스(harness)를 제공하십시오. 3-refute 기준(Sonnet의 2보다 높은 값)은 개별 Haiku 검증기의 노이즈가 더 크다는 점을 감안한 것입니다. 헷갈린 Haiku 2개의 판단 때문에 올바른 증명이 누락되지 않도록 방지합니다.
 
 ## Sonnet
 
-Balanced.
+균형 잡힌 설정.
 
-- **Parallel solvers**: 6
-- **Vote budget**: 5 verifiers, need 4-confirm / 2-refute
-- **Abstain threshold**: 3 consecutive revise cycles fail
-- **Pattern sweep**: all 12
-- **Presentation pass**: 2 drafts, comparator picks cleaner
-- **Rationale**: 4-of-5 tolerates one flake. 2 dissents is signal.
+- **병렬 솔버 수 (Parallel solvers)**: 6
+- **투표 예산 (Vote budget)**: 5명의 검증기, 4명 확인(confirm) / 2명 반박(refute) 필요
+- **기권 기준 (Abstain threshold)**: 3회 연속 보정 사이클 실패 시
+- **패턴 스윕 (Pattern sweep)**: 12개 전체
+- **프레젠테이션 단계 (Presentation pass)**: 2개 초안 중 비교기를 통해 더 깔끔한 것을 선택
+- **설계 배경 (Rationale)**: 5명 중 4명 조건은 1명의 불확실성을 허용합니다. 2명의 이견(dissents)은 확실한 반박 신호로 봅니다.
 
 ## Opus
 
-Depth. Each sample is strong, so invest in making the adversarial pass harder.
+깊이(Depth). 각 샘플의 신뢰도가 높으므로 적대적 단계(adversarial pass)의 난이도를 높이는 데 투자합니다.
 
-- **Parallel solvers**: 4
-- **Vote budget**: 5 general verifiers (4-confirm / 2-refute) PLUS one dedicated
-  verifier per pattern in `verifier_patterns.md` (12 targeted attacks). Any
-  pattern-specific HOLE FOUND counts toward refute.
-- **Abstain threshold**: 5 consecutive revise cycles fail (trust the model's
-  ability to eventually fix)
-- **Pattern sweep**: all 12, each with its own dedicated agent
-- **Presentation pass**: 3 drafts with different instructions ("most elegant,"
-  "most elementary," "shortest"), comparator picks the best. Strong models can
-  genuinely produce different _styles_ of proof.
-- **Rationale**: Opus can execute the deep patterns (#19 base-vs-derived, #22
-  mean-first) that need real mathematical judgment. The 12 dedicated pattern
-  passes are where the model's capability is best spent — it's the difference
-  between "be skeptical" and "check THIS specific thing."
+- **병렬 솔버 수 (Parallel solvers)**: 4
+- **투표 예산 (Vote budget)**: 일반 검증기 5명 (4명 확인 / 2명 반박) + `verifier_patterns.md` 의 각 패턴당 전담 검증기 1명씩 추가 (12개의 표적 공격). 특정 패턴에서 구멍(HOLE FOUND)이 하나라도 발견되면 즉시 반박(refute)으로 집계됩니다.
+- **기권 기준 (Abstain threshold)**: 5회 연속 보정 사이클 실패 시 (결국 해결해 낼 수 있는 모델의 능력을 신뢰함)
+- **패턴 스윕 (Pattern sweep)**: 12개 전체, 각각 전담 에이전트 배정
+- **프레젠테이션 단계 (Presentation pass)**: 서로 다른 지침("가장 우아한", "가장 초등적인", "가장 짧은")을 기반으로 한 3개 초안 중 비교기가 최상의 결과 선택. 성능이 뛰어난 모델은 실제로 서로 다른 *스타일*의 증명을 생성해 낼 수 있습니다.
+- **설계 배경 (Rationale)**: Opus는 진정한 수학적 판단이 필요한 심층 패턴(예: #19 base-vs-derived, #22 mean-first)을 실행할 수 있습니다. 12개의 전담 패턴 검사는 모델의 성능을 가장 가치 있게 사용할 수 있는 부분입니다. 이는 막연히 "회의적으로 검토하라"와 "이 구체적인 지점을 확인하라"의 차이와 같습니다.
 
-## On the pigeonhole exit
+## 비둘기집 원리 조기 종료에 관하여 (On the pigeonhole exit)
 
-Kept at all tiers — not because of cost, but because once
-`inflight >= confirm_needed + refute_needed - 1`, the remaining votes carry no
-information regardless of how they land. Launching them anyway is pure latency.
+모든 티어에서 이 방식을 유지합니다. 비용 때문이 아니라, 일단 `inflight >= confirm_needed + refute_needed - 1` 에 도달하면 남아있는 투표 결과가 어떻게 나오든 최종 결과에 영향이 없기 때문입니다. 확정된 상태에서 잔여 투표를 더 대기하는 것은 순전히 불필요한 대기 시간(latency)을 유발할 뿐입니다.
 
-## Identifying the tier
+## 티어 식별 방법 (Identifying the tier)
 
-If the orchestrating session doesn't know which model it is, default to Sonnet
-configuration. A reasonable heuristic: ask the model to self-identify in its
-first response and match against `haiku`/`sonnet`/`opus` in the output.
+만약 오케스트레이션 세션에서 현재 모델의 종류를 알 수 없는 경우, 기본적으로 Sonnet 설정으로 구동합니다. 권장되는 휴리스틱: 첫 응답에서 모델에게 스스로 식별하도록 요청한 후, 출력 텍스트에서 `haiku`/`sonnet`/`opus`와 매칭합니다.

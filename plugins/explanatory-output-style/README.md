@@ -1,25 +1,20 @@
-# Explanatory Output Style Plugin
+# Explanatory Output Style 플러그인
 
-This plugin recreates the deprecated Explanatory output style as a SessionStart
-hook.
+이 플러그인은 더 이상 지원되지 않는 Explanatory 출력 스타일을 SessionStart 훅(hook)으로 재구현합니다.
 
-WARNING: Do not install this plugin unless you are fine with incurring the token
-cost of this plugin's additional instructions and output.
+경고: 이 플러그인의 추가 지침 및 출력으로 인해 발생하는 토큰 비용을 감수할 수 있는 경우에만 이 플러그인을 설치하십시오.
 
-## What it does
+## 수행하는 작업
 
-When enabled, this plugin automatically adds instructions at the start of each
-session that encourage Claude to:
+활성화되면 이 플러그인은 매 세션 시작 시 Claude가 다음과 같이 동작하도록 권장하는 지침을 자동으로 추가합니다:
 
-1. Provide educational insights about implementation choices
-2. Explain codebase patterns and decisions
-3. Balance task completion with learning opportunities
+1. 구현 선택 사항에 대한 교육적 통찰 제공
+2. 코드베이스 패턴 및 설계 결정 사항 설명
+3. 작업 완료와 학습 기회 간의 균형 유지
 
-## How it works
+## 작동 원리
 
-The plugin uses a SessionStart hook to inject additional context into every
-session. This context instructs Claude to provide brief educational explanations
-before and after writing code, formatted as:
+이 플러그인은 SessionStart 훅을 사용하여 매 세션마다 추가 컨텍스트를 주입합니다. 이 컨텍스트는 Claude가 코드를 작성하기 전후에 다음과 같은 형식으로 간략한 교육적 설명을 제공하도록 지시합니다:
 
 ```
 `★ Insight ─────────────────────────────────────`
@@ -27,22 +22,20 @@ before and after writing code, formatted as:
 `─────────────────────────────────────────────────`
 ```
 
-## Usage
+## 사용법
 
-Once installed, the plugin activates automatically at the start of every
-session. No additional configuration is needed.
+설치가 완료되면 플러그인은 매 세션 시작 시 자동으로 활성화됩니다. 추가적인 설정은 필요하지 않습니다.
 
-The insights focus on:
+통찰은 다음 사항들에 초점을 맞춥니다:
 
-- Specific implementation choices for your codebase
-- Patterns and conventions in your code
-- Trade-offs and design decisions
-- Codebase-specific details rather than general programming concepts
+- 귀하의 코드베이스에 특화된 특정 구현 선택 사항
+- 코드 내의 패턴 및 컨벤션
+- 트레이드오프 및 설계 결정 사항
+- 일반적인 프로그래밍 개념보다는 코드베이스에 종속적인 세부 정보
 
-## Migration from Output Styles
+## 출력 스타일 마이그레이션
 
-This plugin replaces the deprecated "Explanatory" output style setting. If you
-previously used:
+이 플러그인은 더 이상 지원되지 않는 "Explanatory" 출력 스타일 설정을 대체합니다. 기존에 다음과 같이 사용하셨던 경우:
 
 ```json
 {
@@ -50,23 +43,15 @@ previously used:
 }
 ```
 
-You can now achieve the same behavior by installing this plugin instead.
+이제 대신 이 플러그인을 설치하여 동일한 동작을 수행하도록 할 수 있습니다.
 
-More generally, this SessionStart hook pattern is roughly equivalent to
-CLAUDE.md, but it is more flexible and allows for distribution through plugins.
+보다 일반적으로, 이 SessionStart 훅 패턴은 CLAUDE.md와 거의 동일하지만 더 유연하며 플러그인을 통한 배포가 가능합니다.
 
-Note: Output styles that involve tasks besides software development, are better
-expressed as
-[subagents](https://docs.claude.com/en/docs/claude-code/sub-agents), not as
-SessionStart hooks. Subagents change the system prompt while SessionStart hooks
-add to the default system prompt.
+참고: 소프트웨어 개발 이외의 작업을 포함하는 출력 스타일은 SessionStart 훅보다는 [서브 에이전트](https://docs.claude.com/en/docs/claude-code/sub-agents)로 구성하는 것이 더 바람직합니다. 서브 에이전트는 시스템 프롬프트 자체를 변경하는 반면, SessionStart 훅은 기본 시스템 프롬프트에 추가되는 형식입니다.
 
-## Managing changes
+## 변경 사항 관리
 
-- Disable the plugin - keep the code installed on your device
-- Uninstall the plugin - remove the code from your device
-- Update the plugin - create a local copy of this plugin to personalize this
-  plugin
-  - Hint: Ask Claude to read
-    https://docs.claude.com/en/docs/claude-code/plugins.md and set it up for
-    you!
+- 플러그인 비활성화 - 기기에 코드는 남겨둡니다.
+- 플러그인 제거 - 기기에서 코드를 제거합니다.
+- 플러그인 업데이트 - 이 플러그인을 개인화하기 위해 로컬 복사본을 생성합니다.
+  - 힌트: Claude에게 https://docs.claude.com/en/docs/claude-code/plugins.md 문서를 읽고 설정을 도와달라고 요청해 보세요!

@@ -1,170 +1,71 @@
 ---
-description: Generate a phased Modernization Brief — the approved plan that transformation agents will execute against
+description: 단계별 현대화 브리프(Modernization Brief) 생성 — 전환 에이전트들이 실행 기준으로 삼을 승인된 계획
 argument-hint: <system-dir> [target-stack]
 ---
 
-Synthesize everything in `analysis/$1/` into a **Modernization Brief** — the
-single document a steering committee approves and engineering executes.
+`analysis/$1/`에 포함된 모든 정보를 종합하여 **현대화 브리프(Modernization Brief)**를 작성합니다. 이는 운영 위원회가 승인하고 엔지니어링 팀이 실행할 단일 문서입니다.
 
-Target stack: `$2` (if blank, recommend one based on the assessment findings).
+대상 스택: `$2` (비어 있는 경우 평가 결과를 바탕으로 적절한 스택을 권장함).
 
-Read `analysis/$1/ASSESSMENT.md`, `analysis/$1/topology.json` (plus the
-`.mmd` files alongside it — do NOT read `TOPOLOGY.html`, it's an
-interactive viewer with the data minified inside), and
-`analysis/$1/BUSINESS_RULES.md` first. If any are missing, say so and
-stop — they come from `/modernize-assess`, `/modernize-map`, and
-`/modernize-extract-rules` respectively. Run those first.
+먼저 `analysis/$1/ASSESSMENT.md`, `analysis/$1/topology.json`(및 이와 함께 있는 `.mmd` 파일들 — 데이터가 압축되어 내장된 대화형 뷰어인 `TOPOLOGY.html`은 읽지 **마십시오**), `analysis/$1/BUSINESS_RULES.md`를 읽으십시오. 누락된 파일이 있는 경우 이를 알리고 중단하십시오 — 이 파일들은 각각 `/modernize-assess`, `/modernize-map`, `/modernize-extract-rules` 명령을 통해 생성됩니다. 해당 명령들을 먼저 실행하십시오.
 
-Two more inputs are conditional:
+다음 두 가지 입력은 조건부로 사용됩니다:
 
-- **`analysis/$1/PREFLIGHT.md`** — read it if it exists. It records two
-  things nothing else has: the human's answers to `/modernize-preflight`
-  Check 0 (scope, whether they can build and run tests locally and how
-  long CI takes, bespoke build infrastructure, prior attempts, what is
-  off-limits) and the Check 6 **scope boundary** — whether `legacy/$1` is
-  a slice of a larger codebase, and what *outside* it depends on code
-  *inside* it. Both constrain this plan more than anything derivable from
-  the source. Never override an answer the human gave there with a guess.
-- **`analysis/$1/DELTA_CATALOG.md`** — **required** whenever the target
-  (`$2`, or your recommendation) is a newer version of the *same* stack.
-  A same-stack uplift's phase order is decided by its version deltas, not
-  by the topology alone — most of all by whether the **existing test suite
-  can even execute on the target runtime**. Phasing an uplift without the
-  catalog is planning blind; it is exactly how a test-framework migration
-  ends up scheduled last when it must come first. If the catalog is
-  missing, produce it *before* phasing — run `/modernize-uplift $1
-  <source> $2` through its Step 3 (the delta-catalog step), or spawn the
-  **version-delta-analyst** agent directly — then return here. Do not
-  guess at the deltas.
+- **`analysis/$1/PREFLIGHT.md`** — 존재하는 경우 읽어옵니다. 여기에는 다른 문서에서 다루지 않는 두 가지 중요한 사항이 기록되어 있습니다: `/modernize-preflight` Check 0에 대한 사용자의 답변(범위, 로컬 빌드 및 테스트 실행 가능 여부, CI 소요 시간, 맞춤형 빌드 인프라, 이전 시도, 제한 구역 등)과 Check 6 **범위 경계(scope boundary)** 정보(`legacy/$1`이 더 큰 코드베이스의 일부인지 여부 및 소스 코드 *외부*에서 *내부* 코드를 의존하는 부분이 있는지 여부)입니다. 두 가지 항목 모두 소스 코드에서 유도해 낼 수 있는 어떤 정보보다 본 계획을 강하게 구속합니다. 사용자가 여기에 직접 작성한 답변을 자의적인 추측으로 덮어쓰지 마십시오.
+- **`analysis/$1/DELTA_CATALOG.md`** — 대상 환경(`$2` 또는 권장 사항)이 *동일* 스택의 최신 버전인 경우 **필수적으로 요구**됩니다. 동일 스택 Uplift의 단계 순서는 토폴로지 자체보다는 버전 델타에 의해 결정됩니다. 특히 **기존 테스트 제품군이 대상 런타임에서 실행될 수 있는지 여부**가 가장 중요합니다. 카탈로그 없이 Uplift 단계를 계획하는 것은 맹목적인 계획 수립과 같습니다. 이는 테스트 프레임워크 마이그레이션이 가장 먼저 수행되어야 함에도 불구하고 가장 마지막으로 일정이 잡히는 실책을 낳게 됩니다. 카탈로그가 누락된 경우, 단계를 수립하기 *전에* 카탈로그를 생성하십시오. `/modernize-uplift $1 <source> $2` 명령을 Step 3(델타 카탈로그 단계)까지 실행하거나, **version-delta-analyst** 에이전트를 직접 실행한 뒤 여기로 복귀하십시오. 델타 정보에 대해 자의적으로 추측하지 마십시오.
 
-**Staleness check:** compare modification times. If any input is newer
-than an existing `MODERNIZATION_BRIEF.md`, the brief is being justifiably
-regenerated; but if an existing brief is newer than all inputs and the
-user re-ran this command anyway, ask what changed. Either way, note the
-input timestamps in the brief's header so reviewers can see what it was
-built from.
+**노후화 검사(Staleness check):** 수정 시간을 비교합니다. 임의의 입력 파일이 기존 `MODERNIZATION_BRIEF.md`보다 최신인 경우 브리프를 재생성하는 합당한 사유가 됩니다. 하지만 기존 브리프가 모든 입력 파일보다 최신임에도 불구하고 사용자가 이 명령을 재실행한 경우 무엇이 변경되었는지 문의하십시오. 어떤 경우든 검토자가 무엇을 기반으로 작성되었는지 확인할 수 있도록 입력 파일의 타임스탬프를 브리프 헤더에 기록하십시오.
 
-## The Brief
+## 브리프 (The Brief)
 
-Write `analysis/$1/MODERNIZATION_BRIEF.md`:
+`analysis/$1/MODERNIZATION_BRIEF.md`를 작성합니다:
 
-### 1. Objective
-One paragraph: from what, to what, why now.
+### 1. 목표 (Objective)
+한 단락 요약: 어떤 환경에서 어떤 환경으로 전환하는지, 왜 지금 수행하는지.
 
-### 2. Target Architecture
-Mermaid C4 Container diagram of the *end state*. Name every service, data
-store, and integration. Below it, a table mapping legacy component → target
-component(s).
+### 2. 대상 아키텍처 (Target Architecture)
+*최종 상태*의 Mermaid C4 컨테이너 다이어그램. 모든 서비스, 데이터 저장소 및 통합 지점을 명시합니다. 다이어그램 아래에는 레거시 컴포넌트 → 대상 컴포넌트 간의 매핑 테이블을 추가합니다.
 
-### 3. Phased Sequence
-Break the work into 3-6 phases. Order by **strangler-fig** for a cross-stack
-rewrite (lowest-risk, fewest-dependencies first), or **build-graph leaf-first**
-for a same-stack uplift (libraries before the apps that depend on them).
+### 3. 단계별 시퀀스 (Phased Sequence)
+작업을 3~6단계로 나눕니다. 크로스 스택 재작성의 경우 **교살자 패턴(strangler-fig)** 순서로 정렬하고(리스크가 가장 낮고 의존성이 가장 적은 순), 동일 스택 Uplift의 경우 **빌드 그래프 리프 우선(build-graph leaf-first)** 순서로 정렬합니다(라이브러리를 이를 의존하는 앱보다 먼저 수행).
 
-For an **uplift**, leaf-first has three overrides, and getting them wrong is
-the most common way an uplift plan fails. Apply them *here*, at planning
-time. `/modernize-uplift` Step 1 re-applies the same rules at execution
-time (its list also names multi-targeting — the *technique* that satisfies
-override 3's first option), and an approved order and a re-derived one must
-never disagree — which is exactly what deciding the order without these
-would produce:
+**Uplift**의 경우, 리프 우선 순서에는 세 가지 예외(overrides)가 있으며, 이를 잘못 처리하는 것이 Uplift 계획이 실패하는 가장 흔한 원인입니다. 계획 수립 단계인 *바로 지금* 이를 반영해야 합니다. `/modernize-uplift` Step 1은 실행 시점에 동일한 규칙을 재적용하며 (그 규칙 목록에는 예외 3의 첫 번째 옵션을 만족시키는 기술인 멀티 타겟팅(multi-targeting)도 포함됨), 이미 승인된 순서와 재추출된 순서가 서로 상충되어서는 안 됩니다. 만약 이러한 예외를 고려하지 않고 순서를 결정하면 결국 상충이 발생하게 됩니다:
 
-1. **The test harness is not a leaf — it is a prerequisite.** Nothing
-   migrated can be validated until the tests that validate it run on the
-   target. If `DELTA_CATALOG.md` shows the test framework or its runner
-   does not support the target runtime (NUnit 2 or MSTest v1 on modern
-   .NET, JUnit 4 without the vintage engine, `nose` on Python 3, …), then
-   migrating the test framework is **Phase 1 by itself**, before any
-   production code moves.
-2. **Dependency deltas that every consumer shares force a coordinated
-   cut** (a major-version bump of an ORM, a namespace move like
-   `javax`→`jakarta`). These cannot be done leaf-first incrementally —
-   every consumer changes together — so they get their own cross-cutting
-   phase.
-3. **Shared nodes with consumers *outside* the scope** (PREFLIGHT.md's
-   scope-boundary check) need an explicit, recorded decision in whichever
-   phase touches them: keep them buildable for both old and new consumers
-   through the transition (multi-targeting, publishing for both versions,
-   a parallel artifact), expand the scope to include the consumers, or
-   accept and schedule the break. Never silently migrate a shared node in
-   place and break every consumer nobody was looking at.
+1. **테스트 하네스는 리프가 아니며, 필수 전제 조건입니다.** 마이그레이션된 대상이 타겟 환경에서 테스트를 통과하기 전까지는 검증을 마쳤다고 볼 수 없습니다. 만약 `DELTA_CATALOG.md`에서 테스트 프레임워크나 그 러너가 대상 런타임을 지원하지 않는 것으로 확인되면(예: 모던 .NET에서의 NUnit 2 또는 MSTest v1, 빈티지 엔진이 없는 JUnit 4, Python 3에서의 `nose` 등), 테스트 프레임워크 마이그레이션은 프로덕션 코드가 이동하기 전에 **그 자체로 Phase 1**이 되어야 합니다.
+2. **모든 컨슈머가 공유하는 의존성 델타는 공동 전환(coordinated cut)을 강제합니다** (ORM의 메이저 버전 변경, `javax`→`jakarta`와 같은 네임스페이스 변경 등). 이러한 변경 사항은 리프 우선 방식으로 점진적으로 수행할 수 없으며 모든 컨슈머가 한꺼번에 변경되어야 하므로, 독립적인 횡단(cross-cutting) 단계를 할당해야 합니다.
+3. **범위 *외부*의 컨슈머가 있는 공유 노드** (PREFLIGHT.md의 범위 경계 확인 결과)는 관련 단계를 진행할 때 승인된 의사결정 사항을 명시적으로 기록해야 합니다: 과도기 동안 기존 컨슈머와 신규 컨슈머 모두에 대해 빌드 가능하도록 유지하거나 (멀티 타겟팅, 두 버전에 대해 동시 배포, 병렬 아티팩트 제공), 범위를 확장하여 해당 컨슈머들까지 포함시키거나, 빌드가 깨지는 것을 감수하고 일정을 수립해야 합니다. 아무도 살피지 않는 상황에서 공유 노드를 제자리에서 그냥 마이그레이션하여 다른 모든 컨슈머의 빌드를 깨뜨리는 일이 없도록 하십시오.
 
-Name the per-phase execution command: `/modernize-transform` (cross-stack
-module rewrite), `/modernize-reimagine` (greenfield rebuild), or
-`/modernize-uplift` (same-stack version bump — when the target is a newer
-version of the *same* stack, this is the path, not transform). For each phase:
-- Scope (which legacy modules, which target services)
-- Entry criteria (what must be true to start)
-- Exit criteria (what tests/metrics prove it's done)
-- Relative scale (T-shirt size — S/M/L/XL — anchored to the phase's share
-  of the assessment's COCOMO complexity index. This ranks phases by size
-  against each other; it is **not** a duration. Do **not** state
-  person-months, weeks, calendar dates, or a delivery estimate — agentic
-  transformation does not follow the human-team productivity curves those
-  units assume, so any time figure here would be misleading.)
-- Risk level + top 2 risks + mitigation
+단계별 실행 명령을 지정합니다: `/modernize-transform` (크로스 스택 모듈 재작성), `/modernize-reimagine` (그린필드 재구축) 또는 `/modernize-uplift` (동일 스택 버전 업그레이드 — 대상 환경이 동일한 스택의 최신 버전인 경우 transform이 아니라 이 경로를 따릅니다). 각 단계별 포함 내용:
+- Scope (해당 레거시 모듈, 대상 서비스)
+- Entry criteria (시작하기 위해 충족되어야 하는 조건)
+- Exit criteria (완료 여부를 증명할 테스트/메트릭)
+- Relative scale (T-셔츠 사이즈 — S/M/L/XL — 평가 단계의 COCOMO 복잡도 인덱스에서 해당 단계가 차지하는 비중에 따릅니다. 이는 단계별 크기 순위를 매기기 위한 것이며, **일정 기간이 아닙니다.** 인월(person-months), 주(weeks), 달력상 날짜 또는 인도 예정일을 **표시하지 마십시오.** 에이전트 기반 전환은 그러한 단위들이 전제하는 사람으로 구성된 팀의 생산성 곡선을 따르지 않으므로, 임의의 기간 표시는 혼선을 유발합니다.)
+- Risk level + 주요 리스크 2가지 + 완화 대책
 
-The named execution command **reads this brief** and treats its phase's
-scope, entry criteria, and exit criteria as binding gates. So write entry
-criteria as *checkable preconditions* ("baseline recorded in
-`analysis/$1/BASELINE.md`", "pilot playbook approved"), not aspirations —
-and tell the approver they steer execution by editing this file. An edited
-entry criterion is honored; a note in a chat is not.
+지정된 실행 명령은 **이 브리프를 읽고** 해당 단계의 범위, 진입 기준, 종료 기준을 구속력 있는 게이트로 취급합니다. 따라서 진입 기준은 단순한 염원이 아닌 *체크 가능한 전제 조건*("`analysis/$1/BASELINE.md`에 베이스라인이 기록됨", "파일럿 플레이북이 승인됨")으로 작성하십시오. 그리고 승인자에게 이 파일을 편집하여 실행을 제어할 수 있음을 알리십시오. 편집된 진입 기준은 실행 시 반영되지만, 채팅 상의 메모는 반영되지 않습니다.
 
-Render the phases as a Mermaid `flowchart LR` showing **sequence and
-dependencies** (Phase 1 → Phase 2 → …, with branches where phases are
-independent). Do **not** use a `gantt` chart — gantt encodes calendar
-durations, and this plan deliberately makes no time claims.
+단계를 **순서와 의존성**을 보여주는 Mermaid `flowchart LR`로 렌더링합니다 (Phase 1 → Phase 2 → ... 형식이며 독립적인 단계인 경우 분기 처리). `gantt` 차트는 사용하지 **마십시오**. 간트 차트는 달력 기준 기간을 시각화하므로, 의도적으로 일정을 표시하지 않는 본 계획의 취지와 맞지 않습니다.
 
-**Phase 1 is a pilot, and this brief is a hypothesis.** Whenever a phase's
-units share one execution recipe (an uplift over many projects, a transform
-over many similar modules), name **one representative unit** as that
-phase's own first slice. For an uplift, `/modernize-uplift` Step 5a
-*enforces* this — it will not fan out without a pilot and its playbook; for
-the other execution commands the pilot lives here, written into that
-phase's **entry criteria**, which they read as a gate. A reviewer should
-see it in this document either way. Say explicitly in §3 that what the pilot
-surfaces (a delta the analysis missed, a prerequisite that reorders the
-phases, an environment fact nobody wrote down) is *expected* to revise
-this brief, and that a regenerated brief after the pilot is the normal
-path, not a correction. Legacy systems hide their surprises in the build
-and the runtime, not in the source; no amount of reading substitutes for
-one unit taken all the way through.
+**Phase 1은 파일럿 단계이며, 본 브리프는 가설입니다.** 어떤 단계의 구성 단위들이 하나의 실행 레시피를 공유하는 경우 (다수의 프로젝트에 대한 Uplift, 다수의 유사 모듈에 대한 Transform 등), **하나의 대표 단위(representative unit)**를 해당 단계의 첫 번째 단위로 명시하십시오. Uplift의 경우 `/modernize-uplift` Step 5a가 이를 *강제*합니다 (파일럿 및 플레이북 없이는 팬아웃을 진행하지 않음). 다른 실행 명령들의 경우 파일럿은 이 문서의 **진입 기준**에 게이트로 작성됩니다. 검토자는 두 경우 모두 이 문서에서 이를 확인할 수 있어야 합니다. 3절에서 파일럿 과정 중에 발견된 사항(분석에서 놓친 델타, 단계를 재조정하게 만드는 전제 조건, 문서화되지 않은 환경적 실태 등)으로 인해 이 브리프가 수정될 것을 *상정*하고 있음을 명시하고, 파일럿 이후 브리프를 재생성하는 것이 정상적인 프로세스이며 계획의 오류 수정이 아님을 밝히십시오. 레거시 시스템은 예상치 못한 복잡함을 소스 코드가 아닌 빌드 및 런타임 환경에 숨겨두는 경우가 많습니다. 어떤 분석 문서도 하나의 단위를 끝까지 직접 실행해 보는 것보다 효과적일 수 없습니다.
 
-### 4. Business Walkthroughs
-For each persona flow in `analysis/$1/topology.json` (`flows` — produced
-by `/modernize-map`), a short narrative table: persona, what happens in
-business language, which legacy modules implement it today, and which
-phase from §3 replaces each. This is the section non-technical approvers
-actually read — it connects "Phase 2" to "what happens when a customer
-files a claim". If topology.json has no flows, derive 2–3 walkthroughs
-from the entry points and say they need SME confirmation.
+### 4. 비즈니스 워크스루 (Business Walkthroughs)
+`analysis/$1/topology.json`(`flows` - `/modernize-map`에서 생성됨)에 포함된 각 페르소나 흐름에 대한 간략한 설명 테이블: 페르소나, 비즈니스 언어로 작성된 시나리오, 이를 현재 구현하는 레거시 모듈, 그리고 3절의 어떤 단계에서 이를 대체하는지 매핑합니다. 이 섹션은 비기술 분야 승인자가 실제로 읽는 핵심 부분으로, "Phase 2"라는 기술적 단계와 "고객이 청구를 접수할 때 발생하는 상황"을 연결해 줍니다. 만약 topology.json에 흐름 정보가 없는 경우, 엔트리 포인트들로부터 2~3개의 워크스루를 유도하고 SME의 확인이 필요하다고 표기하십시오.
 
-### 5. Behavior Contract
-List the **P0 rules** from BUSINESS_RULES.md (the ones tagged `Priority: P0` —
-money, regulatory, data integrity) that MUST be proven equivalent before any
-phase ships. These become the regression suite. Flag any P0 rule with
-Confidence < High as a blocker requiring SME confirmation before its phase
-starts.
+### 5. 동작 계약 (Behavior Contract)
+각 단계가 배포되기 전에 반드시 등가성(equivalence)을 검증해야 하는 `BUSINESS_RULES.md` 내의 **P0 규칙**들(금전, 규제, 데이터 무결성 등 `Priority: P0` 태그가 붙은 항목)을 나열합니다. 이 규칙들은 회귀 테스트 제품군이 됩니다. 신뢰도(Confidence)가 High 미만인 모든 P0 규칙은 해당 단계가 시작되기 전에 SME의 승인이 필요한 블로커(blocker)로 플래그를 지정합니다.
 
-### 6. Validation Strategy
-State which combination applies: characterization tests, contract tests,
-parallel-run / dual-execution diff, property-based tests, manual UAT.
-Justify per phase.
+### 6. 검증 전략 (Validation Strategy)
+사용할 검증 조합을 기술합니다: 특성 테스트(characterization tests), 계약 테스트(contract tests), 병렬 실행/이중 실행 diff(parallel-run / dual-execution diff), 속성 기반 테스트(property-based tests), 수동 UAT 등. 각 단계별로 근거를 제시합니다.
 
-### 7. Open Questions
-Anything requiring human/SME decision before Phase 1 starts. Each as a
-checkbox the approver must tick.
+### 7. 미결 사항 (Open Questions)
+Phase 1을 시작하기 전에 사람 또는 SME의 결정이 필요한 모든 사항입니다. 승인자가 체크할 수 있도록 체크박스 형태로 작성합니다.
 
-### 8. Approval Block
+### 8. 승인 블록 (Approval Block)
 ```
 Approved by: ________________  Date: __________
 Approval covers: Phase 1 only | Full plan
 ```
 
-## Present
+## 결과 제시 (Present)
 
-Present a summary of the brief and **stop — write nothing further until
-the user explicitly approves** (use plan mode if the session supports
-it). This gate is the human-in-the-loop control point; "no objection" is
-not approval.
+브리프 요약을 제시하고 **중단합니다. 사용자가 명시적으로 승인할 때까지 더 이상 아무것도 작성하지 마십시오** (세션에서 지원하는 경우 계획 모드를 사용하십시오). 이 게이트는 인간 개입(human-in-the-loop) 제어 지점입니다. "이의 없음"은 승인을 의미하지 않습니다.

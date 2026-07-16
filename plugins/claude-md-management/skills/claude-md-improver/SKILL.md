@@ -1,127 +1,127 @@
 ---
 name: claude-md-improver
-description: Audit and improve CLAUDE.md files in repositories. Use when user asks to check, audit, update, improve, or fix CLAUDE.md files. Scans for all CLAUDE.md files, evaluates quality against templates, outputs quality report, then makes targeted updates. Also use when the user mentions "CLAUDE.md maintenance" or "project memory optimization".
+description: 저장소 내의 CLAUDE.md 파일을 감사하고 개선합니다. 사용자가 CLAUDE.md 파일의 확인, 감사, 업데이트, 개선, 수정을 요청할 때 사용하십시오. 모든 CLAUDE.md 파일을 스캔하고, 템플릿과 비교하여 품질을 평가하고, 품질 보고서를 출력한 뒤, 표적 업데이트를 진행합니다. 사용자가 "CLAUDE.md 유지 관리" 또는 "프로젝트 메모리 최적화"를 언급할 때도 사용합니다.
 tools: Read, Glob, Grep, Bash, Edit
 ---
 
-# CLAUDE.md Improver
+# CLAUDE.md 개선기 (CLAUDE.md Improver)
 
-Audit, evaluate, and improve CLAUDE.md files across a codebase to ensure Claude Code has optimal project context.
+Claude Code가 최적의 프로젝트 컨텍스트를 가질 수 있도록 코드베이스 전반의 CLAUDE.md 파일을 감사, 평가 및 개선합니다.
 
-**This skill can write to CLAUDE.md files.** After presenting a quality report and getting user approval, it updates CLAUDE.md files with targeted improvements.
+**이 스킬은 CLAUDE.md 파일에 쓰기 작업을 수행할 수 있습니다.** 품질 보고서를 제시하고 사용자의 승인을 받은 후, 표적화된 개선 사항으로 CLAUDE.md 파일을 업데이트합니다.
 
-## Workflow
+## 워크플로우
 
-### Phase 1: Discovery
+### 1단계: 탐색 (Discovery)
 
-Find all CLAUDE.md files in the repository:
+저장소 내의 모든 CLAUDE.md 파일을 찾습니다:
 
 ```bash
 find . -name "CLAUDE.md" -o -name ".claude.md" -o -name ".claude.local.md" 2>/dev/null | head -50
 ```
 
-**File Types & Locations:**
+**파일 유형 및 위치:**
 
-| Type | Location | Purpose |
+| 유형 | 위치 | 목적/용도 |
 |------|----------|---------|
-| Project root | `./CLAUDE.md` | Primary project context (checked into git, shared with team) |
-| Local overrides | `./.claude.local.md` | Personal/local settings (gitignored, not shared) |
-| Global defaults | `~/.claude/CLAUDE.md` | User-wide defaults across all projects |
-| Package-specific | `./packages/*/CLAUDE.md` | Module-level context in monorepos |
-| Subdirectory | Any nested location | Feature/domain-specific context |
+| 프로젝트 루트 | `./CLAUDE.md` | 주요 프로젝트 컨텍스트 (git에 등록되며 팀과 공유됨) |
+| 로컬 재정의 | `./.claude.local.md` | 개인/로컬 설정 (gitignored 처리되며 공유되지 않음) |
+| 글로벌 기본값 | `~/.claude/CLAUDE.md` | 사용자의 모든 프로젝트에 걸쳐 적용되는 기본값 |
+| 패키지 특화 | `./packages/*/CLAUDE.md` | 모노레포 내의 모듈 수준 컨텍스트 |
+| 하위 디렉터리 | 임의의 중첩 위치 | 특정 기능/도메인 특화 컨텍스트 |
 
-**Note:** Claude auto-discovers CLAUDE.md files in parent directories, making monorepo setups work automatically.
+**참고:** Claude는 상위 디렉터리에서 CLAUDE.md 파일을 자동으로 탐색하므로 모노레포 설정이 자동으로 작동합니다.
 
-### Phase 2: Quality Assessment
+### 2단계: 품질 평가 (Quality Assessment)
 
-For each CLAUDE.md file, evaluate against quality criteria. See [references/quality-criteria.md](references/quality-criteria.md) for detailed rubrics.
+각 CLAUDE.md 파일에 대해 품질 기준에 맞게 평가합니다. 자세한 루브릭은 [references/quality-criteria.md](references/quality-criteria.md)를 참고하세요.
 
-**Quick Assessment Checklist:**
+**평가 기준 체크리스트:**
 
-| Criterion | Weight | Check |
+| 평가 기준 | 가중치 | 확인 사항 |
 |-----------|--------|-------|
-| Commands/workflows documented | High | Are build/test/deploy commands present? |
-| Architecture clarity | High | Can Claude understand the codebase structure? |
-| Non-obvious patterns | Medium | Are gotchas and quirks documented? |
-| Conciseness | Medium | No verbose explanations or obvious info? |
-| Currency | High | Does it reflect current codebase state? |
-| Actionability | High | Are instructions executable, not vague? |
+| 명령어/워크플로우 문서화 | 높음 | 빌드/테스트/배포 명령어가 존재합니까? |
+| 아키텍처 명확성 | 높음 | Claude가 코드베이스 구조를 이해할 수 있습니까? |
+| 직관적이지 않은 패턴 | 보통 | 주의 사항 및 특이 사항이 문서화되어 있습니까? |
+| 간결성 | 보통 | 장황한 설명이나 뻔한 정보는 배제되어 있습니까? |
+| 최신성 | 높음 | 현재 코드베이스 상태를 반영합니까? |
+| 조치 가능성 | 높음 | 지침이 모호하지 않고 즉시 실행 가능합니까? |
 
-**Quality Scores:**
-- **A (90-100)**: Comprehensive, current, actionable
-- **B (70-89)**: Good coverage, minor gaps
-- **C (50-69)**: Basic info, missing key sections
-- **D (30-49)**: Sparse or outdated
-- **F (0-29)**: Missing or severely outdated
+**품질 점수 등급:**
+- **A (90-100)**: 종합적이고 최신 상태이며 즉시 실행 가능
+- **B (70-89)**: 양호한 커버리지, 일부 사소한 빈틈 존재
+- **C (50-69)**: 기본적인 정보만 제공, 핵심 섹션 누락
+- **D (30-49)**: 정보가 부족하거나 오래됨
+- **F (0-29)**: 파일이 누락되었거나 극도로 심각하게 오래됨
 
-### Phase 3: Quality Report Output
+### 3단계: 품질 보고서 출력 (Quality Report Output)
 
-**ALWAYS output the quality report BEFORE making any updates.**
+**업데이트를 수행하기 전에 반드시 품질 보고서를 출력하십시오.**
 
-Format:
+포맷:
 
 ```
-## CLAUDE.md Quality Report
+## CLAUDE.md 품질 보고서
 
-### Summary
-- Files found: X
-- Average score: X/100
-- Files needing update: X
+### 요약
+- 발견된 파일 수: X
+- 평균 점수: X/100
+- 업데이트가 필요한 파일 수: X
 
-### File-by-File Assessment
+### 파일별 평가
 
-#### 1. ./CLAUDE.md (Project Root)
-**Score: XX/100 (Grade: X)**
+#### 1. ./CLAUDE.md (프로젝트 루트)
+**점수: XX/100 (등급: X)**
 
-| Criterion | Score | Notes |
+| 평가 기준 | 점수 | 참고 사항 |
 |-----------|-------|-------|
-| Commands/workflows | X/20 | ... |
-| Architecture clarity | X/20 | ... |
-| Non-obvious patterns | X/15 | ... |
-| Conciseness | X/15 | ... |
-| Currency | X/15 | ... |
-| Actionability | X/15 | ... |
+| 명령어/워크플로우 | X/20 | ... |
+| 아키텍처 명확성 | X/20 | ... |
+| 직관적이지 않은 패턴 | X/15 | ... |
+| 간결성 | X/15 | ... |
+| 최신성 | X/15 | ... |
+| 조치 가능성 | X/15 | ... |
 
-**Issues:**
-- [List specific problems]
+**문제점:**
+- [구체적인 문제 목록 작성]
 
-**Recommended additions:**
-- [List what should be added]
+**권장 추가 사항:**
+- [추가해야 할 사항 목록 작성]
 
-#### 2. ./packages/api/CLAUDE.md (Package-specific)
+#### 2. ./packages/api/CLAUDE.md (패키지 특화)
 ...
 ```
 
-### Phase 4: Targeted Updates
+### 4단계: 표적 업데이트 (Targeted Updates)
 
-After outputting the quality report, ask user for confirmation before updating.
+품질 보고서를 출력한 후, 업데이트하기 전에 사용자의 승인을 받으십시오.
 
-**Update Guidelines (Critical):**
+**업데이트 가이드라인 (중요):**
 
-1. **Propose targeted additions only** - Focus on genuinely useful info:
-   - Commands or workflows discovered during analysis
-   - Gotchas or non-obvious patterns found in code
-   - Package relationships that weren't clear
-   - Testing approaches that work
-   - Configuration quirks
+1. **표적 추가 사항만 제안하십시오** - 실제로 유용한 정보에 집중합니다:
+   - 분석 과정에서 발견된 명령어 또는 워크플로우
+   - 코드 내에서 발견된 주의 사항 및 직관적이지 않은 패턴
+   - 명확하지 않았던 패키지 관계
+   - 유효했던 테스트 접근 방식
+   - 환경 설정상의 특이 사항
 
-2. **Keep it minimal** - Avoid:
-   - Restating what's obvious from the code
-   - Generic best practices already covered
-   - One-off fixes unlikely to recur
-   - Verbose explanations when a one-liner suffices
+2. **최소화하여 작성하십시오** - 피해야 할 사항:
+   - 코드를 통해 파악하기 쉬운 뻔한 내용 반복 설명
+   - 이미 널리 알려진 일반적인 모범 사례
+   - 다시 발생할 가능성이 낮은 일회성 수정 사항
+   - 한 줄로 표현 가능한 내용을 장황하게 설명
 
-3. **Show diffs** - For each change, show:
-   - Which CLAUDE.md file to update
-   - The specific addition (as a diff or quoted block)
-   - Brief explanation of why this helps future sessions
+3. **Diff 표시** - 변경 사항마다 다음을 표시하십시오:
+   - 업데이트할 CLAUDE.md 파일
+   - 구체적인 추가 내용 (diff 또는 인용 블록 형식)
+   - 향후 세션에 이것이 어떻게 도움이 되는지에 대한 간략한 설명
 
-**Diff Format:**
+**Diff 포맷:**
 
 ```markdown
-### Update: ./CLAUDE.md
+### 업데이트: ./CLAUDE.md
 
-**Why:** Build command was missing, causing confusion about how to run the project.
+**Why:** 빌드 명령어가 누락되어 프로젝트 실행 방식에 혼선이 있었습니다.
 
 ```diff
 + ## Quick Start
@@ -133,47 +133,47 @@ After outputting the quality report, ask user for confirmation before updating.
 ```
 ```
 
-### Phase 5: Apply Updates
+### 5단계: 업데이트 적용 (Apply Updates)
 
-After user approval, apply changes using the Edit tool. Preserve existing content structure.
+사용자의 승인을 얻은 후 Edit 도구를 사용하여 변경 사항을 적용합니다. 기존 콘텐츠 구조를 보존하십시오.
 
-## Templates
+## 템플릿
 
-See [references/templates.md](references/templates.md) for CLAUDE.md templates by project type.
+프로젝트 유형별 CLAUDE.md 템플릿은 [references/templates.md](references/templates.md)를 참고하세요.
 
-## Common Issues to Flag
+## 흔히 지적되는 문제들
 
-1. **Stale commands**: Build commands that no longer work
-2. **Missing dependencies**: Required tools not mentioned
-3. **Outdated architecture**: File structure that's changed
-4. **Missing environment setup**: Required env vars or config
-5. **Broken test commands**: Test scripts that have changed
-6. **Undocumented gotchas**: Non-obvious patterns not captured
+1. **만료된 명령어**: 더 이상 작동하지 않는 빌드 명령어
+2. **누락된 종속성**: 필수 도구 언급 누락
+3. **변경된 아키텍처**: 실제와 다른 예전 파일 구조
+4. **누락된 환경 설정**: 필수 환경 변수 또는 설정 누락
+5. **깨진 테스트 명령어**: 변경된 실제 테스트 스크립트
+6. **문서화되지 않은 주의 사항**: 직관적이지 않은 고유 패턴 누락
 
-## User Tips to Share
+## 사용자에게 안내할 팁
 
-When presenting recommendations, remind users:
+권장 사항을 제시할 때 사용자에게 다음 팁을 알려주세요:
 
-- **`#` key shortcut**: During a Claude session, press `#` to have Claude auto-incorporate learnings into CLAUDE.md
-- **Keep it concise**: CLAUDE.md should be human-readable; dense is better than verbose
-- **Actionable commands**: All documented commands should be copy-paste ready
-- **Use `.claude.local.md`**: For personal preferences not shared with team (add to `.gitignore`)
-- **Global defaults**: Put user-wide preferences in `~/.claude/CLAUDE.md`
+- **# 키 단축키**: Claude 세션 진행 중 `#`을 입력하면 Claude가 학습 내용을 CLAUDE.md에 자동으로 반영하도록 요청할 수 있습니다.
+- **간결함 유지**: CLAUDE.md는 사람이 읽기 쉬워야 합니다. 장황한 것보다 밀도 높은 설명이 좋습니다.
+- **즉시 실행 가능한 명령어**: 문서화된 모든 명령어는 바로 복사하여 붙여넣을 수 있는 형태여야 합니다.
+- **.claude.local.md 사용**: 팀과 공유하지 않을 개인적 선호 설정은 이 파일에 작성하십시오 (그리고 `.gitignore`에 추가).
+- **글로벌 기본값**: 사용자 전반에 걸쳐 적용할 선호 설정은 `~/.claude/CLAUDE.md`에 작성하십시오.
 
-## What Makes a Great CLAUDE.md
+## 훌륭한 CLAUDE.md의 요건
 
-**Key principles:**
-- Concise and human-readable
-- Actionable commands that can be copy-pasted
-- Project-specific patterns, not generic advice
-- Non-obvious gotchas and warnings
+**핵심 원칙:**
+- 간결하고 가독성이 높을 것
+- 복사-붙여넣기가 가능한 즉시 실행 방식의 명령어
+- 일반적인 조언이 아닌 프로젝트에 특화된 패턴
+- 직관적이지 않은 주의 사항 및 경고
 
-**Recommended sections** (use only what's relevant):
-- Commands (build, test, dev, lint)
-- Architecture (directory structure)
-- Key Files (entry points, config)
-- Code Style (project conventions)
-- Environment (required vars, setup)
-- Testing (commands, patterns)
-- Gotchas (quirks, common mistakes)
-- Workflow (when to do what)
+**권장 섹션** (관련된 사항만 선택적 사용):
+- 명령어 (build, test, dev, lint)
+- 아키텍처 (디렉터리 구조)
+- 주요 파일 (진입점, 설정 파일)
+- 코드 스타일 (프로젝트 컨벤션)
+- 환경 설정 (필수 변수, 설정 방법)
+- 테스트 (실행 명령어, 패턴)
+- 주의 사항 (특이 사항, 흔히 하는 실수)
+- 워크플로우 (특정 작업 수행 시점)

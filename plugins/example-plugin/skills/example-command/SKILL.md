@@ -1,35 +1,35 @@
 ---
 name: example-command
-description: An example user-invoked skill that demonstrates frontmatter options and the skills/<name>/SKILL.md layout
+description: 프론트매터 옵션과 skills/<name>/SKILL.md 레이아웃을 보여주는 사용자가 호출하는 예시 스킬
 argument-hint: <required-arg> [optional-arg]
 allowed-tools: [Read, Glob, Grep, Bash]
 ---
 
-# Example Command (Skill Format)
+# Example Command (스킬 형식)
 
-This demonstrates the `skills/<name>/SKILL.md` layout for user-invoked slash commands. It is functionally identical to the legacy `commands/example-command.md` format — both are loaded the same way; only the file layout differs.
+이 파일은 사용자가 직접 호출하는 슬래시 명령어를 위한 `skills/<name>/SKILL.md` 레이아웃을 보여줍니다. 기능적으로는 레거시인 `commands/example-command.md` 형식과 완전히 동일하며, 둘 다 같은 방식으로 로드됩니다. 단지 파일 레이아웃만 다릅니다.
 
 ## Arguments
 
-The user invoked this with: $ARGUMENTS
+사용자가 다음 인자로 호출했습니다: $ARGUMENTS
 
 ## Instructions
 
-When this skill is invoked:
+이 스킬이 호출되었을 때:
 
-1. Parse the arguments provided by the user
-2. Perform the requested action using allowed tools
-3. Report results back to the user
+1. 사용자가 제공한 인자를 파싱합니다.
+2. 허용된 도구(allowed tools)를 사용하여 요청된 작업을 수행합니다.
+3. 결과를 사용자에게 보고합니다.
 
 ## Frontmatter Options Reference
 
-Skills in this layout support these frontmatter fields:
+이 레이아웃의 스킬은 다음 프론트매터 필드를 지원합니다:
 
-- **name**: Skill identifier (matches directory name)
-- **description**: Short description shown in /help
-- **argument-hint**: Hints for command arguments shown to user
-- **allowed-tools**: Pre-approved tools for this skill (reduces permission prompts)
-- **model**: Override the model (e.g., "haiku", "sonnet", "opus")
+- **name**: 스킬 식별자 (디렉터리 이름과 일치함)
+- **description**: /help에 표시되는 짧은 설명
+- **argument-hint**: 사용자에게 표시되는 명령어 인자 힌트
+- **allowed-tools**: 이 스킬에 대해 사전 승인된 도구 (권한 요청 팝업을 줄여줌)
+- **model**: 모델 오버라이드 (예: "haiku", "sonnet", "opus")
 
 ## Example Usage
 

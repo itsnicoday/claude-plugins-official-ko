@@ -1,412 +1,411 @@
-# Feature Development Plugin
+# 기능 개발 플러그인
 
-A comprehensive, structured workflow for feature development with specialized agents for codebase exploration, architecture design, and quality review.
+코드베이스 탐색, 아키텍처 설계, 품질 검토를 위한 특화된 에이전트와 함께 기능 개발을 위한 종합적이고 구조화된 워크플로우를 제공합니다.
 
-## Overview
+## 개요
 
-The Feature Development Plugin provides a systematic 7-phase approach to building new features. Instead of jumping straight into code, it guides you through understanding the codebase, asking clarifying questions, designing architecture, and ensuring quality—resulting in better-designed features that integrate seamlessly with your existing code.
+기능 개발 플러그인은 새로운 기능을 빌드하기 위한 체계적인 7단계 접근 방식을 제공합니다. 코드를 바로 작성하기 시작하는 대신, 코드베이스 이해, 명확한 질문 제기, 아키텍처 설계, 품질 보증 과정을 단계별로 안내하여 기존 코드와 원활하게 통합되고 더 나은 구조를 가진 기능을 개발할 수 있도록 돕습니다.
 
-## Philosophy
+## 철학
 
-Building features requires more than just writing code. You need to:
-- **Understand the codebase** before making changes
-- **Ask questions** to clarify ambiguous requirements
-- **Design thoughtfully** before implementing
-- **Review for quality** after building
+기능을 빌드하려면 단순히 코드를 작성하는 것 이상의 작업이 필요합니다:
+- 변경 작업을 하기 전에 **코드베이스를 이해**해야 합니다.
+- 모호한 요구사항을 명확히 하기 위해 **질문을 던져야** 합니다.
+- 구현하기 전에 **심사숙고하여 설계**해야 합니다.
+- 빌드한 후에는 **품질 검토**를 거쳐야 합니다.
 
-This plugin embeds these practices into a structured workflow that runs automatically when you use the `/feature-dev` command.
+이 플러그인은 `/feature-dev` 명령어를 사용할 때 자동으로 실행되는 구조화된 워크플로우에 이러한 모범 사례들을 내장하고 있습니다.
 
-## Command: `/feature-dev`
+## 명령어: `/feature-dev`
 
-Launches a guided feature development workflow with 7 distinct phases.
+7개의 개별 단계로 이루어진 안내형 기능 개발 워크플로우를 시작합니다.
 
-**Usage:**
+**사용법:**
 ```bash
 /feature-dev Add user authentication with OAuth
 ```
 
-Or simply:
+또는 다음과 같이 실행할 수도 있습니다:
 ```bash
 /feature-dev
 ```
 
-The command will guide you through the entire process interactively.
+이 명령어는 대화형으로 전체 과정을 단계별로 안내합니다.
 
-## The 7-Phase Workflow
+## 7단계 워크플로우
 
-### Phase 1: Discovery
+### 1단계: 탐색 (Discovery)
 
-**Goal**: Understand what needs to be built
+**목표**: 빌드해야 할 기능이 무엇인지 파악
 
-**What happens:**
-- Clarifies the feature request if it's unclear
-- Asks what problem you're solving
-- Identifies constraints and requirements
-- Summarizes understanding and confirms with you
+**진행 과정:**
+- 기능 요구사항이 모호한 경우 이를 명확히 합니다.
+- 해결하려는 문제가 무엇인지 묻습니다.
+- 제약 사항 및 요구사항을 식별합니다.
+- 파악한 내용을 요약하여 사용자에게 확인을 받습니다.
 
-**Example:**
+**예시:**
 ```
-You: /feature-dev Add caching
-Claude: Let me understand what you need...
-        - What should be cached? (API responses, computed values, etc.)
-        - What are your performance requirements?
-        - Do you have a preferred caching solution?
-```
-
-### Phase 2: Codebase Exploration
-
-**Goal**: Understand relevant existing code and patterns
-
-**What happens:**
-- Launches 2-3 `code-explorer` agents in parallel
-- Each agent explores different aspects (similar features, architecture, UI patterns)
-- Agents return comprehensive analyses with key files to read
-- Claude reads all identified files to build deep understanding
-- Presents comprehensive summary of findings
-
-**Agents launched:**
-- "Find features similar to [feature] and trace implementation"
-- "Map the architecture and abstractions for [area]"
-- "Analyze current implementation of [related feature]"
-
-**Example output:**
-```
-Found similar features:
-- User authentication (src/auth/): Uses JWT tokens, middleware pattern
-- Session management (src/session/): Redis-backed, 24hr expiry
-- API security (src/api/middleware/): Rate limiting, CORS
-
-Key files to understand:
-- src/auth/AuthService.ts:45 - Core authentication logic
-- src/middleware/authMiddleware.ts:12 - Request authentication
-- src/config/security.ts:8 - Security configuration
+사용자: /feature-dev 캐싱 기능 추가
+Claude: 필요한 사항을 파악해 보겠습니다...
+        - 어떤 것을 캐싱해야 하나요? (API 응답, 연산 결과 등)
+        - 성능 요구사항은 무엇인가요?
+        - 선호하는 캐싱 솔루션이 있나요?
 ```
 
-### Phase 3: Clarifying Questions
+### 2단계: 코드베이스 탐색 (Codebase Exploration)
 
-**Goal**: Fill in gaps and resolve all ambiguities
+**목표**: 관련된 기존 코드 및 패턴 파악
 
-**What happens:**
-- Reviews codebase findings and feature request
-- Identifies underspecified aspects:
-  - Edge cases
-  - Error handling
-  - Integration points
-  - Backward compatibility
-  - Performance needs
-- Presents all questions in an organized list
-- **Waits for your answers before proceeding**
+**진행 과정:**
+- 2~3개의 `code-explorer` 에이전트를 동시에 실행합니다.
+- 각 에이전트는 서로 다른 측면(유사 기능, 아키텍처, UI 패턴 등)을 탐색합니다.
+- 에이전트들은 읽어야 할 핵심 파일과 함께 종합적인 분석 결과를 반환합니다.
+- Claude는 식별된 모든 파일을 읽어 깊이 있게 이해합니다.
+- 파악한 결과를 종합적으로 요약하여 제공합니다.
 
-**Example:**
+**실행되는 에이전트:**
+- "[feature]와 유사한 기능을 찾아 구현 추적"
+- "[area] 영역의 아키텍처 및 추상화 매핑"
+- "[related feature]의 현재 구현 분석"
+
+**출력 예시:**
 ```
-Before designing the architecture, I need to clarify:
+유사 기능 발견:
+- 사용자 인증 (src/auth/): JWT 토큰 사용, 미들웨어 패턴
+- 세션 관리 (src/session/): Redis 기반, 24시간 만료
+- API 보안 (src/api/middleware/): Rate limiting, CORS
 
-1. OAuth provider: Which OAuth providers? (Google, GitHub, custom?)
-2. User data: Store OAuth tokens or just user profile?
-3. Existing auth: Replace current auth or add alongside?
-4. Sessions: Integrate with existing session management?
-5. Error handling: How to handle OAuth failures?
-```
-
-**Critical**: This phase ensures nothing is ambiguous before design begins.
-
-### Phase 4: Architecture Design
-
-**Goal**: Design multiple implementation approaches
-
-**What happens:**
-- Launches 2-3 `code-architect` agents with different focuses:
-  - **Minimal changes**: Smallest change, maximum reuse
-  - **Clean architecture**: Maintainability, elegant abstractions
-  - **Pragmatic balance**: Speed + quality
-- Reviews all approaches
-- Forms opinion on which fits best for this task
-- Presents comparison with trade-offs and recommendation
-- **Asks which approach you prefer**
-
-**Example output:**
-```
-I've designed 3 approaches:
-
-Approach 1: Minimal Changes
-- Extend existing AuthService with OAuth methods
-- Add new OAuth routes to existing auth router
-- Minimal refactoring required
-Pros: Fast, low risk
-Cons: Couples OAuth to existing auth, harder to test
-
-Approach 2: Clean Architecture
-- New OAuthService with dedicated interface
-- Separate OAuth router and middleware
-- Refactor AuthService to use common interface
-Pros: Clean separation, testable, maintainable
-Cons: More files, more refactoring
-
-Approach 3: Pragmatic Balance
-- New OAuthProvider abstraction
-- Integrate into existing AuthService
-- Minimal refactoring, good boundaries
-Pros: Balanced complexity and cleanliness
-Cons: Some coupling remains
-
-Recommendation: Approach 3 - gives you clean boundaries without
-excessive refactoring, and fits your existing architecture well.
-
-Which approach would you like to use?
+이해해야 할 핵심 파일:
+- src/auth/AuthService.ts:45 - 핵심 인증 로직
+- src/middleware/authMiddleware.ts:12 - 요청 인증
+- src/config/security.ts:8 - 보안 설정
 ```
 
-### Phase 5: Implementation
+### 3단계: 명확화 질문 (Clarifying Questions)
 
-**Goal**: Build the feature
+**목표**: 부족한 세부 사항을 채우고 모든 모호성 해소
 
-**What happens:**
-- **Waits for explicit approval** before starting
-- Reads all relevant files identified in previous phases
-- Implements following chosen architecture
-- Follows codebase conventions strictly
-- Writes clean, well-documented code
-- Updates todos as progress is made
+**진행 과정:**
+- 코드베이스 분석 결과와 기능 요구사항을 검토합니다.
+- 명확하게 기술되지 않은 부분을 식별합니다:
+  - 예외 상황 (Edge cases)
+  - 에러 핸들링
+  - 통합 지점
+  - 하위 호환성
+  - 성능 요구사항
+- 정리된 리스트 형태로 모든 질문을 제시합니다.
+- **사용자의 답변을 기다린 후 다음 단계로 진행합니다.**
 
-**Notes:**
-- Implementation only starts after you approve
-- Follows patterns discovered in Phase 2
-- Uses architecture designed in Phase 4
-- Continuously tracks progress
-
-### Phase 6: Quality Review
-
-**Goal**: Ensure code is simple, DRY, elegant, and functionally correct
-
-**What happens:**
-- Launches 3 `code-reviewer` agents in parallel with different focuses:
-  - **Simplicity/DRY/Elegance**: Code quality and maintainability
-  - **Bugs/Correctness**: Functional correctness and logic errors
-  - **Conventions/Abstractions**: Project standards and patterns
-- Consolidates findings
-- Identifies highest severity issues
-- **Presents findings and asks what you want to do**:
-  - Fix now
-  - Fix later
-  - Proceed as-is
-- Addresses issues based on your decision
-
-**Example output:**
+**예시:**
 ```
-Code Review Results:
+아키텍처를 설계하기 전에 다음 사항을 명확히 해야 합니다:
 
-High Priority Issues:
-1. Missing error handling in OAuth callback (src/auth/oauth.ts:67)
-2. Memory leak: OAuth state not cleaned up (src/auth/oauth.ts:89)
-
-Medium Priority:
-1. Could simplify token refresh logic (src/auth/oauth.ts:120)
-2. Consider extracting OAuth config validation
-
-All tests pass. Code follows project conventions.
-
-What would you like to do?
+1. OAuth 제공업체: 어떤 OAuth 제공업체를 사용하나요? (Google, GitHub, 커스텀?)
+2. 사용자 데이터: OAuth 토큰을 저장하나요, 아니면 단순히 사용자 프로필만 저장하나요?
+3. 기존 인증: 현재 인증 방식을 대체하나요, 아니면 함께 추가하나요?
+4. 세션: 기존 세션 관리 기능과 통합하나요?
+5. 에러 핸들링: OAuth 인증 실패를 어떻게 처리하나요?
 ```
 
-### Phase 7: Summary
+**중요**: 이 단계는 설계를 시작하기 전에 모호한 부분이 전혀 없도록 확실하게 짚고 넘어갑니다.
 
-**Goal**: Document what was accomplished
+### 4단계: 아키텍처 설계 (Architecture Design)
 
-**What happens:**
-- Marks all todos complete
-- Summarizes:
-  - What was built
-  - Key decisions made
-  - Files modified
-  - Suggested next steps
+**목표**: 여러 가지 구현 접근 방식 설계
 
-**Example:**
+**진행 과정:**
+- 서로 다른 초점을 가진 2~3개의 `code-architect` 에이전트를 실행합니다:
+  - **최소 변경 (Minimal changes)**: 변경을 최소화하고 재사용을 극대화
+  - **클린 아키텍처 (Clean architecture)**: 유지 보수성 및 우아한 추상화 강조
+  - **실용적인 균형 (Pragmatic balance)**: 속도와 품질의 균형
+- 모든 접근 방식을 검토합니다.
+- 이번 작업에 가장 적합한 접근 방식에 대한 의견을 수립합니다.
+- 트레이드오프 비교 및 권장안을 제시합니다.
+- **사용자가 선호하는 접근 방식을 묻습니다.**
+
+**출력 예시:**
 ```
-Feature Complete: OAuth Authentication
+3가지 접근 방식을 설계했습니다:
 
-What was built:
-- OAuth provider abstraction supporting Google and GitHub
-- OAuth routes and middleware integrated with existing auth
-- Token refresh and session integration
-- Error handling for all OAuth flows
+접근 방식 1: 최소 변경
+- 기존 AuthService에 OAuth 메서드 확장
+- 기존 인증 라우터에 새로운 OAuth 라우트 추가
+- 리팩터링 최소화
+장점: 신속함, 낮은 리스크
+단점: OAuth가 기존 인증 방식과 강하게 결합됨, 테스트가 더 어려움
 
-Key decisions:
-- Used pragmatic approach with OAuthProvider abstraction
-- Integrated with existing session management
-- Added OAuth state to prevent CSRF
+접근 방식 2: 클린 아키텍처
+- 전용 인터페이스를 가진 새로운 OAuthService 생성
+- 별도의 OAuth 라우터 및 미들웨어 분리
+- 공통 인터페이스를 사용하도록 AuthService 리팩터링
+장점: 명확한 분리, 테스트 및 유지 보수 용이
+단점: 파일 수가 늘어남, 리팩터링 작업이 증가함
 
-Files modified:
+접근 방식 3: 실용적인 균형
+- 새로운 OAuthProvider 추상화
+- 기존 AuthService에 통합
+- 최소한의 리팩터링, 좋은 경계
+장점: 복잡성과 깔끔함의 균형
+단점: 일부 결합도가 유지됨
+
+추천: 접근 방식 3 - 과도한 리팩터링 없이 깔끔한 경계를 제공하며, 기존 아키텍처와도 잘 어우러집니다.
+
+어떤 접근 방식을 사용하시겠습니까?
+```
+
+### 5단계: 구현 (Implementation)
+
+**목표**: 기능 구현
+
+**진행 과정:**
+- **시작하기 전에 명시적인 승인을 대기**합니다.
+- 이전 단계에서 파악한 모든 관련 파일을 읽습니다.
+- 선택한 아키텍처에 따라 구현을 수행합니다.
+- 코드베이스 관례를 엄격히 준수합니다.
+- 깔끔하고 문서화가 잘 된 코드를 작성합니다.
+- 진행 상황에 맞춰 할 일 목록(todos)을 업데이트합니다.
+
+**참고:**
+- 사용자가 승인한 후에만 구현이 시작됩니다.
+- 2단계에서 탐색한 패턴을 따릅니다.
+- 4단계에서 설계한 아키텍처를 적용합니다.
+- 진행 상황을 지속적으로 추적합니다.
+
+### 6단계: 품질 검토 (Quality Review)
+
+**목표**: 코드가 단순하고, 중복이 없으며(DRY), 우아하고, 기능적으로 올바른지 확인
+
+**진행 과정:**
+- 서로 다른 초점을 가진 3개의 `code-reviewer` 에이전트를 동시에 실행합니다:
+  - **단순성/DRY/우아함**: 코드 품질 및 유지 보수성
+  - **버그/올바름**: 기능적 정확성 및 로직 에러
+  - **규칙/추상화**: 프로젝트 표준 및 패턴
+- 검토 결과를 취합합니다.
+- 심각도가 가장 높은 문제를 식별합니다.
+- **검토 결과를 제시하고 어떻게 진행할지 묻습니다:**
+  - 지금 수정
+  - 나중에 수정
+  - 그대로 진행
+- 사용자의 결정에 따라 문제를 처리합니다.
+
+**출력 예시:**
+```
+코드 리뷰 결과:
+
+높은 우선순위 문제:
+1. OAuth 콜백의 에러 핸들링 누락 (src/auth/oauth.ts:67)
+2. 메모리 누수: OAuth 상태가 정리되지 않음 (src/auth/oauth.ts:89)
+
+중간 우선순위:
+1. 토큰 갱신 로직을 간소화할 수 있음 (src/auth/oauth.ts:120)
+2. OAuth 설정 검증 로직 분리를 고려해 보십시오.
+
+모든 테스트가 통과했습니다. 코드가 프로젝트 규칙을 준수합니다.
+
+어떻게 하시겠습니까?
+```
+
+### 7단계: 요약 (Summary)
+
+**목표**: 완료된 작업 문서화
+
+**진행 과정:**
+- 모든 할 일 항목을 완료로 표시합니다.
+- 다음 내용을 요약합니다:
+  - 빌드된 기능
+  - 주요 결정 사항
+  - 수정된 파일 목록
+  - 권장되는 후속 단계
+
+**예시:**
+```
+기능 완료: OAuth 인증
+
+빌드된 기능:
+- Google 및 GitHub을 지원하는 OAuth 프로바이더 추상화
+- 기존 인증 기능에 통합된 OAuth 라우트 및 미들웨어
+- 토큰 갱신 및 세션 통합
+- 모든 OAuth 흐름에 대한 에러 핸들링
+
+주요 결정 사항:
+- OAuthProvider 추상화를 사용하는 실용적인 접근 방식 채택
+- 기존 세션 관리 기능과 통합
+- CSRF 방지를 위한 OAuth 상태값 추가
+
+수정된 파일:
 - src/auth/OAuthProvider.ts (new)
 - src/auth/AuthService.ts
 - src/routes/auth.ts
 - src/middleware/authMiddleware.ts
 
-Suggested next steps:
-- Add tests for OAuth flows
-- Add more OAuth providers (Microsoft, Apple)
-- Update documentation
+권장되는 후속 단계:
+- OAuth 흐름에 대한 테스트 추가
+- 더 많은 OAuth 제공업체 추가 (Microsoft, Apple)
+- 문서 업데이트
 ```
 
-## Agents
+## 에이전트
 
 ### `code-explorer`
 
-**Purpose**: Deeply analyzes existing codebase features by tracing execution paths
+**목적**: 실행 경로를 추적하여 기존 코드베이스 기능을 깊이 있게 분석
 
-**Focus areas:**
-- Entry points and call chains
-- Data flow and transformations
-- Architecture layers and patterns
-- Dependencies and integrations
-- Implementation details
+**집중 영역:**
+- 진입점 및 호출 체인
+- 데이터 흐름 및 변환
+- 아키텍처 계층 및 패턴
+- 의존성 및 통합
+- 구현 세부 사항
 
-**When triggered:**
-- Automatically in Phase 2
-- Can be invoked manually when exploring code
+**실행 시점:**
+- 2단계에서 자동 실행
+- 코드를 탐색할 때 수동으로 호출 가능
 
-**Output:**
-- Entry points with file:line references
-- Step-by-step execution flow
-- Key components and responsibilities
-- Architecture insights
-- List of essential files to read
+**출력 결과:**
+- 파일:라인 참조가 포함된 진입점 정보
+- 단계별 실행 흐름
+- 핵심 컴포넌트와 각각의 책임
+- 아키텍처 통찰
+- 읽어야 할 필수 파일 목록
 
 ### `code-architect`
 
-**Purpose**: Designs feature architectures and implementation blueprints
+**목적**: 기능 아키텍처 및 구현 청사진 설계
 
-**Focus areas:**
-- Codebase pattern analysis
-- Architecture decisions
-- Component design
-- Implementation roadmap
-- Data flow and build sequence
+**집중 영역:**
+- 코드베이스 패턴 분석
+- 아키텍처 결정 사항
+- 컴포넌트 디자인
+- 구현 로드맵
+- 데이터 흐름 및 빌드 순서
 
-**When triggered:**
-- Automatically in Phase 4
-- Can be invoked manually for architecture design
+**실행 시점:**
+- 4단계에서 자동 실행
+- 아키텍처 설계를 위해 수동으로 호출 가능
 
-**Output:**
-- Patterns and conventions found
-- Architecture decision with rationale
-- Complete component design
-- Implementation map with specific files
-- Build sequence with phases
+**출력 결과:**
+- 발견된 패턴 및 규칙
+- 근거가 포함된 아키텍처 결정 사항
+- 완벽한 컴포넌트 디자인
+- 특정 파일이 명시된 구현 맵
+- 단계별 빌드 순서
 
 ### `code-reviewer`
 
-**Purpose**: Reviews code for bugs, quality issues, and project conventions
+**목적**: 버그, 품질 문제, 프로젝트 관례 준수 여부를 검토
 
-**Focus areas:**
-- Project guideline compliance (CLAUDE.md)
-- Bug detection
-- Code quality issues
-- Confidence-based filtering (only reports high-confidence issues ≥80)
+**집중 영역:**
+- 프로젝트 가이드라인 준수 여부 (CLAUDE.md)
+- 버그 탐지
+- 코드 품질 문제
+- 신뢰도 기반 필터링 (신뢰도 점수 80 이상의 높은 신뢰성 문제만 보고)
 
-**When triggered:**
-- Automatically in Phase 6
-- Can be invoked manually after writing code
+**실행 시점:**
+- 6단계에서 자동 실행
+- 코드 작성 후 수동으로 호출 가능
 
-**Output:**
-- Critical issues (confidence 75-100)
-- Important issues (confidence 50-74)
-- Specific fixes with file:line references
-- Project guideline references
+**출력 결과:**
+- 치명적인 문제 (신뢰도 75~100)
+- 중요한 문제 (신뢰도 50~74)
+- 파일:라인 참조가 포함된 구체적인 수정 사항
+- 프로젝트 가이드라인 참조
 
-## Usage Patterns
+## 사용 패턴
 
-### Full workflow (recommended for new features):
+### 전체 워크플로우 (새로운 기능 개발 시 권장):
 ```bash
 /feature-dev Add rate limiting to API endpoints
 ```
 
-Let the workflow guide you through all 7 phases.
+워크플로우가 7개의 모든 단계를 안내하도록 진행해 보십시오.
 
-### Manual agent invocation:
+### 수동 에이전트 호출:
 
-**Explore a feature:**
+**기능 탐색:**
 ```
-"Launch code-explorer to trace how authentication works"
-```
-
-**Design architecture:**
-```
-"Launch code-architect to design the caching layer"
+"인증이 어떻게 동작하는지 추적하기 위해 code-explorer 실행"
 ```
 
-**Review code:**
+**아키텍처 설계:**
 ```
-"Launch code-reviewer to check my recent changes"
+"캐싱 레이어를 설계하기 위해 code-architect 실행"
 ```
 
-## Best Practices
+**코드 리뷰:**
+```
+"최근 변경 사항을 확인하기 위해 code-reviewer 실행"
+```
 
-1. **Use the full workflow for complex features**: The 7 phases ensure thorough planning
-2. **Answer clarifying questions thoughtfully**: Phase 3 prevents future confusion
-3. **Choose architecture deliberately**: Phase 4 gives you options for a reason
-4. **Don't skip code review**: Phase 6 catches issues before they reach production
-5. **Read the suggested files**: Phase 2 identifies key files—read them to understand context
+## 모범 사례
 
-## When to Use This Plugin
+1. **복잡한 기능에는 전체 워크플로우를 사용하십시오**: 7단계를 거치면서 철저하게 계획할 수 있습니다.
+2. **명확화 질문에 성실히 답변해 주십시오**: 3단계는 추후 발생할 수 있는 혼선을 방지합니다.
+3. **아키텍처를 신중하게 선택하십시오**: 4단계에서 여러 옵션을 제공하는 데에는 합당한 이유가 있습니다.
+4. **코드 리뷰를 건너지 마십시오**: 6단계는 프로덕션에 배포되기 전에 문제를 미리 잡아내 줍니다.
+5. **제안된 파일을 읽어보십시오**: 2단계에서 파악된 핵심 파일들을 읽음으로써 컨텍스트를 확실히 파악할 수 있습니다.
 
-**Use for:**
-- New features that touch multiple files
-- Features requiring architectural decisions
-- Complex integrations with existing code
-- Features where requirements are somewhat unclear
+## 이 플러그인을 사용해야 할 때
 
-**Don't use for:**
-- Single-line bug fixes
-- Trivial changes
-- Well-defined, simple tasks
-- Urgent hotfixes
+**사용 대상:**
+- 여러 파일을 수정해야 하는 새로운 기능 개발
+- 아키텍처 설계 및 결정이 필요한 기능
+- 기존 코드와의 복잡한 통합 작업
+- 요구사항이 다소 모호한 기능
 
-## Requirements
+**사용하지 않는 대상:**
+- 한 줄짜리 단순 버그 수정
+- 사소한 변경 사항
+- 명확하게 정의된 아주 간단한 작업
+- 긴급 핫픽스
 
-- Claude Code installed
-- Git repository (for code review)
-- Project with existing codebase (workflow assumes existing code to learn from)
+## 요구 사항
 
-## Troubleshooting
+- Claude Code가 설치되어 있어야 함
+- Git 저장소 (코드 리뷰 진행용)
+- 기존 코드베이스가 존재하는 프로젝트 (워크플로우는 학습할 기존 코드가 있음을 전제로 합니다)
 
-### Agents take too long
+## 문제 해결
 
-**Issue**: Code exploration or architecture agents are slow
+### 에이전트 실행 시간이 너무 오래 걸림
 
-**Solution**:
-- This is normal for large codebases
-- Agents run in parallel when possible
-- The thoroughness pays off in better understanding
+**현상**: 코드 탐색 또는 아키텍처 에러 에이전트 속도가 느림
 
-### Too many clarifying questions
+**해결책:**
+- 대규모 코드베이스에서는 정상적인 현상입니다.
+- 에이전트들은 가능한 경우 병렬로 실행됩니다.
+- 철저한 분석 결과로 더 깊은 이해라는 충분한 보상을 얻게 됩니다.
 
-**Issue**: Phase 3 asks too many questions
+### 명확화 질문이 너무 많음
 
-**Solution**:
-- Be more specific in your initial feature request
-- Provide context about constraints upfront
-- Say "whatever you think is best" if truly no preference
+**현상**: 3단계에서 너무 많은 질문을 던짐
 
-### Architecture options overwhelming
+**해결책:**
+- 초기 기능 요청 시 상세 내용을 더 구체적으로 적어주십시오.
+- 제약 사항에 대한 컨텍스트를 미리 제공하십시오.
+- 특별한 선호 사항이 없다면 "가장 좋은 방식으로 진행해 주세요"라고 말씀하십시오.
 
-**Issue**: Too many architecture options in Phase 4
+### 아키텍처 옵션이 너무 다양함
 
-**Solution**:
-- Trust the recommendation—it's based on codebase analysis
-- If still unsure, ask for more explanation
-- Pick the pragmatic option when in doubt
+**현상**: 4단계에서 보여주는 아키텍처 옵션이 너무 복잡함
 
-## Tips
+**해결책:**
+- 권장안을 신뢰하십시오. 코드베이스 분석에 기반한 결과입니다.
+- 여전히 불확실하다면 자세한 추가 설명을 요청하십시오.
+- 애매할 때는 실용적인(pragmatic) 옵션을 선택하는 것이 좋습니다.
 
-- **Be specific in your feature request**: More detail = fewer clarifying questions
-- **Trust the process**: Each phase builds on the previous one
-- **Review agent outputs**: Agents provide valuable insights about your codebase
-- **Don't skip phases**: Each phase serves a purpose
-- **Use for learning**: The exploration phase teaches you about your own codebase
+## 팁
 
-## Author
+- **기능 요청 시 구체적으로 적어주십시오**: 자세할수록 질문 수가 줄어듭니다.
+- **프로세스를 신뢰하십시오**: 각 단계는 이전 단계를 기반으로 유기적으로 구축됩니다.
+- **에이전트 출력을 검토해 보십시오**: 에이전트는 코드베이스에 대한 유용한 인사이트를 제공합니다.
+- **단계를 건너뛰지 마십시오**: 각 단계는 다 나름의 목적이 있습니다.
+- **학습 용도로 활용하십시오**: 탐색 단계를 통해 본인의 코드베이스를 더 잘 이해할 수 있습니다.
+
+## 저자
 
 Sid Bidasaria (sbidasaria@anthropic.com)
 
-## Version
+## 버전
 
 1.0.0

@@ -1,8 +1,8 @@
-# Minimal Plugin Example
+# 최소 구성 플러그인 예시 (Minimal Plugin Example)
 
-A bare-bones plugin with a single command.
+단일 명령어만 포함하는 최소 구조의 플러그인 예시.
 
-## Directory Structure
+## 디렉토리 구조 (Directory Structure)
 
 ```
 hello-world/
@@ -12,7 +12,7 @@ hello-world/
     └── hello.md
 ```
 
-## File Contents
+## 파일 내용 (File Contents)
 
 ### .claude-plugin/plugin.json
 
@@ -45,9 +45,9 @@ Output the following message to the user:
 Include the current timestamp in the greeting to show the command executed successfully.
 ```
 
-## Usage
+## 사용법 (Usage)
 
-After installing the plugin:
+플러그인을 설치한 후:
 
 ```
 $ claude
@@ -59,25 +59,25 @@ Use this as a starting point for building more complex plugins.
 Executed at: 2025-01-15 14:30:22 UTC
 ```
 
-## Key Points
+## 주요 특징 (Key Points)
 
-1. **Minimal manifest**: Only the required `name` field
-2. **Single command**: One markdown file in `commands/` directory
-3. **Auto-discovery**: Claude Code finds the command automatically
-4. **No dependencies**: No scripts, hooks, or external resources
+1. **최소 구성 매니페스트**: 필수 필드인 `name`만 포함
+2. **단일 명령어**: `commands/` 디렉토리에 하나의 마크다운 파일만 포함
+3. **자동 감지**: Claude Code가 명령어를 자동으로 검색
+4. **종속성 없음**: 스크립트, 훅 또는 외부 리소스 미사용
 
-## When to Use This Pattern
+## 이 패턴의 사용 시기 (When to Use This Pattern)
 
-- Quick prototypes
-- Single-purpose utilities
-- Learning plugin development
-- Internal team tools with one specific function
+- 빠른 프로토타이핑
+- 단일 목적 유틸리티
+- 플러그인 개발 학습
+- 하나의 특정 기능만 갖춘 내부 팀용 도구
 
-## Extending This Plugin
+## 이 플러그인의 확장 방법 (Extending This Plugin)
 
-To add more functionality:
+기능을 추가하려면:
 
-1. **Add commands**: Create more `.md` files in `commands/`
-2. **Add metadata**: Update `plugin.json` with version, description, author
-3. **Add agents**: Create `agents/` directory with agent definitions
-4. **Add hooks**: Create `hooks/hooks.json` for event handling
+1. **명령어 추가**: `commands/` 디렉토리에 추가적인 `.md` 파일 생성
+2. **메타데이터 추가**: `plugin.json`에 `version`, `description`, `author` 정보 업데이트
+3. **에이전트 추가**: 에이전트 정의가 포함된 `agents/` 디렉토리 생성
+4. **훅 추가**: 이벤트 처리를 위한 `hooks/hooks.json` 파일 생성

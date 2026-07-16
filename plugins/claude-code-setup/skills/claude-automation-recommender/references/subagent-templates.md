@@ -1,156 +1,156 @@
-# Subagent Recommendations
+# 서브에이전트(Subagent) 추천
 
-Subagents are specialized Claude instances that run in parallel, each with their own context window and tool access. They're ideal for focused reviews, analysis, or generation tasks.
+서브에이전트는 병렬로 실행되는 특화된 Claude 인스턴스로, 각자 고유한 컨텍스트 창과 도구 액세스 권한을 갖습니다. 특정 영역의 리뷰, 분석 또는 코드 생성 작업에 이상적입니다.
 
-**Note**: These are common patterns. Design custom subagents based on the codebase's specific review and analysis needs.
+**참고**: 아래는 일반적인 패턴들입니다. 코드베이스의 특정 리뷰 및 분석 요구사항에 따라 맞춤형 서브에이전트를 설계하십시오.
 
-## Code Review Agents
+## 코드 리뷰 에이전트 (Code Review Agents)
 
 ### code-reviewer
-**Best for**: Automated code quality checks on large codebases
+**적합한 작업**: 대규모 코드베이스에 대한 자동화된 코드 품질 검사
 
-| Recommend When | Detection |
+| 추천 시점 | 감지 조건 |
 |----------------|-----------|
-| Large codebase (>500 files) | File count |
-| Frequent code changes | Active development |
-| Team wants consistent review | Quality focus |
+| 대규모 코드베이스 (>500개 파일) | 파일 수 |
+| 빈번한 코드 변경 | 활발한 개발 상태 |
+| 팀 전체의 일관된 리뷰 필요 | 품질 중심 개발 |
 
-**Value**: Runs code review in parallel while you continue working
-**Model**: sonnet (balanced quality/speed)
-**Tools**: Read, Grep, Glob, Bash
+**효과**: 사용자가 작업을 계속 진행하는 동안 병렬로 코드 리뷰를 수행합니다.
+**모델**: sonnet (품질과 속도의 균형)
+**사용 도구**: Read, Grep, Glob, Bash
 
 ---
 
 ### security-reviewer
-**Best for**: Security-focused code review
+**적합한 작업**: 보안에 특화된 코드 리뷰
 
-| Recommend When | Detection |
+| 추천 시점 | 감지 조건 |
 |----------------|-----------|
-| Auth code present | `auth/`, `login`, `session` patterns |
-| Payment processing | `stripe`, `payment`, `billing` patterns |
-| User data handling | `user`, `profile`, `pii` patterns |
-| API keys in code | Environment variable patterns |
+| 인증 관련 코드 존재 | `auth/`, `login`, `session` 패턴 |
+| 결제 처리 관련 코드 존재 | `stripe`, `payment`, `billing` 패턴 |
+| 사용자 데이터 처리 | `user`, `profile`, `pii` 패턴 |
+| 코드 내 API 키 포함 여부 | 환경 변수 관련 패턴 |
 
-**Value**: Catches OWASP vulnerabilities, auth issues, data exposure
-**Model**: sonnet
-**Tools**: Read, Grep, Glob (read-only for safety)
+**효과**: OWASP 취약점, 인증 문제, 데이터 노출 등을 감지합니다.
+**모델**: sonnet
+**사용 도구**: Read, Grep, Glob (안전을 위한 읽기 전용 권한)
 
 ---
 
 ### test-writer
-**Best for**: Generating comprehensive test coverage
+**적합한 작업**: 포괄적인 테스트 커버리지 자동 생성
 
-| Recommend When | Detection |
+| 추천 시점 | 감지 조건 |
 |----------------|-----------|
-| Low test coverage | Few test files vs source files |
-| Test suite exists | `tests/`, `__tests__/` present |
-| Testing framework configured | jest, pytest, vitest in deps |
+| 낮은 테스트 커버리지 | 소스 파일 대비 현저히 적은 테스트 파일 |
+| 테스트 도구 존재 | `tests/`, `__tests__/` 디렉토리 존재 |
+| 테스트 프레임워크 설정 | 종속성 파일(deps) 내 jest, pytest, vitest 존재 |
 
-**Value**: Generates tests matching project conventions
-**Model**: sonnet
-**Tools**: Read, Write, Grep, Glob
+**효과**: 프로젝트의 컨벤션(규칙)에 맞는 테스트 코드를 생성합니다.
+**모델**: sonnet
+**사용 도구**: Read, Write, Grep, Glob
 
 ---
 
-## Specialized Agents
+## 특화 에이전트 (Specialized Agents)
 
 ### api-documenter
-**Best for**: API documentation generation
+**적합한 작업**: API 문서 자동 생성
 
-| Recommend When | Detection |
+| 추천 시점 | 감지 조건 |
 |----------------|-----------|
-| REST endpoints | Express routes, FastAPI paths |
-| GraphQL schema | `.graphql` files |
-| OpenAPI exists | `openapi.yaml`, `swagger.json` |
-| Undocumented APIs | Routes without docs |
+| REST 엔드포인트 존재 | Express 라우트, FastAPI 경로 패턴 |
+| GraphQL 스키마 존재 | `.graphql` 파일 존재 |
+| OpenAPI 설정 파일 존재 | `openapi.yaml`, `swagger.json` 파일 존재 |
+| 문서화되지 않은 API 존재 | 문서가 없는 라우트(Route) 존재 |
 
-**Value**: Generates OpenAPI specs, endpoint documentation
-**Model**: sonnet
-**Tools**: Read, Write, Grep, Glob
+**효과**: OpenAPI 명세서 및 엔드포인트 문서를 자동으로 생성합니다.
+**모델**: sonnet
+**사용 도구**: Read, Write, Grep, Glob
 
 ---
 
 ### performance-analyzer
-**Best for**: Finding performance bottlenecks
+**적합한 작업**: 성능 병목 지점 감지
 
-| Recommend When | Detection |
+| 추천 시점 | 감지 조건 |
 |----------------|-----------|
-| Database queries | ORM usage, raw SQL |
-| High-traffic code | API endpoints, hot paths |
-| Performance complaints | User reports slowness |
-| Complex algorithms | Nested loops, recursion |
+| 데이터베이스 쿼리 실행 | ORM 사용 코드, raw SQL 코드 존재 |
+| 트래픽이 몰리는 코드 | API 엔드포인트, 주요 실행 경로(hot path) |
+| 성능 관련 이슈 제기 | 사용자의 속도 저하 리포트 존재 |
+| 복잡한 알고리즘 | 다중 루프, 재귀 함수 존재 |
 
-**Value**: Finds N+1 queries, O(n²) algorithms, memory leaks
-**Model**: sonnet
-**Tools**: Read, Grep, Glob, Bash
+**효과**: N+1 쿼리, O(n²) 알고리즘, 메모리 누수 등을 감지합니다.
+**모델**: sonnet
+**사용 도구**: Read, Grep, Glob, Bash
 
 ---
 
 ### ui-reviewer
-**Best for**: Frontend accessibility and UX review
+**적합한 작업**: 프론트엔드 웹 접근성(accessibility) 및 UX 리뷰
 
-| Recommend When | Detection |
+| 추천 시점 | 감지 조건 |
 |----------------|-----------|
-| React/Vue/Angular | Frontend framework detected |
-| Component library | `components/` directory |
-| User-facing UI | Not just API project |
+| React/Vue/Angular | 프론트엔드 프레임워크 감지 |
+| 컴포넌트 라이브러리 | `components/` 디렉토리 존재 |
+| 사용자용 UI 존재 | 단순 API 프로젝트가 아님 |
 
-**Value**: Catches accessibility issues, UX problems, responsive design gaps
-**Model**: sonnet
-**Tools**: Read, Grep, Glob
+**효과**: 웹 접근성 문제, UX 개선 사항, 반응형 디자인 미비점을 감지합니다.
+**모델**: sonnet
+**사용 도구**: Read, Grep, Glob
 
 ---
 
-## Utility Agents
+## 유틸리티 에이전트 (Utility Agents)
 
 ### dependency-updater
-**Best for**: Safe dependency updates
+**적합한 작업**: 안전한 종속성 패키지 업데이트
 
-| Recommend When | Detection |
+| 추천 시점 | 감지 조건 |
 |----------------|-----------|
-| Outdated deps | `npm outdated` has results |
-| Security advisories | `npm audit` warnings |
-| Major version behind | Significant version gaps |
+| 오래된 종속성 패키지 | `npm outdated` 실행 결과 존재 |
+| 보안 경고 존재 | `npm audit` 경고 발생 |
+| 메이저 버전 차이 발생 | 상당한 버전 격차 존재 |
 
-**Value**: Updates dependencies incrementally with testing
-**Model**: sonnet
-**Tools**: Read, Write, Bash, Grep
+**효과**: 테스트를 병행하며 종속성 패키지를 점진적으로 업데이트합니다.
+**모델**: sonnet
+**사용 도구**: Read, Write, Bash, Grep
 
 ---
 
 ### migration-helper
-**Best for**: Framework/version migrations
+**적합한 작업**: 프레임워크 및 버전 마이그레이션
 
-| Recommend When | Detection |
+| 추천 시점 | 감지 조건 |
 |----------------|-----------|
-| Major upgrade needed | Framework version very old |
-| Breaking changes coming | Deprecation warnings |
-| Refactoring planned | Architectural changes |
+| 메이저 업그레이드 필요 | 매우 오래된 프레임워크 버전 사용 중 |
+| 변경에 따른 영향 예상 | 지원 중단(Deprecation) 경고 발생 |
+| 리팩토링 계획 단계 | 아키텍처 변경 예정 |
 
-**Value**: Plans and executes migrations incrementally
-**Model**: opus (complex reasoning needed)
-**Tools**: Read, Write, Grep, Glob, Bash
+**효과**: 마이그레이션 계획을 수립하고 이를 점진적으로 실행합니다.
+**모델**: opus (복잡한 추론 필요)
+**사용 도구**: Read, Write, Grep, Glob, Bash
 
 ---
 
-## Quick Reference: Detection → Recommendation
+## 빠른 참조: 감지 조건 → 추천 사항 (Quick Reference: Detection → Recommendation)
 
-| If You See | Recommend Subagent |
+| 감지 조건 | 추천 서브에이전트 |
 |------------|-------------------|
-| Large codebase | code-reviewer |
-| Auth/payment code | security-reviewer |
-| Few tests | test-writer |
-| API routes | api-documenter |
-| Database heavy | performance-analyzer |
-| Frontend components | ui-reviewer |
-| Outdated packages | dependency-updater |
-| Old framework version | migration-helper |
+| 대규모 코드베이스 | code-reviewer |
+| 인증/결제 관련 코드 | security-reviewer |
+| 테스트 부족 | test-writer |
+| API 라우트 존재 | api-documenter |
+| 데이터베이스 사용 비중 높음 | performance-analyzer |
+| 프론트엔드 컴포넌트 존재 | ui-reviewer |
+| 오래된 패키지 사용 | dependency-updater |
+| 이전 버전 프레임워크 사용 | migration-helper |
 
 ---
 
-## Subagent Placement
+## 서브에이전트 위치 (Subagent Placement)
 
-Subagents go in `.claude/agents/`:
+서브에이전트는 `.claude/agents/` 디렉토리에 작성합니다:
 
 ```
 .claude/
@@ -162,20 +162,20 @@ Subagents go in `.claude/agents/`:
 
 ---
 
-## Model Selection Guide
+## 모델 선택 가이드 (Model Selection Guide)
 
-| Model | Best For | Trade-off |
+| 모델 | 적합한 작업 | 절충 사항 (Trade-off) |
 |-------|----------|-----------|
-| **haiku** | Simple, repetitive checks | Fast, cheap, less thorough |
-| **sonnet** | Most review/analysis tasks | Balanced (recommended default) |
-| **opus** | Complex migrations, architecture | Thorough, slower, more expensive |
+| **haiku** | 단순하고 반복적인 검사 | 빠르고 저렴하지만, 분석이 덜 정교함 |
+| **sonnet** | 대부분의 리뷰 및 분석 작업 | 균형 잡힘 (기본 추천 설정) |
+| **opus** | 복잡한 마이그레이션 및 아키텍처 분석 | 정교하지만 느리고 비용이 더 듦 |
 
 ---
 
-## Tool Access Guide
+## 도구 접근 권한 가이드 (Tool Access Guide)
 
-| Access Level | Tools | Use Case |
+| 권한 수준 | 사용 가능 도구 | 주요 사용 사례 |
 |--------------|-------|----------|
-| Read-only | Read, Grep, Glob | Reviews, analysis |
-| Writing | + Write | Code generation, docs |
-| Full | + Bash | Migrations, testing |
+| 읽기 전용 (Read-only) | Read, Grep, Glob | 리뷰 및 분석 |
+| 쓰기 가능 (Writing) | + Write | 코드 생성 및 문서 작성 |
+| 모든 권한 (Full) | + Bash | 마이그레이션 및 테스트 실행 |

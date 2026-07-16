@@ -1,25 +1,25 @@
-# MCP Authentication Patterns
+# MCP 인증 패턴 (MCP Authentication Patterns)
 
-Complete guide to authentication methods for MCP servers in Claude Code plugins.
+Claude Code 플러그인의 MCP 서버용 인증 방식 전체 가이드.
 
-## Overview
+## 개요 (Overview)
 
-MCP servers support multiple authentication methods depending on the server type and service requirements. Choose the method that best matches your use case and security requirements.
+MCP 서버는 서버 유형 및 서비스 요구 사항에 따라 여러 인증 방식을 지원합니다. 사용 사례와 보안 요구 사항에 가장 잘 맞는 방식을 선택하십시오.
 
-## OAuth (Automatic)
+## OAuth (자동 처리) (OAuth (Automatic))
 
-### How It Works
+### 작동 방식 (How It Works)
 
-Claude Code automatically handles the complete OAuth 2.0 flow for SSE and HTTP servers:
+Claude Code는 SSE 및 HTTP 서버에 대한 완전한 OAuth 2.0 흐름을 자동으로 처리합니다:
 
-1. User attempts to use MCP tool
-2. Claude Code detects authentication needed
-3. Opens browser for OAuth consent
-4. User authorizes in browser
-5. Tokens stored securely by Claude Code
-6. Automatic token refresh
+1. 사용자가 MCP 도구 사용을 시도합니다.
+2. Claude Code가 인증이 필요함을 감지합니다.
+3. OAuth 동의를 위한 브라우저를 엽니다.
+4. 사용자가 브라우저에서 승인합니다.
+5. 토큰이 Claude Code에 의해 안전하게 저장됩니다.
+6. 자동으로 토큰을 갱신(refresh)합니다.
 
-### Configuration
+### 구성 (Configuration)
 
 ```json
 {
@@ -30,21 +30,21 @@ Claude Code automatically handles the complete OAuth 2.0 flow for SSE and HTTP s
 }
 ```
 
-No additional auth configuration needed! Claude Code handles everything.
+추가적인 인증 구성이 필요하지 않습니다! Claude Code가 모든 것을 처리합니다.
 
-### Supported Services
+### 지원되는 서비스 (Supported Services)
 
-**Known OAuth-enabled MCP servers:**
+**OAuth가 활성화된 것으로 알려진 MCP 서버:**
 - Asana: `https://mcp.asana.com/sse`
-- GitHub (when available)
-- Google services (when available)
-- Custom OAuth servers
+- GitHub (가용 시)
+- Google 서비스 (가용 시)
+- 맞춤형 OAuth 서버
 
-### OAuth Scopes
+### OAuth 스코프 (OAuth Scopes)
 
-OAuth scopes are determined by the MCP server. Users see required scopes during the consent flow.
+OAuth 스코프는 MCP 서버에 의해 결정됩니다. 사용자는 동의 흐름을 거치는 동안 필요한 스코프를 확인할 수 있습니다.
 
-**Document required scopes in your README:**
+**README에 필요한 스코프를 문서화하십시오:**
 ```markdown
 ## Authentication
 
@@ -54,36 +54,36 @@ This plugin requires the following Asana permissions:
 - Access workspace data
 ```
 
-### Token Storage
+### 토큰 저장 (Token Storage)
 
-Tokens are stored securely by Claude Code:
-- Not accessible to plugins
-- Encrypted at rest
-- Automatic refresh
-- Cleared on sign-out
+토큰은 Claude Code에 의해 안전하게 보관됩니다:
+- 플러그인이 직접 접근할 수 없음
+- 미사용 시 암호화되어 저장됨
+- 자동으로 토큰이 갱신됨
+- 로그아웃 시 삭제됨
 
-### Troubleshooting OAuth
+### OAuth 문제 해결 (Troubleshooting OAuth)
 
-**Authentication loop:**
-- Clear cached tokens (sign out and sign in)
-- Check OAuth redirect URLs
-- Verify server OAuth configuration
+**인증 루프 현상:**
+- 캐시된 토큰을 지웁니다 (로그아웃 후 다시 로그인).
+- OAuth 리다이렉트 URL을 확인합니다.
+- 서버의 OAuth 구성을 검증합니다.
 
-**Scope issues:**
-- User may need to re-authorize for new scopes
-- Check server documentation for required scopes
+**스코프 관련 문제:**
+- 사용자가 새로운 스코프에 대해 재인증을 해야 할 수 있습니다.
+- 필요한 스코프에 대해 서버 문서를 확인하십시오.
 
-**Token expiration:**
-- Claude Code auto-refreshes
-- If refresh fails, prompts re-authentication
+**토큰 만료:**
+- Claude Code가 자동으로 갱신합니다.
+- 갱신에 실패하면 재인증을 요청합니다.
 
-## Token-Based Authentication
+## 토큰 기반 인증 (Token-Based Authentication)
 
-### Bearer Tokens
+### Bearer 토큰 (Bearer Tokens)
 
-Most common for HTTP and WebSocket servers.
+HTTP 및 WebSocket 서버에서 가장 흔하게 쓰입니다.
 
-**Configuration:**
+**구성:**
 ```json
 {
   "api": {
@@ -96,16 +96,16 @@ Most common for HTTP and WebSocket servers.
 }
 ```
 
-**Environment variable:**
+**환경 변수 설정:**
 ```bash
 export API_TOKEN="your-secret-token-here"
 ```
 
-### API Keys
+### API 키 (API Keys)
 
-Alternative to Bearer tokens, often in custom headers.
+Bearer 토큰 대신 주로 전용 맞춤형 헤더에 실어 전송합니다.
 
-**Configuration:**
+**구성:**
 ```json
 {
   "api": {
@@ -119,11 +119,11 @@ Alternative to Bearer tokens, often in custom headers.
 }
 ```
 
-### Custom Headers
+### 맞춤형 헤더 (Custom Headers)
 
-Services may use custom authentication headers.
+서비스에 따라 고유한 인증용 맞춤형 헤더를 요구할 수 있습니다.
 
-**Configuration:**
+**구성:**
 ```json
 {
   "service": {
@@ -138,9 +138,9 @@ Services may use custom authentication headers.
 }
 ```
 
-### Documenting Token Requirements
+### 토큰 요구 사항 문서화 (Documenting Token Requirements)
 
-Always document in your README:
+항상 README 파일에 이 정보를 명시하십시오:
 
 ```markdown
 ## Setup
@@ -149,10 +149,10 @@ Always document in your README:
 
 Set these environment variables before using the plugin:
 
-\`\`\`bash
+```bash
 export API_TOKEN="your-token-here"
 export API_SECRET="your-secret-here"
-\`\`\`
+```
 
 ### Obtaining Tokens
 
@@ -167,14 +167,13 @@ The API token needs the following permissions:
 - Read access to resources
 - Write access for creating items
 - Delete access (optional, for cleanup operations)
-\`\`\`
 ```
 
-## Environment Variable Authentication (stdio)
+## 환경 변수 인증 (stdio 방식) (Environment Variable Authentication (stdio))
 
-### Passing Credentials to Server
+### 서버에 크리덴셜 전달 (Passing Credentials to Server)
 
-For stdio servers, pass credentials via environment variables:
+stdio 서버의 경우, 환경 변수를 통해 서버 프로세스에 직접 신원 정보를 주입합니다:
 
 ```json
 {
@@ -190,7 +189,7 @@ For stdio servers, pass credentials via environment variables:
 }
 ```
 
-### User Environment Variables
+### 사용자 환경 변수 (User Environment Variables)
 
 ```bash
 # User sets these in their shell
@@ -199,36 +198,35 @@ export DB_USER="myuser"
 export DB_PASSWORD="mypassword"
 ```
 
-### Documentation Template
+### 문서화 템플릿 (Documentation Template)
 
 ```markdown
 ## Database Configuration
 
 Set these environment variables:
 
-\`\`\`bash
+```bash
 export DATABASE_URL="postgresql://host:port/database"
 export DB_USER="username"
 export DB_PASSWORD="password"
-\`\`\`
+```
 
 Or create a `.env` file (add to `.gitignore`):
 
-\`\`\`
+```
 DATABASE_URL=postgresql://localhost:5432/mydb
 DB_USER=myuser
 DB_PASSWORD=mypassword
-\`\`\`
-
-Load with: \`source .env\` or \`export $(cat .env | xargs)\`
-\`\`\`
 ```
 
-## Dynamic Headers
+Load with: `source .env` or `export $(cat .env | xargs)`
+```
 
-### Headers Helper Script
+## 동적 헤더 (Dynamic Headers)
 
-For tokens that change or expire, use a helper script:
+### 헤더 헬퍼 스크립트 (Headers Helper Script)
+
+주기적으로 갱신되거나 만료 기간이 있는 토큰의 경우, 외부 헬퍼 스크립트를 연동하여 헤더를 주입합니다:
 
 ```json
 {
@@ -240,7 +238,7 @@ For tokens that change or expire, use a helper script:
 }
 ```
 
-**Script (get-headers.sh):**
+**스크립트 (get-headers.sh):**
 ```bash
 #!/bin/bash
 # Generate dynamic authentication headers
@@ -257,18 +255,18 @@ cat <<EOF
 EOF
 ```
 
-### Use Cases for Dynamic Headers
+### 동적 헤더 사용 사례 (Use Cases for Dynamic Headers)
 
-- Short-lived tokens that need refresh
-- Tokens with HMAC signatures
-- Time-based authentication
-- Dynamic tenant/workspace selection
+- 갱신이 빈번하게 일어나는 단기 토큰
+- HMAC 서명이 포함된 서명 검증 토큰
+- 타임스탬프 기반 인증 방식
+- 동적인 테넌트/워크스페이스 선택이 필요할 때
 
-## Security Best Practices
+## 보안 권장 사항 (Security Best Practices)
 
-### DO
+### 권장 사항 (DO)
 
-✅ **Use environment variables:**
+✅ **환경 변수 사용:**
 ```json
 {
   "headers": {
@@ -277,19 +275,19 @@ EOF
 }
 ```
 
-✅ **Document required variables in README**
+✅ **README에 필수 변수 문서화**
 
-✅ **Use HTTPS/WSS always**
+✅ **항상 HTTPS/WSS 사용**
 
-✅ **Implement token rotation**
+✅ **토큰 주기적 갱신(rotation) 구현**
 
-✅ **Store tokens securely (env vars, not files)**
+✅ **파일이 아닌 임시 환경 변수에 토큰 안전하게 저장**
 
-✅ **Let OAuth handle authentication when available**
+✅ **지원되는 경우 가급적 OAuth 연동**
 
-### DON'T
+### 금지 사항 (DON'T)
 
-❌ **Hardcode tokens:**
+❌ **토큰 하드코딩:**
 ```json
 {
   "headers": {
@@ -298,21 +296,21 @@ EOF
 }
 ```
 
-❌ **Commit tokens to git**
+❌ **Git 저장소에 토큰 노출**
 
-❌ **Share tokens in documentation**
+❌ **공개 문서나 가이드에 실제 토큰 기재**
 
-❌ **Use HTTP instead of HTTPS**
+❌ **암호화되지 않은 HTTP 프로토콜 사용**
 
-❌ **Store tokens in plugin files**
+❌ **플러그인 파일 자체에 물리적으로 토큰 저장**
 
-❌ **Log tokens or sensitive headers**
+❌ **보안 비밀이나 토큰 헤더 값을 로그 파일에 기록**
 
-## Multi-Tenancy Patterns
+## 멀티 테넌시 패턴 (Multi-Tenancy Patterns)
 
-### Workspace/Tenant Selection
+### 워크스페이스/테넌트 선택 (Workspace/Tenant Selection)
 
-**Via environment variable:**
+**환경 변수 지정 방식:**
 ```json
 {
   "api": {
@@ -326,7 +324,7 @@ EOF
 }
 ```
 
-**Via URL:**
+**URL 경로 지정 방식:**
 ```json
 {
   "api": {
@@ -336,32 +334,32 @@ EOF
 }
 ```
 
-### Per-User Configuration
+### 사용자별 구성 (Per-User Configuration)
 
-Users set their own workspace:
+사용자가 자신의 워크스페이스를 환경 변수로 개별 설정합니다:
 
 ```bash
 export WORKSPACE_ID="my-workspace-123"
 export TENANT_ID="my-company"
 ```
 
-## Authentication Troubleshooting
+## 인증 관련 문제 해결 (Authentication Troubleshooting)
 
-### Common Issues
+### 일반적인 이슈 (Common Issues)
 
 **401 Unauthorized:**
-- Check token is set correctly
-- Verify token hasn't expired
-- Check token has required permissions
-- Ensure header format is correct
+- 토큰이 올바르게 설정되었는지 확인
+- 토큰이 만료되지 않았는지 확인
+- 토큰이 필요한 권한을 가졌는지 확인
+- 헤더 서식 형식이 올바른지 확인
 
 **403 Forbidden:**
-- Token valid but lacks permissions
-- Check scope/permissions
-- Verify workspace/tenant ID
-- May need admin approval
+- 토큰은 유효하나 해당 연산에 대한 권한이 없음
+- 스코프/권한을 확인
+- 워크스페이스/테넌트 ID를 확인
+- 관리자의 승인이 필요할 수 있음
 
-**Token not found:**
+**토큰 검색 실패:**
 ```bash
 # Check environment variable is set
 echo $API_TOKEN
@@ -370,29 +368,29 @@ echo $API_TOKEN
 export API_TOKEN="your-token"
 ```
 
-**Token in wrong format:**
+**잘못된 토큰 서식:**
 ```json
-// Correct
+// 올바름 (Correct)
 "Authorization": "Bearer sk-abc123"
 
-// Wrong
+// 잘못됨 (Wrong)
 "Authorization": "sk-abc123"
 ```
 
-### Debugging Authentication
+### 인증 과정 디버깅 (Debugging Authentication)
 
-**Enable debug mode:**
+**디버그 모드 활성화:**
 ```bash
 claude --debug
 ```
 
-Look for:
-- Authentication header values (sanitized)
-- OAuth flow progress
-- Token refresh attempts
-- Authentication errors
+디버그 로그 중에서 다음 사항을 찾아보십시오:
+- 인증 헤더 값 (민감한 데이터는 숨김 처리됨)
+- OAuth 인증 절차 진행 로그
+- 토큰 갱신 시도 로그
+- 발생한 인증 에러 메시지
 
-**Test authentication separately:**
+**격리 테스트 실행:**
 ```bash
 # Test HTTP endpoint
 curl -H "Authorization: Bearer $API_TOKEN" \
@@ -401,11 +399,11 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 # Should return 200 OK
 ```
 
-## Migration Patterns
+## 마이그레이션 패턴 (Migration Patterns)
 
-### From Hardcoded to Environment Variables
+### 하드코딩에서 환경 변수 방식으로 전환 (From Hardcoded to Environment Variables)
 
-**Before:**
+**이전:**
 ```json
 {
   "headers": {
@@ -414,7 +412,7 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 }
 ```
 
-**After:**
+**이후:**
 ```json
 {
   "headers": {
@@ -423,16 +421,16 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 }
 ```
 
-**Migration steps:**
-1. Add environment variable to plugin README
-2. Update configuration to use ${VAR}
-3. Test with variable set
-4. Remove hardcoded value
-5. Commit changes
+**마이그레이션 절차:**
+1. 플러그인 README 파일에 새로운 환경 변수 정보 추가
+2. 매니페스트 구성 정보를 `${VAR}` 형식을 사용하도록 변경
+3. 실제 변수 값을 설정한 후 동작 테스트
+4. 설정 내의 하드코딩된 원본 문자열 제거
+5. 변경 사항 커밋
 
-### From Basic Auth to OAuth
+### Basic 인증에서 OAuth로 전환 (From Basic Auth to OAuth)
 
-**Before:**
+**이전:**
 ```json
 {
   "headers": {
@@ -441,7 +439,7 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 }
 ```
 
-**After:**
+**이후:**
 ```json
 {
   "type": "sse",
@@ -449,21 +447,21 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 }
 ```
 
-**Benefits:**
-- Better security
-- No credential management
-- Automatic token refresh
-- Scoped permissions
+**이점:**
+- 대폭 향상된 보안 통제
+- 번거로운 크리덴셜 관리 절차 생략
+- 자동으로 백그라운드 토큰 갱신 처리
+- 세분화된 스코프 권한 통제
 
-## Advanced Authentication
+## 고급 인증 (Advanced Authentication)
 
-### Mutual TLS (mTLS)
+### 상호 TLS (mTLS) (Mutual TLS (mTLS))
 
-Some enterprise services require client certificates.
+일부 기업용 보안 환경에서는 클라이언트 인증서(client certificates)를 요구합니다.
 
-**Not directly supported in MCP configuration.**
+**MCP 구성에서 mTLS를 직접 설정하는 것은 불가능합니다.**
 
-**Workaround:** Wrap in stdio server that handles mTLS:
+**해결 방법:** mTLS 핸드셰이크를 전담 처리하는 stdio 래퍼 서버를 활용해 간접 연동합니다:
 
 ```json
 {
@@ -477,9 +475,9 @@ Some enterprise services require client certificates.
 }
 ```
 
-### JWT Tokens
+### JWT 토큰 (JWT Tokens)
 
-Generate JWT tokens dynamically with headers helper:
+헤더 헬퍼 스크립트를 사용하여 JWT 토큰을 동적으로 생성 및 주입합니다:
 
 ```bash
 #!/bin/bash
@@ -497,9 +495,9 @@ echo "{\"Authorization\": \"Bearer $JWT\"}"
 }
 ```
 
-### HMAC Signatures
+### HMAC 서명 (HMAC Signatures)
 
-For APIs requiring request signing:
+API 요청 서명 검증이 필요할 때:
 
 ```bash
 #!/bin/bash
@@ -517,33 +515,33 @@ cat <<EOF
 EOF
 ```
 
-## Best Practices Summary
+## 권장 사항 요약 (Best Practices Summary)
 
-### For Plugin Developers
+### 플러그인 개발자 가이드 (For Plugin Developers)
 
-1. **Prefer OAuth** when service supports it
-2. **Use environment variables** for tokens
-3. **Document all required variables** in README
-4. **Provide setup instructions** with examples
-5. **Never commit credentials**
-6. **Use HTTPS/WSS only**
-7. **Test authentication thoroughly**
+1. 서비스가 지원하는 경우 **가급적 OAuth 연동을 권장**합니다.
+2. 토큰 전달 시 반드시 **환경 변수 지정 형식**을 활용합니다.
+3. 필수 변수 목록은 README에 **빠짐없이 기재**합니다.
+4. 명확하고 친절한 설치 및 설정 예시 가이드를 제공합니다.
+5. 크리덴셜 정보를 절대로 **코드로 커밋하지 않습니다**.
+6. 반드시 **HTTPS/WSS 보안 프로토콜만 사용**합니다.
+7. 인증 절차에 대해 충분한 동작 검증을 거칩니다.
 
-### For Plugin Users
+### 플러그인 사용자 가이드 (For Plugin Users)
 
-1. **Set environment variables** before using plugin
-2. **Keep tokens secure** and private
-3. **Rotate tokens regularly**
-4. **Use different tokens** for dev/prod
-5. **Don't commit .env files** to git
-6. **Review OAuth scopes** before authorizing
+1. 플러그인을 활성화하기 전에 필수 **환경 변수들을 쉘에 설정**합니다.
+2. 발급받은 토큰 정보가 외부에 노출되지 않도록 각별히 유의합니다.
+3. 주기적으로 토큰을 **새로 갱신(rotation)**합니다.
+4. 개발 환경과 프로덕션 환경의 토큰을 철저히 분리하여 사용합니다.
+5. 설정용 `.env` 파일 등을 Git에 커밋하는 실수를 방지합니다.
+6. 승인하기 전에 OAuth 스코프가 과도하게 넓지 않은지 꼼꼼히 확인합니다.
 
-## Conclusion
+## 결론 (Conclusion)
 
-Choose the authentication method that matches your MCP server's requirements:
-- **OAuth** for cloud services (easiest for users)
-- **Bearer tokens** for API services
-- **Environment variables** for stdio servers
-- **Dynamic headers** for complex auth flows
+MCP 서버 요구 사항에 부합하는 인증 체계를 구성하십시오:
+- **OAuth**: 클라우드 서비스 연동용 (사용자 편의성이 가장 높음)
+- **Bearer 토큰**: API 서비스 연동용
+- **환경 변수**: stdio 프로세스 연동용
+- **동적 헤더**: 복잡한 조건부 인증 제어용
 
-Always prioritize security and provide clear setup documentation for users.
+항상 시스템 보안을 우선시하며, 사용자를 위해 명확하고 친절한 설정 가이드 문서를 기재해 두십시오.

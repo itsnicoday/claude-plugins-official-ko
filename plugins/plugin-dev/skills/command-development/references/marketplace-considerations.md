@@ -1,16 +1,16 @@
-# Marketplace Considerations for Commands
+# 명령어를 위한 마켓플레이스 고려 사항 (Marketplace Considerations for Commands)
 
-Guidelines for creating commands designed for distribution and marketplace success.
+배포 및 마켓플레이스 등록 시 성공을 거둘 수 있는 명령어를 만들기 위한 가이드라인입니다.
 
-## Overview
+## 개요
 
-Commands distributed through marketplaces need additional consideration beyond personal use commands. They must work across environments, handle diverse use cases, and provide excellent user experience for unknown users.
+마켓플레이스를 통해 배포되는 명령어는 개인용 명령어와 달리 추가적인 고려가 필요합니다. 다양한 실행 환경에서도 원활히 작동해야 하고, 다양한 사용 사례를 처리할 수 있어야 하며, 생소한 사용자에게도 훌륭한 사용자 경험(UX)을 제공해야 합니다.
 
-## Design for Distribution
+## 배포를 위한 설계
 
-### Universal Compatibility
+### 범용 호환성 (Universal Compatibility)
 
-**Cross-platform considerations:**
+**크로스 플랫폼 고려 사항:**
 
 ```markdown
 ---
@@ -45,13 +45,13 @@ fi
 [Platform-appropriate implementation...]
 ```
 
-**Avoid platform-specific commands:**
+**플랫폼별로 국한된 명령어 사용 피하기:**
 
 ```markdown
-<!-- BAD: macOS-specific -->
+<!-- 잘못된 사례: macOS 전용 -->
 !`pbcopy < file.txt`
 
-<!-- GOOD: Platform detection -->
+<!-- 올바른 사례: 플랫폼 감지 -->
 if command -v pbcopy > /dev/null; then
   pbcopy < file.txt
 elif command -v xclip > /dev/null; then
@@ -63,9 +63,9 @@ else
 fi
 ```
 
-### Minimal Dependencies
+### 최소한의 종속성 (Minimal Dependencies)
 
-**Check for required tools:**
+**필수 도구 확인:**
 
 ```markdown
 ---
@@ -108,7 +108,7 @@ fi
 [Continue with command...]
 ```
 
-**Document optional dependencies:**
+**선택적 종속성 문서화:**
 
 ```markdown
 <!--
@@ -125,9 +125,9 @@ DEPENDENCIES:
 -->
 ```
 
-### Graceful Degradation
+### 유연한 기능 축소 (Graceful Degradation)
 
-**Handle missing features:**
+**누락된 기능 처리:**
 
 ```markdown
 ---
@@ -162,11 +162,11 @@ fi
 [Adapt behavior based on available features...]
 ```
 
-## User Experience for Unknown Users
+## 생소한 사용자를 위한 사용자 경험
 
-### Clear Onboarding
+### 명확한 온보딩 과정 (Clear Onboarding)
 
-**First-run experience:**
+**최초 실행 경험:**
 
 ```markdown
 ---
@@ -202,7 +202,7 @@ fi
 [Normal command execution...]
 ```
 
-**Progressive feature discovery:**
+**점진적인 기능 발견:**
 
 ```markdown
 ---
@@ -223,9 +223,9 @@ You can speed up this command with the --fast flag:
 For more tips: /command tips
 ```
 
-### Comprehensive Error Handling
+### 종합적인 에러 처리 (Comprehensive Error Handling)
 
-**Anticipate user mistakes:**
+**사용자의 실수 예측 및 대응:**
 
 ```markdown
 ---
@@ -262,7 +262,7 @@ fi
 [Command continues...]
 ```
 
-**Helpful diagnostics:**
+**도움이 되는 진단 정보 제공:**
 
 ```markdown
 ---
@@ -291,11 +291,11 @@ This information helps debug the issue.
 For support, include the above diagnostics.
 ```
 
-## Distribution Best Practices
+## 배포 베스트 프랙티스
 
-### Namespace Awareness
+### 네임스페이스 인지 (Namespace Awareness)
 
-**Avoid name collisions:**
+**이름 충돌 방지:**
 
 ```markdown
 ---
@@ -322,7 +322,7 @@ Reasoning: Clearest ownership, least likely to conflict
 [Implementation...]
 ```
 
-**Document naming rationale:**
+**명명 근거 문서화:**
 
 ```markdown
 <!--
@@ -342,9 +342,9 @@ Final choice balances:
 -->
 ```
 
-### Configurability
+### 설정 가능성 (Configurability)
 
-**User preferences:**
+**사용자 선호도 설정:**
 
 ```markdown
 ---
@@ -376,7 +376,7 @@ fi
 [Use configuration in command...]
 ```
 
-**Sensible defaults:**
+**합리적인 기본값 설정:**
 
 ```markdown
 ---
@@ -405,9 +405,9 @@ verbose: true
 \`\`\`
 ```
 
-### Version Compatibility
+### 버전 호환성 (Version Compatibility)
 
-**Version checking:**
+**버전 검사:**
 
 ```markdown
 ---
@@ -449,7 +449,7 @@ fi
 [Command continues...]
 ```
 
-**Deprecation warnings:**
+**지원 종료(Deprecation) 경고:**
 
 ```markdown
 ---
@@ -478,11 +478,11 @@ fi
 [Handle both old and new flags during deprecation period...]
 ```
 
-## Marketplace Presentation
+## 마켓플레이스 등록 양식
 
-### Command Discovery
+### 명령어 발견 용이성 (Command Discovery)
 
-**Descriptive naming:**
+**설명적인 이름 사용:**
 
 ```markdown
 ---
@@ -500,7 +500,7 @@ description: Do the thing
 <!-- BAD: Vague description -->
 ```
 
-**Searchable keywords:**
+**검색 가능한 키워드 활용:**
 
 ```markdown
 <!--
@@ -511,9 +511,9 @@ for related functionality in the marketplace.
 -->
 ```
 
-### Showcase Examples
+### 시연용 예시 제공 (Showcase Examples)
 
-**Compelling demonstrations:**
+**독자의 눈길을 끄는 시연 코드:**
 
 ```markdown
 ---
@@ -563,9 +563,9 @@ Ready to analyze your code...
 [Command implementation...]
 ```
 
-### User Reviews and Feedback
+### 사용자 리뷰 및 피드백 (User Reviews and Feedback)
 
-**Feedback mechanism:**
+**피드백 수집 방법:**
 
 ```markdown
 ---
@@ -594,7 +594,7 @@ Reply with an emoji or:
 Your feedback matters!
 ```
 
-**Usage analytics preparation:**
+**사용 분석 준비:**
 
 ```markdown
 <!--
@@ -613,11 +613,11 @@ Privacy-preserving:
 -->
 ```
 
-## Quality Standards
+## 품질 표준 (Quality Standards)
 
-### Professional Polish
+### 전문적인 완성도 (Professional Polish)
 
-**Consistent branding:**
+**일관된 브랜딩:**
 
 ```markdown
 ---
@@ -640,7 +640,7 @@ Part of the [Plugin Name] suite
 Powered by Plugin Name v2.1.0
 ```
 
-**Attention to detail:**
+**디테일 완성도 높이기:**
 
 ```markdown
 <!-- Details that matter -->
@@ -654,9 +654,9 @@ Powered by Plugin Name v2.1.0
 ✓ Confirm successful operations
 ```
 
-### Reliability
+### 신뢰성 (Reliability)
 
-**Idempotency:**
+**멱등성 (Idempotency):**
 
 ```markdown
 ---
@@ -689,7 +689,7 @@ Marking complete...
 echo "$(date)" > .claude/operation-completed.flag
 ```
 
-**Atomic operations:**
+**원자적 작업 (Atomic Operations):**
 
 ```markdown
 ---
@@ -723,9 +723,9 @@ else
 fi
 ```
 
-## Testing for Distribution
+## 배포용 테스트
 
-### Pre-Release Checklist
+### 배포 전 체크리스트
 
 ```markdown
 <!--
@@ -769,9 +769,9 @@ Support:
 -->
 ```
 
-### Beta Testing
+### 베타 테스트 (Beta Testing)
 
-**Beta release approach:**
+**베타 릴리즈 방법:**
 
 ```markdown
 ---
@@ -811,11 +811,11 @@ Help improve this command:
 Your feedback helps make this command better.
 ```
 
-## Maintenance and Updates
+## 유지보수 및 업데이트
 
-### Update Strategy
+### 업데이트 전략 (Update Strategy)
 
-**Versioned commands:**
+**버전 관리 방식:**
 
 ```markdown
 <!--
@@ -843,7 +843,7 @@ Release schedule:
 -->
 ```
 
-**Update notifications:**
+**업데이트 알림:**
 
 ```markdown
 ---
@@ -875,30 +875,30 @@ fi
 [Command continues...]
 ```
 
-## Best Practices Summary
+## 권장 가이드 요약 (Best Practices Summary)
 
-### Distribution Design
+### 배포 설계:
 
-1. **Universal**: Works across platforms and environments
-2. **Self-contained**: Minimal dependencies, clear requirements
-3. **Graceful**: Degrades gracefully when features unavailable
-4. **Forgiving**: Anticipates and handles user mistakes
-5. **Helpful**: Clear errors, good defaults, excellent docs
+1. **범용성 (Universal)**: 다양한 플랫폼과 환경에서 작동
+2. **자기 완결성 (Self-contained)**: 최소한의 종속성, 명확한 필요 조건
+3. **유연성 (Graceful)**: 특정 기능이 없을 때 유연하게 기능을 축소하여 대응
+4. **허용적 설계 (Forgiving)**: 사용자의 실수를 예측하고 적절히 처리
+5. **도움이 됨 (Helpful)**: 명확한 에러 메시지, 좋은 기본값, 훌륭한 문서
 
-### Marketplace Success
+### 마켓플레이스 성공 지침:
 
-1. **Discoverable**: Clear name, good description, searchable keywords
-2. **Professional**: Polished presentation, consistent branding
-3. **Reliable**: Tested thoroughly, handles edge cases
-4. **Maintainable**: Versioned, updated regularly, supported
-5. **User-focused**: Great UX, responsive to feedback
+1. **발견 용이성 (Discoverable)**: 명확한 이름, 좋은 설명, 검색 가능한 키워드
+2. **전문성 (Professional)**: 세련된 레이아웃, 일관된 브랜딩
+3. **신뢰성 (Reliable)**: 철저하게 테스트 완료, 예외 상황 처리
+4. **유지보수 용이성 (Maintainable)**: 버전 관리, 정기적인 업데이트, 지속적인 기술 지원
+5. **사용자 중심 (User-focused)**: 훌륭한 UX, 피드백에 신속히 반응
 
-### Quality Standards
+### 품질 기준:
 
-1. **Complete**: Fully documented, all features working
-2. **Tested**: Works in real environments, edge cases handled
-3. **Secure**: No vulnerabilities, safe operations
-4. **Performant**: Reasonable speed, resource-efficient
-5. **Ethical**: Privacy-respecting, user consent
+1. **완전함 (Complete)**: 완벽한 문서화, 모든 기능 작동
+2. **테스트 완료 (Tested)**: 실제 작업 환경에서 테스트 완료, 예외 상황 처리
+3. **보안 준수 (Secure)**: 보안 취약점 없음, 안전한 작업 수행
+4. **성능 준수 (Performant)**: 수용 가능한 실행 속도, 효율적인 리소스 관리
+5. **윤리 준수 (Ethical)**: 개인정보 존중, 사용자의 동의 획득
 
-With these considerations, commands become marketplace-ready and delight users across diverse environments and use cases.
+이러한 고려 사항들을 적용함으로써 명령어들은 마켓플레이스에 등록할 준비를 갖추게 되며, 다양한 사용 환경과 다양한 케이스의 사용자들을 모두 만족시킬 수 있을 것입니다.

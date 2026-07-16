@@ -1,20 +1,20 @@
 # lua-lsp
 
-Lua language server for Claude Code, providing code intelligence and diagnostics.
+코드 인텔리전스 및 진단(diagnostics)을 제공하는 Claude Code용 Lua 언어 서버(language server)입니다.
 
-## Supported Extensions
+## 지원되는 확장자
 `.lua`
 
-## Installation
+## 설치
 
-### Via Homebrew (macOS)
+### Homebrew 사용 (macOS)
 ```bash
 brew install lua-language-server
 ```
 
-### Via package manager (Linux)
+### 패키지 관리자 사용 (Linux)
 ```bash
-# Ubuntu/Debian (via snap)
+# Ubuntu/Debian (snap 사용)
 sudo snap install lua-language-server --classic
 
 # Arch Linux
@@ -24,9 +24,9 @@ sudo pacman -S lua-language-server
 sudo dnf install lua-language-server
 ```
 
-### Manual Installation
-Download pre-built binaries from the [releases page](https://github.com/LuaLS/lua-language-server/releases).
+### 수동 설치
+[배포 페이지](https://github.com/LuaLS/lua-language-server/releases)에서 사전 빌드된 바이너리를 다운로드합니다.
 
-## More Information
+## 추가 정보
 - [Lua Language Server GitHub](https://github.com/LuaLS/lua-language-server)
-- [Documentation](https://luals.github.io/)
+- [문서](https://luals.github.io/)

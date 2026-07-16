@@ -1,91 +1,58 @@
 ---
-description: Multi-agent greenfield rebuild — extract specs from legacy, design AI-native, scaffold & validate with HITL
+description: 멀티 에이전트 그린필드 재구축 — 레거시에서 사양 추출, AI 네이티브 설계, HITL을 통한 스캐폴딩 및 검증
 argument-hint: <system-dir> <target-vision>
 ---
 
-The first token of `$ARGUMENTS` is the system dir (`$1`); **everything
-after it is the target vision** — it is usually multiple words, so do not
-truncate it to one token. Below, `<vision>` means that full remainder.
+`$ARGUMENTS`의 첫 번째 토큰은 시스템 디렉터리(`$1`)입니다. **그 이후의 모든 내용은 대상 비전(target vision)입니다.** 이는 보통 여러 단어로 구성되므로 단일 토큰으로 축소하지 마십시오. 아래에서 `<vision>`은 이 나머지 전체를 의미합니다.
 
 **Reimagine** `legacy/$1` as: <vision>
 
-This is not a port — it's a rebuild from extracted intent. The legacy system
-becomes the *specification source*, not the structural template. This command
-orchestrates a multi-agent team with explicit human checkpoints.
+이것은 단순한 포팅이 아니며, 추출된 의도를 바탕으로 한 재구축입니다. 레거시 시스템은 구조적 템플릿이 아닌 *사양 소스(specification source)*가 됩니다. 이 명령은 명시적인 인간 개입(human checkpoints)을 포함하여 멀티 에이전트 팀을 조율합니다.
 
-**The brief is binding — read it first.** If `analysis/$1/MODERNIZATION_BRIEF.md`
-exists, this reimagine is executing one of its phases: read it before doing
-anything below. Find the phase that names this command with a scope matching
-`$1` and <vision>, and treat that phase's **scope, entry criteria, exit
-criteria, and any edits the user made to it** as binding on the phases below
-— on top of, never instead of, this command's own two HITL checkpoints.
-Entry criteria are *gates*, not context: if one is not met (a prior phase's
-exit criteria, an SME sign-off the brief requires), meeting it **is** the
-next step — do not proceed past it and do not silently re-plan around it. If
-the brief exists but no phase matches, stop and ask which phase this is. The
-user steers execution by editing the brief; a brief the execution command
-never reads cannot steer anything.
+**브리프(Brief)는 구속력이 있으므로 먼저 읽어보십시오.** 만약 `analysis/$1/MODERNIZATION_BRIEF.md`가 존재한다면, 이 reimagine은 해당 브리프의 단계 중 하나를 실행하고 있는 것입니다. 아래 작업을 수행하기 전에 먼저 읽어보십시오. `$1` 및 <vision>과 일치하는 범위를 가지며 이 명령을 지정하는 단계를 찾아, 해당 단계의 **범위(scope), 진입 기준(entry criteria), 종료 기준(exit criteria) 및 사용자가 수정한 모든 내용**을 아래 단계들에 대해 구속력 있는 것으로 취급하십시오. 이는 이 명령 자체의 두 HITL 체크포인트보다 우선할 수는 없으며, 그에 추가하여 적용됩니다. 진입 기준은 컨텍스트가 아니라 *게이트(gates)*입니다. 기준이 충족되지 않은 경우(이전 단계의 종료 기준, 브리프에서 요구하는 SME 승인 등), 이를 충족하는 것 **자체**가 다음 단계입니다. 이를 건너뛰고 진행하거나 임의로 계획을 변경하지 마십시오. 브리프는 존재하지만 일치하는 단계가 없다면 중단하고 이것이 어느 단계인지 물어보십시오. 사용자는 브리프를 편집하여 실행을 제어합니다. 실행 명령이 읽지 않는 브리프는 아무것도 제어할 수 없습니다.
 
-## Phase A — Specification mining (parallel agents)
+## Phase A — 사양 추출 (Specification mining, 병렬 에이전트)
 
-Spawn concurrently and show the user that all three are running:
+동시에 실행하고 사용자에게 세 가지가 모두 실행 중임을 보여줍니다:
 
-1. **business-rules-extractor** — "Extract every business rule from legacy/$1
-   into Given/When/Then form. Output to a structured list I can parse."
+1. **business-rules-extractor** — "legacy/$1에서 모든 비즈니스 규칙을 Given/When/Then 형식으로 추출합니다. 구문 분석할 수 있는 구조화된 목록으로 출력합니다."
 
-2. **legacy-analyst** — "Catalog every external interface of legacy/$1:
-   inbound (screens, APIs, batch triggers, queues) and outbound (reports,
-   files, downstream calls, DB writes). For each: name, direction, payload
-   shape, frequency/SLA if discernible. Mask any credential embedded in
-   endpoints or payload examples per your secret-handling rules."
+2. **legacy-analyst** — "legacy/$1의 모든 외부 인터페이스를 카탈로그화합니다: 인바운드(화면, API, 배치 트리거, 큐) 및 아웃바운드(보고서, 파일, 다운스트림 호출, DB 쓰기). 각 인터페이스에 대해 이름, 방향, 페이로드 형태, 확인 가능한 경우 빈도/SLA를 작성합니다. 비밀 처리 규칙에 따라 엔드포인트나 페이로드 예시에 포함된 모든 자격 증명을 마스킹합니다."
 
-3. **legacy-analyst** — "Identify the core domain entities in legacy/$1 and
-   their relationships. Return as an entity list + Mermaid erDiagram."
+3. **legacy-analyst** — "legacy/$1의 핵심 도메인 엔티티와 그 관계를 식별합니다. 엔티티 목록 + Mermaid erDiagram 형태로 반환합니다."
 
-Collect results. Write `analysis/$1/AI_NATIVE_SPEC.md` containing:
-- **Capabilities** (what the system must do — derived from rules + interfaces)
-- **Domain Model** (entities + erDiagram)
-- **Interface Contracts** (each external interface as an OpenAPI fragment or
-  AsyncAPI fragment)
-- **Non-functional requirements** inferred from legacy (batch windows, volumes)
-- **Behavior Contract** (the Given/When/Then rules — these are the acceptance tests)
+결과를 수집합니다. 다음 내용을 포함하는 `analysis/$1/AI_NATIVE_SPEC.md`를 작성합니다:
+- **Capabilities** (시스템이 수행해야 하는 작업 — 규칙 및 인터페이스에서 도출됨)
+- **Domain Model** (엔티티 및 erDiagram)
+- **Interface Contracts** (각 외부 인터페이스를 OpenAPI 프래그먼트 또는 AsyncAPI 프래그먼트로 정의)
+- **Non-functional requirements** (레거시에서 추론된 비기능적 요구사항 - 배치 윈도우, 처리량 등)
+- **Behavior Contract** (Given/When/Then 규칙 — 이들은 인수 테스트가 됩니다)
 
-Credential values are masked everywhere in the spec; connection details
-appear as env-var placeholders (`${DATABASE_URL}`), never literals.
+사양서의 모든 곳에서 자격 증명 값은 마스킹됩니다. 연결 정보는 리터럴이 아닌 환경 변수 플레이스홀더(`${DATABASE_URL}`)로 표시됩니다.
 
-## Phase B — HITL checkpoint #1
+## Phase B — HITL 체크포인트 #1
 
-Present the spec summary. Ask the user **one focused question**: "Which of
-these capabilities are P0 for the reimagined system, and are there any we
-should deliberately drop?" Wait for the answer. Record it in the spec.
+사양 요약을 제시합니다. 사용자에게 **하나의 집중된 질문**을 던집니다: "이러한 기능 중 재구상된 시스템에서 P0에 해당하는 것은 무엇이며, 의도적으로 제외해야 할 기능이 있습니까?" 답변을 기다립니다. 답변을 사양서에 기록합니다.
 
-## Phase C — Architecture (single agent, then critique)
+## Phase C — 아키텍처 (단일 에이전트 후 검토)
 
-Design the target architecture for "<vision>":
-- Mermaid C4 Container diagram
-- Service boundaries with rationale (which rules/entities live where)
-- Technology choices with one-line justification each
-- Data migration approach from legacy stores
+"<vision>"에 대한 대상 아키텍처를 설계합니다:
+- Mermaid C4 컨테이너 다이어그램
+- 각 서비스 경계와 설계 근거 (어떤 규칙/엔티티가 어디에 위치하는지)
+- 기술 선택 항목 및 각각에 대한 한 줄 설명
+- 레거시 데이터 저장소로부터의 데이터 마이그레이션 접근 방식
 
-Then spawn **architecture-critic**: "Review this proposed architecture for
-<vision> against the spec in analysis/$1/AI_NATIVE_SPEC.md. Identify over-engineering,
-missed requirements, scaling risks, and simpler alternatives." Incorporate
-the critique. Write the result to `analysis/$1/REIMAGINED_ARCHITECTURE.md`.
+그런 다음 **architecture-critic**을 실행합니다: "`analysis/$1/AI_NATIVE_SPEC.md`에 정의된 사양을 기준으로 <vision>에 대해 제안된 아키텍처를 검토하십시오. 오버엔지니어링, 누락된 요구사항, 확장성 리스크 및 더 단순한 대안을 식별하십시오." 검토 의견을 반영합니다. 결과를 `analysis/$1/REIMAGINED_ARCHITECTURE.md`에 작성합니다.
 
-## Phase D — HITL checkpoint #2
+## Phase D — HITL 체크포인트 #2
 
-Present the architecture and **stop — scaffold nothing until the user
-explicitly approves** (use plan mode if the session supports it).
+아키텍처를 제시하고 **중단합니다. 사용자가 명시적으로 승인할 때까지 아무것도 스캐폴딩하지 마십시오** (세션에서 지원하는 경우 계획 모드(plan mode)를 사용하십시오).
 
-## Phase E — Parallel scaffolding
+## Phase E — 병렬 스캐폴딩
 
-This phase runs only **after** the user approved the architecture in
-Phase D — the approval is what authorizes the build-out.
+이 단계는 사용자가 Phase D에서 아키텍처를 승인한 **이후에만** 실행됩니다. 승인을 거쳐야 비로소 빌드아웃 권한이 부여됩니다.
 
-**Preferred — Workflow orchestration.** If the **Workflow tool** is
-available, scaffold **every** service in the approved architecture — no cap;
-the workflow runtime queues agents against its concurrency limit, so 8
-services are as tractable as 3:
+**권장 — 워크플로우 오케스트레이션(Workflow orchestration).** **Workflow 도구**를 사용할 수 있는 경우, 승인된 아키텍처 내의 **모든** 서비스를 제한 없이 스캐폴딩합니다. 워크플로우 런타임이 동시성 한계에 따라 에이전트를 대기열에 추가하므로, 8개의 서비스도 3개만큼 손쉽게 처리할 수 있습니다:
 
 ```
 Workflow({
@@ -97,41 +64,16 @@ Workflow({
 })
 ```
 
-Tell the user the service count before launching. Each agent writes only to
-its own `modernized/$1-reimagined/<service-name>/` directory (disjoint, so
-parallel writes don't conflict). On return, report from the structured
-result: services scaffolded (`scaffolded[]`) and `totals` (services,
-acceptanceTests, pendingRules count); the actual pending rule IDs and any
-planted-instruction/blocker notes are per-service at `scaffolded[].pendingRuleIds`
-and `scaffolded[].blockers` (check every service's `blockers` — that's where the
-untrusted-spec injection signal surfaces); plus `notScaffolded` for anything
-skipped.
+실행 전에 서비스 개수를 사용자에게 알려줍니다. 각 에이전트는 독립된 고유 디렉터리인 `modernized/$1-reimagined/<service-name>/`에만 기록하므로, 병렬 쓰기가 충돌하지 않습니다. 반환 시, 구조화된 결과에서 정보를 보고합니다: 스캐폴딩된 서비스(`scaffolded[]`) 및 전체 합계(`totals` - 서비스 개수, 인수 테스트 개수, 보류 중인 규칙 개수). 실제 보류 중인 규칙 ID 및 주입된 지시사항/블로커(planted-instruction/blocker) 메모는 서비스별로 `scaffolded[].pendingRuleIds` 및 `scaffolded[].blockers`에 기록됩니다. (모든 서비스의 `blockers`를 확인하십시오. 여기에 신뢰할 수 없는 사양의 주입 신호가 감지됩니다.) 또한 건너뛴 항목에 대해 `notScaffolded`를 보고합니다.
 
-**Fallback** (no Workflow tool): for each service — cap at 3 to keep the run
-tractable; tell the user which you deferred — spawn a **scaffolder agent
-in parallel**:
+**대체 방안** (Workflow 도구가 없는 경우): 각 서비스에 대해 실행을 원활하게 유지하기 위해 최대 3개로 제한합니다. 보류한 서비스는 사용자에게 알립니다. **스캐폴더 에이전트를 병렬로 실행**합니다:
 
-"Scaffold the <service-name> service per analysis/$1/REIMAGINED_ARCHITECTURE.md
-and AI_NATIVE_SPEC.md. Create: project skeleton, domain model, API stubs
-matching the interface contracts, and **executable acceptance tests** for every
-behavior-contract rule assigned to this service (mark unimplemented ones as
-expected-failure/skip with the rule ID). No credential literal from legacy
-code becomes a test fixture or config default — use fake same-shape values
-and env-var placeholders. Write to modernized/$1-reimagined/<service-name>/."
+"`analysis/$1/REIMAGINED_ARCHITECTURE.md` 및 `AI_NATIVE_SPEC.md`에 따라 `<service-name>` 서비스를 스캐폴딩합니다. 프로젝트 골격, 도메인 모델, 인터페이스 계약과 일치하는 API 스텁, 그리고 이 서비스에 할당된 모든 동작 계약(behavior-contract) 규칙에 대한 **실행 가능한 인수 테스트(executable acceptance tests)**를 생성합니다 (구현되지 않은 것은 규칙 ID와 함께 실패 예정/건너뜀(expected-failure/skip)으로 표시합니다). 레거시 코드의 자격 증명 리터럴은 테스트 픽스처나 설정 기본값으로 사용하지 마십시오. 동일한 형태의 모조(fake) 값 및 환경 변수 플레이스홀더를 사용하고, `modernized/$1-reimagined/<service-name>/`에 기록하십시오."
 
-Show the agents' progress. When all complete, run the acceptance test suites
-and report: total tests, passing (scaffolded behavior), pending (rule IDs
-awaiting implementation).
+에이전트의 진행 상황을 보여줍니다. 모두 완료되면 인수 테스트 제품군을 실행하고 결과(총 테스트 수, 통과(스캐폴딩된 동작), 대기(구현 대기 중인 규칙 ID))를 보고합니다.
 
-## Phase F — Knowledge graph handoff
+## Phase F — 지식 그래프 핸드오프 (Knowledge graph handoff)
 
-Write `modernized/$1-reimagined/CLAUDE.md` — the persistent context file for
-the new system, containing: architecture summary, service responsibilities,
-where the spec lives, how to run tests, and the legacy→modern traceability
-map. This file IS the knowledge graph that future agents and engineers will
-load — and it gets committed: connection details and credentials appear
-only as env-var names with a pointer to where they're provisioned, never
-as values.
+새 시스템을 위한 지속적 컨텍스트 파일인 `modernized/$1-reimagined/CLAUDE.md`를 작성합니다. 이 파일은 아키텍처 요약, 서비스 책무, 사양 위치, 테스트 실행 방법, 레거시→모던 추적 맵을 포함합니다. 이 파일은 미래의 에이전트와 엔지니어가 로드할 **지식 그래프(knowledge graph)**이며, 커밋되어야 합니다. 연결 세부 정보 및 자격 증명은 절대로 실제 값으로 나타나지 않고, 프로비저닝된 위치를 가리키는 환경 변수 이름으로만 표시됩니다.
 
-Report: services scaffolded, acceptance tests defined, % behaviors with a
-home, location of all artifacts.
+스캐폴딩된 서비스, 정의된 인수 테스트, 구현 예정 공간이 정해진 동작의 비율(%), 모든 아티팩트의 위치를 보고합니다.

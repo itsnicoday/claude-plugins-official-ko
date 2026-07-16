@@ -1,125 +1,125 @@
 ---
-description: Guided feature development with codebase understanding and architecture focus
+description: 코드베이스 이해 및 아키텍처 설계를 기반으로 하는 안내형 기능 개발 프로세스
 argument-hint: Optional feature description
 ---
 
-# Feature Development
+# 기능 개발
 
-You are helping a developer implement a new feature. Follow a systematic approach: understand the codebase deeply, identify and ask about all underspecified details, design elegant architectures, then implement.
+개발자가 새로운 기능을 구현하도록 돕습니다. 체계적인 접근 방식을 따르십시오: 코드베이스를 깊이 있게 이해하고, 정의가 부족한 세부 사항을 식별하여 질문하고, 우아한 아키텍처를 설계한 뒤 구현에 착수하세요.
 
-## Core Principles
+## 핵심 원칙
 
-- **Ask clarifying questions**: Identify all ambiguities, edge cases, and underspecified behaviors. Ask specific, concrete questions rather than making assumptions. Wait for user answers before proceeding with implementation. Ask questions early (after understanding the codebase, before designing architecture).
-- **Understand before acting**: Read and comprehend existing code patterns first
-- **Read files identified by agents**: When launching agents, ask them to return lists of the most important files to read. After agents complete, read those files to build detailed context before proceeding.
-- **Simple and elegant**: Prioritize readable, maintainable, architecturally sound code
-- **Use TodoWrite**: Track all progress throughout
-
----
-
-## Phase 1: Discovery
-
-**Goal**: Understand what needs to be built
-
-Initial request: $ARGUMENTS
-
-**Actions**:
-1. Create todo list with all phases
-2. If feature unclear, ask user for:
-   - What problem are they solving?
-   - What should the feature do?
-   - Any constraints or requirements?
-3. Summarize understanding and confirm with user
+- **명확화 질문 제기**: 모든 모호한 부분, 예외 상황(edge cases), 명확하지 않은 동작들을 식별합니다. 임의로 추측하지 말고 구체적이고 실질적인 질문을 던지십시오. 구현을 진행하기 전에 사용자의 답변을 기다립니다. 질문은 프로세스 초기(코드베이스를 이해한 직후, 아키텍처를 설계하기 전)에 하십시오.
+- **행동하기 전에 이해**: 먼저 기존 코드 패턴을 읽고 확실히 이해하십시오.
+- **에이전트가 식별한 파일 읽기**: 에이전트를 실행할 때 읽어야 할 가장 중요한 파일 목록을 반환하도록 하십시오. 에이전트 실행이 완료되면, 다음 단계로 가기 전에 해당 파일들을 읽어 구체적인 컨텍스트를 파악하십시오.
+- **단순하고 우아하게**: 가독성이 높고 유지 보수가 쉬우며 아키텍처적으로 건전한 코드를 최우선으로 합니다.
+- **TodoWrite 사용**: 진행 과정 내내 모든 진척 상황을 추적하십시오.
 
 ---
 
-## Phase 2: Codebase Exploration
+## 1단계: 탐색 (Discovery)
 
-**Goal**: Understand relevant existing code and patterns at both high and low levels
+**목표**: 빌드해야 할 기능이 무엇인지 파악
 
-**Actions**:
-1. Launch 2-3 code-explorer agents in parallel. Each agent should:
-   - Trace through the code comprehensively and focus on getting a comprehensive understanding of abstractions, architecture and flow of control
-   - Target a different aspect of the codebase (eg. similar features, high level understanding, architectural understanding, user experience, etc)
-   - Include a list of 5-10 key files to read
+초기 요청: $ARGUMENTS
 
-   **Example agent prompts**:
-   - "Find features similar to [feature] and trace through their implementation comprehensively"
-   - "Map the architecture and abstractions for [feature area], tracing through the code comprehensively"
-   - "Analyze the current implementation of [existing feature/area], tracing through the code comprehensively"
-   - "Identify UI patterns, testing approaches, or extension points relevant to [feature]"
-
-2. Once the agents return, please read all files identified by agents to build deep understanding
-3. Present comprehensive summary of findings and patterns discovered
+**작업**:
+1. 모든 단계를 포함하는 할 일 목록(todo list) 생성
+2. 기능 요구사항이 불명확할 경우 다음 사항을 사용자에게 확인:
+   - 해결하려는 문제가 무엇인가요?
+   - 기능이 구체적으로 어떤 동작을 해야 하나요?
+   - 제약 사항이나 요구사항이 있나요?
+3. 파악한 내용을 요약하여 사용자에게 확인 요청
 
 ---
 
-## Phase 3: Clarifying Questions
+## 2단계: 코드베이스 탐색 (Codebase Exploration)
 
-**Goal**: Fill in gaps and resolve all ambiguities before designing
+**목표**: 관련된 기존 코드와 패턴을 상위 및 하위 수준 모두에서 깊이 있게 파악
 
-**CRITICAL**: This is one of the most important phases. DO NOT SKIP.
+**작업**:
+1. 2~3개의 code-explorer 에이전트를 동시에 실행합니다. 각 에이전트는 다음 작업을 수행해야 합니다:
+   - 코드를 종합적으로 추적하여 추상화, 아키텍처 및 제어 흐름에 대해 깊이 있게 이해하는 데 초점을 맞춤
+   - 코드베이스의 서로 다른 측면을 대상으로 탐색 (예: 유사 기능, 고수준 이해, 아키텍처 이해, 사용자 경험 등)
+   - 읽어야 할 5~10개의 핵심 파일 목록 포함
 
-**Actions**:
-1. Review the codebase findings and original feature request
-2. Identify underspecified aspects: edge cases, error handling, integration points, scope boundaries, design preferences, backward compatibility, performance needs
-3. **Present all questions to the user in a clear, organized list**
-4. **Wait for answers before proceeding to architecture design**
+   **에이전트 프롬프트 예시**:
+   - "[feature]와 유사한 기능을 찾아 구현 방식을 종합적으로 추적하십시오"
+   - "[feature area] 영역의 아키텍처와 추상화를 매핑하고 코드를 종합적으로 추적하십시오"
+   - "[existing feature/area]의 현재 구현 상태를 분석하고 코드를 종합적으로 추적하십시오"
+   - "[feature]와 관련이 있는 UI 패턴, 테스트 접근 방식 또는 확장 지점 식별"
 
-If the user says "whatever you think is best", provide your recommendation and get explicit confirmation.
-
----
-
-## Phase 4: Architecture Design
-
-**Goal**: Design multiple implementation approaches with different trade-offs
-
-**Actions**:
-1. Launch 2-3 code-architect agents in parallel with different focuses: minimal changes (smallest change, maximum reuse), clean architecture (maintainability, elegant abstractions), or pragmatic balance (speed + quality)
-2. Review all approaches and form your opinion on which fits best for this specific task (consider: small fix vs large feature, urgency, complexity, team context)
-3. Present to user: brief summary of each approach, trade-offs comparison, **your recommendation with reasoning**, concrete implementation differences
-4. **Ask user which approach they prefer**
+2. 에이전트들이 분석을 마치고 복귀하면, 식별된 모든 파일을 읽고 깊이 있게 이해하십시오.
+3. 발견한 내용과 패턴에 대한 종합적인 요약을 제시하십시오.
 
 ---
 
-## Phase 5: Implementation
+## 3단계: 명확화 질문 (Clarifying Questions)
 
-**Goal**: Build the feature
+**목표**: 설계하기 전에 정보의 빈틈을 메우고 모든 모호성 해소
 
-**DO NOT START WITHOUT USER APPROVAL**
+**중요**: 가장 중요한 단계 중 하나입니다. 절대 건너뛰지 마십시오.
 
-**Actions**:
-1. Wait for explicit user approval
-2. Read all relevant files identified in previous phases
-3. Implement following chosen architecture
-4. Follow codebase conventions strictly
-5. Write clean, well-documented code
-6. Update todos as you progress
+**작업**:
+1. 코드베이스 탐색 결과와 최초 기능 요청을 검토합니다.
+2. 예외 상황(edge cases), 에러 핸들링, 통합 지점, 범위 경계, 디자인 선호도, 하위 호환성, 성능 요구사항 등 명확하지 않은 요소를 파악합니다.
+3. **명확하고 정리된 목록 형태로 모든 질문을 사용자에게 제시하십시오.**
+4. **아키텍처 설계로 진행하기 전에 사용자의 답변을 기다리십시오.**
 
----
-
-## Phase 6: Quality Review
-
-**Goal**: Ensure code is simple, DRY, elegant, easy to read, and functionally correct
-
-**Actions**:
-1. Launch 3 code-reviewer agents in parallel with different focuses: simplicity/DRY/elegance, bugs/functional correctness, project conventions/abstractions
-2. Consolidate findings and identify highest severity issues that you recommend fixing
-3. **Present findings to user and ask what they want to do** (fix now, fix later, or proceed as-is)
-4. Address issues based on user decision
+만약 사용자가 "가장 적절하다고 판단되는 대로 진행해 주세요"라고 답한다면, 권장 방안을 제시하고 명시적인 확인을 받으십시오.
 
 ---
 
-## Phase 7: Summary
+## 4단계: 아키텍처 설계 (Architecture Design)
 
-**Goal**: Document what was accomplished
+**목표**: 서로 다른 트레이드오프를 가지는 여러 가지 구현 접근 방식 설계
 
-**Actions**:
-1. Mark all todos complete
-2. Summarize:
-   - What was built
-   - Key decisions made
-   - Files modified
-   - Suggested next steps
+**작업**:
+1. 서로 다른 초점을 가진 2~3개의 code-architect 에이전트를 동시에 실행합니다: 최소 변경(최소한의 변경, 재사용 극대화), 클린 아키텍처(유지 보수성, 우아한 추상화), 또는 실용적인 균형(속도 및 품질)
+2. 모든 접근 방식을 검토하고, 이번 특정 작업에 가장 적합한 접근 방식에 대해 의견을 수립합니다 (작은 수정 사항인지 큰 기능인지, 긴급성, 복잡성, 팀 상황 등을 고려).
+3. 사용자에게 다음을 제시하십시오: 각 접근 방식의 간략한 요약, 트레이드오프 비교, **근거를 포함한 본인의 권장안**, 구체적인 구현 방식 차이
+4. **사용자에게 어떤 접근 방식을 선호하는지 묻습니다.**
+
+---
+
+## 5단계: 구현 (Implementation)
+
+**목표**: 기능 구현
+
+**사용자의 승인 없이 시작하지 마십시오**
+
+**작업**:
+1. 사용자의 명시적인 승인이 있을 때까지 대기합니다.
+2. 이전 단계에서 파악된 모든 관련 파일을 읽습니다.
+3. 선택한 아키텍처에 따라 구현합니다.
+4. 코드베이스 규칙을 엄격하게 준수합니다.
+5. 깔끔하고 문서화가 잘 된 코드를 작성합니다.
+6. 진행 상황에 맞춰 할 일 목록(todos)을 업데이트합니다.
+
+---
+
+## 6단계: 품질 검토 (Quality Review)
+
+**목표**: 코드가 단순하고, 중복이 없으며(DRY), 우아하고, 가독성이 좋으며, 기능적으로 올바른지 확인
+
+**작업**:
+1. 서로 다른 초점을 가진 3개의 code-reviewer 에이전트를 동시에 실행합니다: 단순성/DRY/우아함, 버그/기능적 정확성, 프로젝트 규칙/추상화
+2. 검토 결과를 취합하고, 수정을 권장하는 가장 높은 심각도의 문제를 식별합니다.
+3. **검토 결과를 사용자에게 제시하고 어떻게 진행할지 의견을 묻습니다** (지금 수정, 나중에 수정, 또는 그대로 진행).
+4. 사용자의 결정에 따라 문제를 처리합니다.
+
+---
+
+## 7단계: 요약 (Summary)
+
+**목표**: 완료된 작업 문서화
+
+**작업**:
+1. 모든 할 일을 완료로 표시합니다.
+2. 요약 제공:
+   - 빌드된 기능
+   - 주요 결정 사항
+   - 수정된 파일 목록
+   - 권장되는 후속 단계
 
 ---

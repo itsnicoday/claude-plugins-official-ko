@@ -1,109 +1,109 @@
-# CLAUDE.md Quality Criteria
+# CLAUDE.md 품질 기준
 
-## Scoring Rubric
+## 평가 루브릭
 
-### 1. Commands/Workflows (20 points)
+### 1. 명령어/워크플로우 (20점)
 
-**20 points**: All essential commands documented with context
-- Build, test, lint, deploy commands present
-- Development workflow clear
-- Common operations documented
+**20점**: 필수적인 모든 명령어가 컨텍스트와 함께 문서화됨
+- 빌드, 테스트, 린트, 배포 명령어가 존재함
+- 개발 워크플로우가 명확함
+- 공통 작업들이 문서화됨
 
-**15 points**: Most commands present, some missing context
+**15점**: 대부분의 명령어가 존재하나 일부 컨텍스트가 누락됨
 
-**10 points**: Basic commands only, no workflow
+**10점**: 기본적인 명령어만 존재하고 워크플로우가 없음
 
-**5 points**: Few commands, many missing
+**5점**: 명령어가 거의 없고 상당수 누락됨
 
-**0 points**: No commands documented
+**0점**: 문서화된 명령어가 없음
 
-### 2. Architecture Clarity (20 points)
+### 2. 아키텍처 명확성 (20점)
 
-**20 points**: Clear codebase map
-- Key directories explained
-- Module relationships documented
-- Entry points identified
-- Data flow described where relevant
+**20점**: 코드베이스 구조가 명확히 맵핑됨
+- 핵심 디렉터리에 대한 설명 제공
+- 모듈 간의 관계 문서화
+- 진입점(entry points) 식별
+- 필요한 경우 데이터 흐름 기술
 
-**15 points**: Good structure overview, minor gaps
+**15점**: 구조 개요가 잘 짜여 있으나 약간의 빈틈이 있음
 
-**10 points**: Basic directory listing only
+**10점**: 기본적인 디렉터리 목록만 나열됨
 
-**5 points**: Vague or incomplete
+**5점**: 모호하거나 불완전함
 
-**0 points**: No architecture info
+**0점**: 아키텍처 정보가 없음
 
-### 3. Non-Obvious Patterns (15 points)
+### 3. 직관적이지 않은 패턴 (15점)
 
-**15 points**: Gotchas and quirks captured
-- Known issues documented
-- Workarounds explained
-- Edge cases noted
-- "Why we do it this way" for unusual patterns
+**15점**: 주의 사항 및 특이 사항이 잘 반영됨
+- 알려진 이슈(known issues) 문서화
+- 우회 방법(workarounds) 설명
+- 예외 상황(edge cases) 기재
+- 일반적이지 않은 패턴에 대해 "왜 이 방식을 사용하는지" 설명
 
-**10 points**: Some patterns documented
+**10점**: 일부 패턴이 문서화됨
 
-**5 points**: Minimal pattern documentation
+**5점**: 최소한의 패턴만 문서화됨
 
-**0 points**: No patterns or gotchas
+**0점**: 패턴이나 주의 사항이 없음
 
-### 4. Conciseness (15 points)
+### 4. 간결성 (15점)
 
-**15 points**: Dense, valuable content
-- No filler or obvious info
-- Each line adds value
-- No redundancy with code comments
+**15점**: 밀도 높고 유용한 정보로만 구성됨
+- 무의미한 미사여구나 당연한 정보가 없음
+- 모든 줄이 실질적인 가치를 지님
+- 코드 주석과의 불필요한 중복이 없음
 
-**10 points**: Mostly concise, some padding
+**10점**: 대체로 간결하지만 일부 군더더기가 있음
 
-**5 points**: Verbose in places
+**5점**: 일부 장황한 부분이 있음
 
-**0 points**: Mostly filler or restates obvious code
+**0점**: 대부분 무의미한 내용이거나 당연한 코드를 반복 설명함
 
-### 5. Currency (15 points)
+### 5. 최신성 (15점)
 
-**15 points**: Reflects current codebase
-- Commands work as documented
-- File references accurate
-- Tech stack current
+**15점**: 현재 코드베이스 상태를 정확히 반영함
+- 문서화된 명령어가 정상적으로 동작함
+- 파일 참조가 정확함
+- 기술 스택이 최신 상태임
 
-**10 points**: Mostly current, minor staleness
+**10점**: 대체로 최신 상태이나 사소하게 만료된 내용이 있음
 
-**5 points**: Several outdated references
+**5점**: 만료된 참조가 다수 존재함
 
-**0 points**: Severely outdated
+**0점**: 극도로 심각하게 오래됨
 
-### 6. Actionability (15 points)
+### 6. 조치 가능성 (15점)
 
-**15 points**: Instructions are executable
-- Commands can be copy-pasted
-- Steps are concrete
-- Paths are real
+**15점**: 지침이 즉시 실행 가능함
+- 명령어를 복사하여 붙여넣을 수 있음
+- 단계가 구체적임
+- 경로가 실재함
 
-**10 points**: Mostly actionable
+**10점**: 대체로 즉시 실행 가능함
 
-**5 points**: Some vague instructions
+**5점**: 일부 모호한 지침이 존재함
 
-**0 points**: Vague or theoretical
+**0점**: 모호하거나 이론적임
 
-## Assessment Process
+## 평가 프로세스
 
-1. Read the CLAUDE.md file completely
-2. Cross-reference with actual codebase:
-   - Run documented commands (mentally or actually)
-   - Check if referenced files exist
-   - Verify architecture descriptions
-3. Score each criterion
-4. Calculate total and assign grade
-5. List specific issues found
-6. Propose concrete improvements
+1. CLAUDE.md 파일을 처음부터 끝까지 읽습니다.
+2. 실제 코드베이스와 교차 확인합니다:
+   - 문서화된 명령어를 (생각으로든 실제로든) 실행해 봅니다.
+   - 참조된 파일들이 실제로 존재하는지 확인합니다.
+   - 아키텍처 설명이 맞는지 검증합니다.
+3. 각 기준에 따라 점수를 부여합니다.
+4. 총점을 계산하여 등급을 매깁니다.
+5. 발견된 구체적인 문제 목록을 작성합니다.
+6. 구체적인 개선안을 제시합니다.
 
-## Red Flags
+## 주의 대상 신호 (Red Flags)
 
-- Commands that would fail (wrong paths, missing deps)
-- References to deleted files/folders
-- Outdated tech versions
-- Copy-paste from templates without customization
-- Generic advice not specific to the project
-- "TODO" items never completed
-- Duplicate info across multiple CLAUDE.md files
+- 실패할 위험이 있는 명령어 (잘못된 경로, 누락된 종속성)
+- 삭제된 파일/폴더에 대한 참조
+- 만료된 기술 버전
+- 커스터마이징 없이 템플릿을 그대로 복사-붙여넣기 한 경우
+- 프로젝트 고유의 내용이 아닌 일반적인 조언
+- 완료되지 않은 채 방치된 "TODO" 항목
+- 여러 CLAUDE.md 파일 간에 중복된 정보

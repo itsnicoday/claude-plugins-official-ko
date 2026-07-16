@@ -1,16 +1,16 @@
-# Advanced Workflow Patterns
+# 고급 워크플로우 패턴 (Advanced Workflow Patterns)
 
-Multi-step command sequences and composition patterns for complex workflows.
+복잡한 워크플로우를 처리하기 위한 다단계 명령어 시퀀스 및 조합 패턴들입니다.
 
-## Overview
+## 개요
 
-Advanced workflows combine multiple commands, coordinate state across invocations, and create sophisticated automation sequences. These patterns enable building complex functionality from simple command building blocks.
+고급 워크플로우는 여러 명령어를 결합하고, 여러 실행 간의 상태(state)를 조정하며, 정교한 자동화 시퀀스를 생성합니다. 이러한 패턴들은 단순한 명령어 빌딩 블록으로부터 복잡한 기능을 구축할 수 있게 합니다.
 
-## Multi-Step Command Patterns
+## 다단계 명령어 패턴 (Multi-Step Command Patterns)
 
-### Sequential Workflow Command
+### 순차적 워크플로우 명령어 (Sequential Workflow Command)
 
-Commands that guide users through multi-step processes:
+사용자에게 다단계 프로세스를 가이드하는 명령어:
 
 ```markdown
 ---
@@ -55,15 +55,15 @@ Would you like to:
 Reply with your choice and I'll help complete the action.
 ```
 
-**Key features:**
-- Numbered steps for clarity
-- Bash execution for context
-- Decision points for user input
-- Next action suggestions
+**주요 특징:**
+- 가독성을 위한 순서가 매겨진 단계들
+- 콘텍스트 확보를 위한 Bash 실행
+- 사용자 입력을 위한 의사 결정 시점
+- 다음 행동에 대한 제안
 
-### State-Carrying Workflow
+### 상태 유지형 워크플로우 (State-Carrying Workflow)
 
-Commands that maintain state between invocations:
+여러 실행 간에 상태를 유지하는 명령어:
 
 ```markdown
 ---
@@ -103,7 +103,7 @@ Next steps:
 State saved. Run `/deploy-test` to continue.
 ```
 
-**Next command** (`/deploy-test`):
+**다음 명령어** (`/deploy-test`):
 ```markdown
 ---
 description: Run deployment tests
@@ -119,15 +119,15 @@ Updating state to 'tested'...
 Tests complete. Run `/deploy-build` to continue.
 ```
 
-**Pattern benefits:**
-- Persistent state across commands
-- Clear workflow progression
-- Safety checkpoints
-- Resume capability
+**패턴 적용의 장점:**
+- 명령어 전반에 걸친 지속적인 상태 관리
+- 명확한 워크플로우 진행 상황 확인
+- 안전한 체크포인트 설정
+- 중단 시 재개 기능
 
-### Conditional Workflow Branching
+### 조건부 워크플로우 분기 (Conditional Workflow Branching)
 
-Commands that adapt based on conditions:
+조건에 따라 다르게 조율되는 명령어:
 
 ```markdown
 ---
@@ -168,11 +168,11 @@ Based on above, proceeding with: [determined workflow]
 Ready to deploy? (yes/no)
 ```
 
-## Command Composition Patterns
+## 명령어 조합 패턴 (Command Composition Patterns)
 
-### Command Chaining
+### 명령어 체이닝 (Command Chaining)
 
-Commands designed to work together:
+함께 동작하도록 설계된 명령어들:
 
 ```markdown
 ---
@@ -195,16 +195,16 @@ I'll compile results and prepare comprehensive review materials.
 Starting sequence...
 ```
 
-**Individual commands** are simple:
-- `/format-code` - Just formats
-- `/lint-code` - Just lints
-- `/test-all` - Just tests
+**개별 명령어**는 간단합니다:
+- `/format-code` - 포맷팅만 수행
+- `/lint-code` - 린트만 수행
+- `/test-all` - 테스트만 실행
 
-**Composition command** orchestrates them.
+**조합 명령어**가 이들을 전반적으로 조정합니다.
 
-### Pipeline Pattern
+### 파이프라인 패턴 (Pipeline Pattern)
 
-Commands that process output from previous commands:
+이전 명령어의 출력 결과를 처리하는 명령어:
 
 ```markdown
 ---
@@ -241,9 +241,9 @@ Would you like me to:
 3. Create GitHub issues for each
 ```
 
-### Parallel Execution Pattern
+### 병렬 실행 패턴 (Parallel Execution Pattern)
 
-Commands that coordinate multiple simultaneous operations:
+여러 작업을 동시에 실행하고 제안하는 명령어:
 
 ```markdown
 ---
@@ -276,11 +276,11 @@ Details:
 [Collated results from all checks]
 ```
 
-## Workflow State Management
+## 워크플로우 상태 관리 (Workflow State Management)
 
-### Using .local.md Files
+### .local.md 파일 활용
 
-Store workflow state in plugin-specific files:
+플러그인 고유 파일에 워크플로우 상태를 저장합니다:
 
 ```markdown
 .claude/plugin-name-workflow.local.md:
@@ -312,7 +312,7 @@ Pending steps:
 - Smoke tests
 ```
 
-**Reading state in commands:**
+**명령어 내에서 상태 읽기:**
 
 ```markdown
 ---
@@ -329,9 +329,9 @@ Current stage: @.claude/plugin-name-workflow.local.md
 Next action based on state: [determined action]
 ```
 
-### Workflow Recovery
+### 워크플로우 복구 (Workflow Recovery)
 
-Handle interrupted workflows:
+중단된 워크플로우 처리:
 
 ```markdown
 ---
@@ -358,11 +358,11 @@ State file: @.claude/plugin-name-workflow.local.md
 Which would you like? (1/2/3)
 ```
 
-## Workflow Coordination Patterns
+## 워크플로우 조정 패턴 (Workflow Coordination Patterns)
 
-### Cross-Command Communication
+### 명령어 간 통신 (Cross-Command Communication)
 
-Commands that signal each other:
+서로 신호를 주고받는 명령어들:
 
 ```markdown
 ---
@@ -384,7 +384,7 @@ This signals other commands that feature is ready for:
 Feature marked complete.
 ```
 
-**Other commands check for flag:**
+**다른 명령어에서 플래그 확인:**
 
 ```markdown
 ---
@@ -401,9 +401,9 @@ fi
 [Include in release notes]
 ```
 
-### Workflow Locking
+### 워크플로우 락킹 (Workflow Locking)
 
-Prevent concurrent workflow execution:
+워크플로우의 동시 실행 방지:
 
 ```markdown
 ---
@@ -431,7 +431,7 @@ Deployment started. Lock created.
 [Proceed with deployment]
 ```
 
-**Lock cleanup:**
+**락 해제:**
 
 ```markdown
 ---
@@ -447,9 +447,9 @@ rm .claude/deployment.lock
 Ready for next deployment.
 ```
 
-## Advanced Argument Handling
+## 고급 인자 처리 (Advanced Argument Handling)
 
-### Optional Arguments with Defaults
+### 기본값이 있는 선택적 인자
 
 ```markdown
 ---
@@ -467,7 +467,7 @@ Note: Using defaults for missing arguments:
 - Version defaults to 'latest'
 ```
 
-### Argument Validation
+### 인자 검증
 
 ```markdown
 ---
@@ -489,7 +489,7 @@ fi
 Environment validated. Proceeding...
 ```
 
-### Argument Transformation
+### 인자 변환
 
 ```markdown
 ---
@@ -514,9 +514,9 @@ esac
 Deploying to: $ENV
 ```
 
-## Error Handling in Workflows
+## 워크플로우 내 에러 처리 (Workflow Handling)
 
-### Graceful Failure
+### 부드러운 실패 처리 (Graceful Failure)
 
 ```markdown
 ---
@@ -547,7 +547,7 @@ fi
 [Continue only if Step 1 succeeded]
 ```
 
-### Rollback on Failure
+### 실패 시 롤백 (Rollback on Failure)
 
 ```markdown
 ---
@@ -576,7 +576,7 @@ fi
 Deployment complete.
 ```
 
-### Checkpoint Recovery
+### 체크포인트 복구 (Checkpoint Recovery)
 
 ```markdown
 ---
@@ -601,42 +601,42 @@ If any step fails, resume with:
 /deployment-resume [last-successful-checkpoint]
 ```
 
-## Best Practices
+## 베스트 프랙티스
 
-### Workflow Design
+### 워크플로우 디자인:
 
-1. **Clear progression**: Number steps, show current position
-2. **Explicit state**: Don't rely on implicit state
-3. **User control**: Provide decision points
-4. **Error recovery**: Handle failures gracefully
-5. **Progress indication**: Show what's done, what's pending
+1. **명확한 진행 흐름**: 단계별로 번호를 매기고, 현재 위치를 표시합니다.
+2. **명시적인 상태 관리**: 암묵적인 상태에 의존하지 마세요.
+3. **사용자 제어권 보장**: 의사 결정 시점을 제공합니다.
+4. **에이전트 복구**: 실패를 유연하게 처리합니다.
+5. **진행 상황 인디케이터**: 완료된 작업과 남은 작업을 명확히 보여줍니다.
 
-### Command Composition
+### 명령어 조합:
 
-1. **Single responsibility**: Each command does one thing well
-2. **Composable design**: Commands work together easily
-3. **Standard interfaces**: Consistent input/output formats
-4. **Loose coupling**: Commands don't depend on each other's internals
+1. **단일 책임 원칙**: 각 명령어는 단 하나의 일만 명확하게 잘 처리해야 합니다.
+2. **조합 가능한 디자인**: 명령어들이 쉽게 묶여서 연동될 수 있어야 합니다.
+3. **표준 인터페이스**: 입력/출력 포맷의 일관성을 유지합니다.
+4. **느슨한 결합**: 명령어가 서로의 내부 로직에 강하게 종속되지 않도록 설계합니다.
 
-### State Management
+### 상태 관리:
 
-1. **Persistent state**: Use .local.md files
-2. **Atomic updates**: Write complete state files atomically
-3. **State validation**: Check state file format/completeness
-4. **Cleanup**: Remove stale state files
-5. **Documentation**: Document state file formats
+1. **지속적인 상태 관리**: .local.md 파일을 활용하세요.
+2. **원자적 업데이트**: 상태 파일 전체를 원자적으로 작성합니다.
+3. **상태 검증**: 상태 파일의 포맷 및 무결성을 검사합니다.
+4. **정리**: 오래되어 쓸모없어진 상태 파일은 즉시 제거합니다.
+5. **문서화**: 상태 파일 포맷에 대해 꼼꼼하게 문서로 기록해 둡니다.
 
-### Error Handling
+### 에러 처리:
 
-1. **Fail fast**: Detect errors early
-2. **Clear messages**: Explain what went wrong
-3. **Recovery options**: Provide clear next steps
-4. **State preservation**: Keep state for recovery
-5. **Rollback capability**: Support undoing changes
+1. **Fail fast**: 에러는 가급적 초기에 감지하여 실패 처리합니다.
+2. **명확한 메시지**: 무엇이 잘못되었는지 자세히 설명합니다.
+3. **복구 옵션 제공**: 명확한 복구 단계와 다음 행동 지침을 제시합니다.
+4. **상태 보존**: 복구를 위해 현재 상태 정보를 보존합니다.
+5. **롤백 기능**: 이전 변경 사항을 되돌릴 수 있는 기능을 지원합니다.
 
-## Example: Complete Deployment Workflow
+## 예시: 종합 배포 워크플로우
 
-### Initialize Command
+### 초기화 명령어
 
 ```markdown
 ---
@@ -665,7 +665,7 @@ Written to .claude/deployment-state.local.md
 Next: Run /deployment-validate
 ```
 
-### Validation Command
+### 검증 명령어
 
 ```markdown
 ---
@@ -685,7 +685,7 @@ Updating state to 'validated'...
 Next: Run /deployment-execute
 ```
 
-### Execution Command
+### 실행 명령어
 
 ```markdown
 ---
@@ -705,7 +705,7 @@ Updating state to 'completed'...
 Cleanup: /deployment-cleanup
 ```
 
-### Cleanup Command
+### 정리 명령어
 
 ```markdown
 ---
@@ -719,4 +719,4 @@ rm .claude/deployment-state.local.md
 Deployment workflow complete.
 ```
 
-This complete workflow demonstrates state management, sequential execution, error handling, and clean separation of concerns across multiple commands.
+이 종합 워크플로우 예시는 여러 명령어 전반에 걸친 상태 관리, 순차적 실행, 에러 처리, 그리고 명확한 관심사 분리(separation of concerns)를 잘 보여줍니다.

@@ -1,20 +1,20 @@
-# AI-Assisted Agent Generation Template
+# AI 지원 에이전트 생성 템플릿 (AI-Assisted Agent Generation Template)
 
-Use this template to generate agents using Claude with the agent creation system prompt.
+에이전트 생성 시스템 프롬프트를 사용하여 Claude로 에이전트를 생성할 때 이 템플릿을 활용하십시오.
 
-## Usage Pattern
+## 사용 패턴 (Usage Pattern)
 
-### Step 1: Describe Your Agent Need
+### 1단계: 에이전트의 필요성 설명하기 (Describe Your Agent Need)
 
-Think about:
-- What task should the agent handle?
-- When should it be triggered?
-- Should it be proactive or reactive?
-- What are the key responsibilities?
+다음 사항들을 고려해 보세요:
+- 에이전트가 어떤 작업을 처리해야 합니까?
+- 언제 트리거되어야 합니까?
+- 자발적(proactive)이어야 합니까, 반응적(reactive)이어야 합니까?
+- 핵심 책임은 무엇입니까?
 
-### Step 2: Use the Generation Prompt
+### 2단계: 생성 프롬프트 사용하기 (Use the Generation Prompt)
 
-Send this to Claude (with the agent-creation-system-prompt loaded):
+Claude에게 다음과 같이 전송합니다 (agent-creation-system-prompt가 로드된 상태에서):
 
 ```
 Create an agent configuration based on this request: "[YOUR DESCRIPTION]"
@@ -22,11 +22,11 @@ Create an agent configuration based on this request: "[YOUR DESCRIPTION]"
 Return ONLY the JSON object, no other text.
 ```
 
-**Replace [YOUR DESCRIPTION] with your agent requirements.**
+**[YOUR DESCRIPTION] 부분을 귀하의 에이전트 요구사항으로 교체하십시오.**
 
-### Step 3: Claude Returns JSON
+### 3단계: Claude가 JSON을 반환함 (Claude Returns JSON)
 
-Claude will return:
+Claude는 다음을 반환할 것입니다:
 
 ```json
 {
@@ -36,11 +36,11 @@ Claude will return:
 }
 ```
 
-`whenToUse` is flat prose. `systemPrompt` includes a "When to invoke" section with prose bullets.
+`whenToUse`는 단일 행 일반 텍스트입니다. `systemPrompt`에는 줄글 글머리 기호가 포함된 "When to invoke" 섹션이 들어갑니다.
 
-### Step 4: Convert to Agent File
+### 4단계: 에이전트 파일로 변환하기 (Convert to Agent File)
 
-Create `agents/[identifier].md`:
+`agents/[identifier].md` 파일을 생성합니다:
 
 ```markdown
 ---
@@ -54,14 +54,14 @@ tools: ["Read", "Write", "Grep"]  # Optional: restrict tools
 [systemPrompt from JSON]
 ```
 
-## Example 1: Code Review Agent
+## 예시 1: 코드 리뷰 에이전트 (Code Review Agent)
 
-**Your request:**
+**귀하의 요청:**
 ```
 I need an agent that reviews code changes for quality issues, security vulnerabilities, and adherence to best practices. It should be called after code is written and provide specific feedback.
 ```
 
-**Claude generates:**
+**Claude 생성 결과:**
 ```json
 {
   "identifier": "code-quality-reviewer",
@@ -70,9 +70,9 @@ I need an agent that reviews code changes for quality issues, security vulnerabi
 }
 ```
 
-**You create:**
+**생성할 파일:**
 
-File: `agents/code-quality-reviewer.md`
+파일: `agents/code-quality-reviewer.md`
 
 ```markdown
 ---
@@ -118,14 +118,14 @@ Provide a structured review:
 Include file names and line numbers for all findings.
 ```
 
-## Example 2: Test Generation Agent
+## 예시 2: 테스트 생성 에이전트 (Test Generation Agent)
 
-**Your request:**
+**귀하의 요청:**
 ```
 Create an agent that generates unit tests for code. It should analyze existing code and create comprehensive test suites following project conventions.
 ```
 
-**Claude generates:**
+**Claude 생성 결과:**
 ```json
 {
   "identifier": "test-generator",
@@ -134,54 +134,54 @@ Create an agent that generates unit tests for code. It should analyze existing c
 }
 ```
 
-**You create:** `agents/test-generator.md` with the structure above.
+**생성할 파일:** 위의 구조로 `agents/test-generator.md`를 생성합니다.
 
-## Example 3: Documentation Agent
+## 예시 3: 문서화 에이전트 (Documentation Agent)
 
-**Your request:**
+**귀하의 요청:**
 ```
 Build an agent that writes and updates API documentation. It should analyze code and generate clear, comprehensive docs.
 ```
 
-**Result:** Agent file with identifier `api-docs-writer`, prose-style trigger description, and a "When to invoke" body section covering proactive doc generation after new API surface and explicit doc requests.
+**결과:** 식별자가 `api-docs-writer`이고 줄글 스타일의 트리거 설명이 포함되며, 새로운 API 노출 후 자발적 문서 생성 및 명시적 문서 요청을 다루는 "When to invoke" 본문 섹션이 있는 에이전트 파일이 생성됩니다.
 
-## Tips for Effective Agent Generation
+## 효과적인 에이전트 생성을 위한 팁 (Tips for Effective Agent Generation)
 
-### Be Specific in Your Request
+### 구체적으로 요청하기 (Be Specific in Your Request)
 
-**Vague:**
+**모호한 예:**
 ```
 "I need an agent that helps with code"
 ```
 
-**Specific:**
+**구체적인 예:**
 ```
 "I need an agent that reviews pull requests for type safety issues in TypeScript, checking for proper type annotations, avoiding 'any', and ensuring correct generic usage"
 ```
 
-### Include Triggering Preferences
+### 트리거링 선호사항 포함하기 (Include Triggering Preferences)
 
-Tell Claude when the agent should activate:
+Claude에게 에이전트가 언제 활성화되어야 하는지 알려주십시오:
 
 ```
 "Create an agent that generates tests. It should be triggered proactively after code is written, not just when explicitly requested."
 ```
 
-### Mention Project Context
+### 프로젝트 컨텍스트 언급하기 (Mention Project Context)
 
 ```
 "Create a code review agent. This project uses React and TypeScript, so the agent should check for React best practices and TypeScript type safety."
 ```
 
-### Define Output Expectations
+### 출력 기대값 정의하기 (Define Output Expectations)
 
 ```
 "Create an agent that analyzes performance. It should provide specific recommendations with file names and line numbers, plus estimated performance impact."
 ```
 
-## Validation After Generation
+## 생성 후 검증하기 (Validation After Generation)
 
-Always validate generated agents:
+생성된 에이전트를 항상 검증하십시오:
 
 ```bash
 # Validate structure
@@ -191,34 +191,34 @@ Always validate generated agents:
 # Test with realistic invocation phrasings
 ```
 
-## Iterating on Generated Agents
+## 생성된 에이전트 반복 개선하기 (Iterating on Generated Agents)
 
-If generated agent needs improvement:
+생성된 에이전트에 개선이 필요한 경우:
 
-1. Identify what's missing or wrong
-2. Manually edit the agent file
-3. Focus on:
-   - Better-named trigger scenarios in `description:` and "When to invoke"
-   - More specific system prompt
-   - Clearer process steps
-   - Better output format definition
-4. Re-validate
-5. Test again
+1. 누락되었거나 잘못된 부분을 식별합니다.
+2. 에이전트 파일을 수동으로 편집합니다.
+3. 다음에 집중하십시오:
+   - `description:` 및 "When to invoke"에서 트리거 시나리오의 이름을 더 잘 짓기
+   - 더 구체적인 시스템 프롬프트 작성
+   - 더 명확한 프로세스 단계 정의
+   - 더 나은 출력 형식 정의
+4. 다시 검증합니다.
+5. 재테스트합니다.
 
-## Advantages of AI-Assisted Generation
+## AI 지원 생성의 장점 (Advantages of AI-Assisted Generation)
 
-- **Comprehensive**: Claude includes edge cases and quality checks
-- **Consistent**: Follows proven patterns
-- **Fast**: Seconds vs manual writing
-- **Complete**: Provides full system prompt structure
+- **포괄적**: Claude가 예외 사례와 품질 검사를 포함해 줍니다.
+- **일관성**: 검증된 패턴을 따릅니다.
+- **신속성**: 수동으로 작성하는 것에 비해 몇 초면 충분합니다.
+- **완전성**: 전체 시스템 프롬프트 구조를 제공합니다.
 
-## When to Edit Manually
+## 수동 편집이 필요한 경우 (When to Edit Manually)
 
-Edit generated agents when:
-- Need very specific project patterns
-- Require custom tool combinations
-- Want unique persona or style
-- Integrating with existing agents
-- Need precise triggering conditions
+다음과 같은 경우 생성된 에이전트를 수동으로 편집하십시오:
+- 매우 구체적인 프로젝트 패턴이 필요한 경우
+- 맞춤형 도구 조합이 필요한 경우
+- 독특한 페르소나나 스타일을 원하는 경우
+- 기존 에이전트와 통합하는 경우
+- 정밀한 트리거 조건이 필요한 경우
 
-Start with generation, then refine manually for best results.
+생성을 시작으로 하여, 최상의 결과를 위해 수동으로 다듬어 나가십시오.

@@ -1,135 +1,80 @@
-# Solver Heuristics (Pólya + Olympiad Practice)
+# 솔버 휴리스틱 (Pólya 및 올림피아드 실전) (Solver Heuristics)
 
-For solver subagents. These are the moves to try when the direct approach
-stalls.
+솔버 서브에이전트를 위한 지침입니다. 직접적인 접근법이 막혔을 때 시도해 볼 수 있는 방법들입니다.
 
-## Pólya's core moves (from "How to Solve It")
+## 폴리아(Pólya)의 핵심 접근법 ("어떻게 문제를 풀 것인가" 중에서) (Pólya's core moves)
 
-**Have you seen a related problem?** Not the same problem — one with the same
-UNKNOWN, or the same STRUCTURE. A problem about covering points with lines has
-the same shape as one about covering lattice points with arithmetic
-progressions.
+**관련된 문제를 본 적이 있습니까? (Have you seen a related problem?)** 동일한 문제가 아니라 — 동일한 '미지수'나 동일한 '구조'를 가진 문제를 뜻합니다. 점들을 선으로 덮는 문제는 격자점들을 등차수열로 덮는 문제와 같은 구조(shape)를 가집니다.
 
-**Specialize.** If you can't solve the given problem, solve n=3, n=4, n=5 by
-hand. The pattern is often the proof. (But: test past the first nontrivial case
-— n≤3 may be degenerate.)
+**특수화하십시오 (Specialize).** 제시된 문제를 풀 수 없다면, n=3, n=4, n=5인 경우를 손으로 직접 풀어보십시오. 종종 그 패턴 자체가 증명이 됩니다. (주의: 단순하지 않은 최초의 케이스 너머까지 테스트하십시오 — n≤3인 사례는 퇴화된 상태일 수 있습니다.)
 
-**Generalize (inventor's paradox).** The more ambitious problem sometimes has
-MORE structure and is easier. "Prove for all primes" might be harder than "prove
-for all integers" if the integer case has a clean induction.
+**일반화하십시오 (발명가의 역설) (Generalize).** 더 큰 규모의 문제가 때로는 더 많은 구조를 제공하여 풀기 쉬울 수 있습니다. 정수 전체에 대한 명제가 깔끔한 수학적 귀납법으로 해결된다면, "모든 소수에 대해 증명하라"는 문제가 오히려 "모든 정수에 대해 증명하라"는 문제보다 어려울 수 있습니다.
 
-**Drop a condition.** What happens if you relax one hypothesis? Does the result
-become trivially false? Where? That WHERE is often the key step — the point
-where the condition is load-bearing.
+**조건을 하나 떼어내 보십시오 (Drop a condition).** 가정 중 하나를 완화하면 어떻게 됩니까? 결과가 아주 사소하게 거짓이 됩니까? 어느 지점에서 그렇습니까? 그 '어느 지점(WHERE)'이 바로 핵심 단계이며, 해당 조건이 결정적인 역할을 하는 곳입니다.
 
-**Work backwards.** Start from what you want to prove. What would imply it? What
-would imply THAT? If this chain meets something you can prove directly, you have
-the proof (reversed).
+**거꾸로 풀기 (Work backwards).** 증명하고자 하는 결론에서 시작하십시오. 무엇이 그 결론을 함의(imply)합니까? 그것은 또 무엇에 의해 함의됩니까? 이 연쇄 과정이 직접 증명할 수 있는 대목과 만나게 된다면, (역방향으로 완성된) 증명을 얻은 것입니다.
 
-**Auxiliary element.** Introduce something not in the problem — a new variable,
-a reflection, a well-chosen function. Olympiad geometry lives on this (auxiliary
-points, circles).
+**보조 요소 도입 (Auxiliary element).** 문제에 주어지지 않은 새로운 것 — 새로운 변수, 대칭이동, 적절히 선택된 함수 등을 도입해 보십시오. 올림피아드 기하학은 대개 이러한 보조 요소(보조점, 보조원)를 활용해 해결됩니다.
 
-## Olympiad-specific moves
+## 올림피아드 특화 접근법 (Olympiad-specific moves)
 
-**Find the invariant.** If there's a process (game, transformation, iteration),
-what quantity is preserved? Parity, sum, product modulo something.
+**불변량 찾기 (Find the invariant).** 어떤 프로세스(게임, 변환, 반복 등)가 진행될 때, 보존되는 양은 무엇입니까? 기우성(홀짝), 합, 특정 값으로 나눈 나머지(modulo)의 곱 등이 될 수 있습니다.
 
-**Find the extremal.** Take the LARGEST, or SMALLEST, or LEFTMOST object.
-Extremal choices often have extra properties that generic choices don't.
+**극단적 대상 선택 (Extremal principle) (Find the extremal).** 가장 크거나, 가장 작거나, 가장 왼쪽에 있는 대상을 잡으십시오. 이러한 극단적 선택은 일반적인 선택이 가지지 못하는 추가적인 성질을 가질 때가 많습니다.
 
-**Double count.** Count the same thing two ways. Incidences, edges, sums over
-pairs.
+**이중 계산 (Double counting) (Double count).** 동일한 대상을 두 가지 서로 다른 방식으로 세어 보십시오. 관계의 개수, 간선(edges)의 수, 쌍들의 합 등이 해당합니다.
 
-**Coloring / parity.** Can you 2-color the objects so the claim becomes a parity
-statement?
+**색칠하기 / 기우성 (Coloring / parity).** 대상을 2색으로 칠해서 명제를 홀짝성(parity) 문제로 바꿀 수 있습니까?
 
-**Smoothing / adjusting.** For inequalities: if you perturb two variables closer
-together (or further apart), does the expression increase or decrease?
-Extremize.
+**평활화 / 조정 (Smoothing / adjusting).** 부등식 문제에서: 두 변수를 서로 가깝게(혹은 멀게) 미세 조정할 때 식의 값이 증가합니까, 감소합니까? 극단으로 보내보십시오.
 
-**Symmetry → WLOG.** If the problem is symmetric in x,y,z, you can assume x≤y≤z.
-But only if the conclusion is ALSO symmetric.
+**대칭성 → 일반성을 잃지 않고 (WLOG) (Symmetry → WLOG).** 만약 문제가 x, y, z에 대해 대칭적이라면 x≤y≤z 로 가정할 수 있습니다. 단, 결론 역시 대칭적일 때만 가능합니다.
 
-## Geometry-specific moves
+## 기하학 특화 접근법 (Geometry-specific moves)
 
-Standard angles (induction, invariants, extremal) are often wrong-shaped for
-olympiad geometry. Use these instead:
+일반적인 관점들(귀납법, 불변량, 극단적 경우)은 올림피아드 기하학 문제를 풀기에는 적절하지 않은 형태일 수 있습니다. 대신 다음 방법들을 사용하십시오:
 
-**Coordinate bash.** Place the configuration in coordinates. Choose them to kill
-degrees of freedom (origin at a center, axis along a line). Grind out the
-algebra. Ugly but reliable.
+**좌표 도입 (Coordinate bash).** 배치를 좌표계 위에 놓으십시오. 자유도를 없앨 수 있도록 좌표축을 잡으십시오 (예: 원의 중심을 원점으로 설정, 한 직선을 좌표축으로 설정). 그 후 대수 계산을 끈기 있게 풀어내십시오. 투박하지만 확실한 방법입니다.
 
-**Auxiliary point.** Introduce a point not in the problem — a reflection, a
-second intersection, the point where two lines "should" meet. Often the key
-construction is finding the right extra point.
+**보조점 도입 (Auxiliary point).** 문제에 없는 점을 만드십시오 — 대칭점, 두 번째 교점, 혹은 두 직선이 만나야 할 "예상 교점" 등이 해당합니다. 기하학 문제 해결의 열쇠는 종종 적절한 보조점을 설계하는 것입니다.
 
-**Power of a point.** For any point P and circle ω, PA·PB is the same for every
-line through P meeting ω at A, B. Use it to turn ratios into equalities.
+**방멱 정리 (Power of a point).** 임의의 점 P와 원 ω에 대해, P를 지나며 ω와 A, B에서 만나는 모든 직선에 대해 PA·PB 의 값은 항상 일정합니다. 이를 이용해 비율 관계를 등식으로 전환하십시오.
 
-**Spiral similarity / rotation.** Two directly similar triangles are related by
-a spiral similarity (rotation + scaling about a fixed point). Find that point —
-it often lies on a circle you already have.
+**나선 닮음 / 회전 (Spiral similarity / rotation).** 두 개의 닮은 삼각형은 나선 닮음(한 고정점을 중심으로 회전 + 닮음 확대/축소)의 관계를 가집니다. 그 중심점을 찾으십시오 — 보통 이미 그려진 원 위에 그 중심점이 위치합니다.
 
-**Inversion.** When there are many circles or tangencies, invert about a
-well-chosen center. Circles through the center become lines; tangencies become
-simpler tangencies.
+**반전 기하 (Inversion).** 많은 원들이나 접선들이 존재할 때, 중심점을 적절히 잡아 반전 변환을 수행하십시오. 반전 중심을 지나는 원은 직선이 되며, 접점들은 더 단순한 접점 관계로 변환됩니다.
 
-**Angle chase.** Cyclic quadrilaterals give equal angles. Tangent-chord gives an
-angle equal to the inscribed angle. Chase around the figure.
+**각도 추적 (Angle chase).** 원에 내접하는 사각형은 대각의 합이 같습니다. 접현각 정리(tangent-chord theorem)는 접현각과 그 원주각의 크기가 같음을 보장합니다. 도형의 각도들을 꼬리를 물며 추적하십시오.
 
-## Geometry-specific moves (these are DIFFERENT)
+## 기하학 특화 접근법 (심층/대수 기하 관점) (Geometry-specific moves - these are DIFFERENT)
 
-The standard angles (invariant, extremal, induction) don't fit
-circles/circumcenters/orthocenters. Geometry needs:
+기본적인 접근(불변량, 극단성, 귀납법)은 원/외심/수심과 관련된 문제를 풀기에 부족합니다. 기하학 문제에는 다음이 필요합니다:
 
-**Coordinate bash.** Place one point at origin, another on the x-axis. Compute
-everything explicitly. The algebra is heavy but mechanical. For two circles with
-centers M, N and radii r, R: set M=(0,0), N=(d,0), then the intersection points
-have x-coordinate (r²+d²−R²)/2d and everything follows.
+**좌표 도입 (Coordinate bash).** 한 점을 원점에, 다른 점을 x축에 놓으십시오. 모든 것을 명시적으로 계산하십시오. 대수 계산이 복잡하지만 기계적으로 풀립니다. 예를 들어 중심이 M, N이고 반지름이 각각 r, R인 두 원에 대해 M=(0,0), N=(d,0)으로 두면 두 원의 교점의 x좌표는 (r²+d²-R²)/2d 가 되며, 이를 바탕으로 모든 수식이 풀려나갑니다.
 
-**Auxiliary point.** Introduce a point not in the problem — the reflection, the
-foot of a perpendicular, the second intersection. Olympiad geometry lives on
-finding the right extra point.
+**보조점 도입 (Auxiliary point).** 문제에 없는 점을 만드십시오 — 대칭점, 수선의 발, 두 번째 교점 등이 해당합니다. 올림피아드 기하학은 적절한 보조점을 찾아내는 과정이 핵심입니다.
 
-**Power of a point.** For point P and circle Γ: PA·PB is constant for any line
-through P meeting Γ at A,B. This converts circles to products.
+**방멱 정리 (Power of a point).** 점 P와 원 Γ에 대해, P를 지나며 Γ와 A, B에서 만나는 임의의 직선에 대해 PA·PB는 일정합니다. 이를 통해 원 관계를 곱셈 관계로 변환합니다.
 
-**Inversion.** Circles through the center become lines. Sometimes the inverted
-problem is trivial.
+**반전 기하 (Inversion).** 반전 중심을 지나는 원은 직선이 됩니다. 때때로 반전 변환을 거친 문제가 아주 자명해지기도 합니다.
 
-**Angle chasing / cyclic quads.** Four points are concyclic iff opposite angles
-sum to π. Chase angles until enough equalities force concyclicity.
+**각도 추적 / 원에 내접하는 사각형 (Angle chasing / cyclic quads).** 네 점이 한 원 위에 있을 필요충분조건은 대각의 합이 π인 것입니다. 내접 조건을 유도할 수 있는 충분한 각도 등식들을 찾을 때까지 각도를 추적하십시오.
 
-## Recurrence-specific trap
+## 점화식 특화 함정 (Recurrence-specific trap)
 
-For recurrences like b\_{n+1} = P(b_n) where P is polynomial degree ≥ 2: **b_n
-grows doubly-exponentially**. You cannot compute b_30 exactly — it has trillions
-of digits. Work in ℤ/2^m (or ℤ/p^m) from the start. Prove b_n ≡ r_n (mod 2^m) by
-induction on n, NOT by computing b_n.
+차수가 2 이상인 다항식 P에 대하여 b\_{n+1} = P(b_n) 과 같은 점화식의 경우: **b_n은 이중 지수적으로 증가(doubly-exponentially)합니다.** b_30 의 정확한 값을 계산하는 것은 불가능합니다 — 수조 개의 자릿수를 가집니다. 처음부터 ℤ/2^m (또는 ℤ/p^m) 상에서 작업하십시오. b_n 자체를 계산하지 말고, n에 대한 수학적 귀납법을 통해 b_n ≡ r_n (mod 2^m) 임을 증명하십시오.
 
-## When the answer involves √n or log n
+## 정답에 √n 또는 log n이 포함되어 있을 때 (When the answer involves √n or log n)
 
-These answers often come from a structure that is NOT the obvious/symmetric one.
-The diagonal, the identity, the "natural" choice frequently gives the WORST
-case, not the best — it clusters the constraint in a way that prevents large
-substructures.
+이러한 형태의 답은 대개 뻔하거나 대칭적인 구조가 '아닌' 구조로부터 유도됩니다. 대각선 배치, 항등 배치, 혹은 "가장 자연스러운" 선택은 종종 최상의 결과가 아닌 최악의 결과를 유발합니다. 이는 큰 하부 구조가 형성되는 것을 가로막는 방식으로 제약 조건을 밀집시키기 때문입니다.
 
-**For pure-reasoning solvers**: Before claiming the symmetric choice is optimal,
-ask "what if I deliberately break the symmetry?" For grid/covering problems:
-what if the gaps are SPREAD OUT instead of clustered? For sequences: what if the
-extremal sequence is NOT constant or linear?
+**순수 추론 솔버의 경우 (For pure-reasoning solvers)**: 대칭적 선택이 최적이라고 주장하기 전에, "만약 내가 의도적으로 대칭성을 깬다면 어떻게 될까?"라고 질문해 보십시오. 격자/덮개 문제의 경우: 공백들이 뭉쳐있지 않고 고르게 분산되어 있다면 어떨까요? 수열 문제의 경우: 극단 수열이 상수 수열이나 일차 수열이 아니라면 어떨까요?
 
-**For deep-mode agents**: Brute-force n=3..8 before theorizing. If the formula
-that fits is n+c√n instead of cn, the structure has √n-sized blocks.
+**심층 추론 에이전트의 경우 (For deep-mode agents)**: 이론을 정립하기 전에 n=3부터 8까지 브루트포스로 결과를 먼저 확인하십시오. 적합한 공식이 cn 대신 n+c√n 형태라면, 그 구조는 √n 크기의 블록을 포함하고 있는 것입니다.
 
-## The Look Back phase (after you have a proof)
+## 검토 단계 (증명을 구한 후) (The Look Back phase)
 
-- **Can you check it?** Plug in small cases. Does n=3 give what your formula
-  says?
-- **Can you prove it differently?** A second proof is a verification. And often
-  shorter.
-- **Is your bound tight?** If you proved ≤ N and the answer is exactly N, find
-  the extremal case. If you can't, your bound might be loose.
-- **What did you actually use?** Sometimes you used less than all the hypotheses
-  — the real theorem is stronger.
+- **검증할 수 있습니까? (Can you check it?)** 작은 사례들을 대입해 보십시오. n=3일 때 공식이 도출한 값과 일치합니까?
+- **다른 방식으로 증명할 수 있습니까? (Can you prove it differently?)** 두 번째 증명은 훌륭한 검증 수단이 됩니다. 그리고 종종 더 짧습니다.
+- **부등식의 바운드가 타이트합니까? (Is your bound tight?)** 만약 ≤ N 임을 증명했고 실제 답이 N이라면, 등호가 성립하는 극단적인 경우(extremal case)를 찾으십시오. 찾을 수 없다면 바운드가 느슨하게 설정된 것일 수 있습니다.
+- **실제로 무엇을 사용했습니까? (What did you actually use?)** 때로는 제시된 모든 가정을 사용하지 않고도 증명이 완료될 수 있습니다 — 즉, 실제 정리는 더 강력합니다.

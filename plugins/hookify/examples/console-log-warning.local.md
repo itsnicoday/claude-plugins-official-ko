@@ -6,9 +6,9 @@ pattern: console\.log\(
 action: warn
 ---
 
-🔍 **Console.log detected**
+🔍 **console.log 감지됨**
 
-You're adding a console.log statement. Please consider:
-- Is this for debugging or should it be proper logging?
-- Will this ship to production?
-- Should this use a logging library instead?
+console.log 구문을 추가하고 있습니다. 다음을 고려해 보십시오:
+- 단순 디버깅용입니까, 아니면 정식 로그를 남겨야 합니까?
+- 이것이 프로덕션 환경에 배포됩니까?
+- 대신 로깅 라이브러리를 사용해야 합니까?

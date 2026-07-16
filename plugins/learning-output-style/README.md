@@ -1,93 +1,93 @@
 # Learning Style Plugin
 
-This plugin combines the unshipped Learning output style with explanatory functionality as a SessionStart hook.
+이 플러그인은 미출시된 Learning 출력 스타일과 설명적 기능을 SessionStart 훅으로 결합한 플러그인입니다.
 
-**Note:** This plugin differs from the original unshipped Learning output style by also incorporating all functionality from the [explanatory-output-style plugin](https://github.com/anthropics/claude-code/tree/main/plugins/explanatory-output-style), providing both interactive learning and educational insights.
+**참고:** 이 플러그인은 [explanatory-output-style plugin](https://github.com/anthropics/claude-code/tree/main/plugins/explanatory-output-style)의 모든 기능도 통합하여 인터랙티브 학습과 교육적인 인사이트를 모두 제공한다는 점에서 원래의 미출시된 Learning 출력 스타일과 다릅니다.
 
-WARNING: Do not install this plugin unless you are fine with incurring the token cost of this plugin's additional instructions and the interactive nature of learning mode.
+경고: 이 플러그인의 추가 지침으로 인한 토큰 비용과 학습 모드의 인터랙티브한 특성을 감수할 수 있는 경우에만 이 플러그인을 설치하십시오.
 
-## What it does
+## 주요 기능
 
-When enabled, this plugin automatically adds instructions at the start of each session that encourage Claude to:
+활성화되면 이 플러그인은 매 세션이 시작될 때마다 Claude가 다음을 수행하도록 권장하는 지침을 자동으로 추가합니다:
 
-1. **Learning Mode:** Engage you in active learning by requesting meaningful code contributions at decision points
-2. **Explanatory Mode:** Provide educational insights about implementation choices and codebase patterns
+1. **학습 모드 (Learning Mode):** 의사 결정 시점에 의미 있는 코드 기여를 요청함으로써 적극적인 학습에 참여하도록 유도합니다.
+2. **설명 모드 (Explanatory Mode):** 구현 방식의 선택 및 코드베이스 패턴에 대한 교육적 인사이트를 제공합니다.
 
-Instead of implementing everything automatically, Claude will:
+모든 것을 자동으로 구현하는 대신 Claude는 다음과 같이 동작합니다:
 
-1. Identify opportunities where you can write 5-10 lines of meaningful code
-2. Focus on business logic and design choices where your input truly matters
-3. Prepare the context and location for your contribution
-4. Explain trade-offs and guide your implementation
-5. Provide educational insights before and after writing code
+1. 사용자가 5~10줄의 의미 있는 코드를 작성할 수 있는 기회를 식별합니다.
+2. 사용자의 입력이 정말로 중요한 비즈니스 로직 및 디자인 선택에 집중합니다.
+3. 사용자가 기여할 콘텍스트와 위치를 준비합니다.
+4. 트레이드오프를 설명하고 구현을 안내합니다.
+5. 코드를 작성하기 전과 후에 교육적인 인사이트를 제공합니다.
 
-## How it works
+## 작동 방식
 
-The plugin uses a SessionStart hook to inject additional context into every session. This context instructs Claude to adopt an interactive teaching approach where you actively participate in writing key parts of the code.
+이 플러그인은 SessionStart 훅을 사용하여 매 세션에 추가적인 콘텍스트를 주입합니다. 이 콘텍스트는 Claude가 사용자와 함께 코드의 핵심 부분을 작성하는 인터랙티브한 교육 방식을 취하도록 지시합니다.
 
-## When Claude requests contributions
+## Claude가 기여를 요청하는 시점
 
-Claude will ask you to write code for:
-- Business logic with multiple valid approaches
-- Error handling strategies
-- Algorithm implementation choices
-- Data structure decisions
-- User experience decisions
-- Design patterns and architecture choices
+Claude는 다음과 같은 작업에 대해 코드 작성을 요청합니다:
+- 유효한 접근 방식이 여러 개 있는 비즈니스 로직
+- 에러 처리 전략
+- 알고리즘 구현의 선택
+- 자료 구조 결정
+- 사용자 경험(UX) 결정
+- 디자인 패턴 및 아키텍처 선택
 
-## When Claude won't request contributions
+## Claude가 기여를 요청하지 않는 시점
 
-Claude will implement directly:
-- Boilerplate or repetitive code
-- Obvious implementations with no meaningful choices
-- Configuration or setup code
-- Simple CRUD operations
+Claude가 직접 구현하는 영역:
+- 보일러플레이트 또는 반복적인 코드
+- 의미 있는 선택의 여지가 없는 뻔한 구현
+- 설정 또는 준비 코드
+- 단순 CRUD 작업
 
-## Example interaction
+## 대화 예시
 
-**Claude:** I've set up the authentication middleware. The session timeout behavior is a security vs. UX trade-off - should sessions auto-extend on activity, or have a hard timeout?
+**Claude:** 인증 미들웨어를 설정했습니다. 세션 만료 동작은 보안과 UX 간의 트레이드오프입니다. 활성 상태일 때 세션을 자동으로 연장해야 할까요, 아니면 강제 만료 시간을 두어야 할까요?
 
-In `auth/middleware.ts`, implement the `handleSessionTimeout()` function to define the timeout behavior.
+`auth/middleware.ts`에서 `handleSessionTimeout()` 함수를 구현하여 만료 동작을 정의해 주세요.
 
-Consider: auto-extending improves UX but may leave sessions open longer; hard timeouts are more secure but might frustrate active users.
+고려할 사항: 자동 연장은 UX를 개선하지만 세션이 더 오래 열려 있을 수 있습니다. 강제 만료는 더 안전하지만 활성 사용자를 불편하게 만들 수 있습니다.
 
-**You:** [Write 5-10 lines implementing your preferred approach]
+**사용자:** [선호하는 방식을 구현하는 5~10줄의 코드 작성]
 
-## Educational insights
+## 교육적 인사이트
 
-In addition to interactive learning, Claude will provide educational insights about implementation choices using this format:
+인터랙티브 학습 외에도 Claude는 다음과 같은 형식을 사용하여 구현 선택에 대한 교육적 인사이트를 제공합니다:
 
 ```
 `★ Insight ─────────────────────────────────────`
-[2-3 key educational points about the codebase or implementation]
+[코드베이스 또는 구현에 대한 2-3가지 핵심 교육적 요점]
 `─────────────────────────────────────────────────`
 ```
 
-These insights focus on:
-- Specific implementation choices for your codebase
-- Patterns and conventions in your code
-- Trade-offs and design decisions
-- Codebase-specific details rather than general programming concepts
+이러한 인사이트는 다음에 초점을 맞춥니다:
+- 코드베이스를 위한 구체적인 구현 선택
+- 코드 내의 패턴 및 컨벤션
+- 트레이드오프 및 설계 결정
+- 일반적인 프로그래밍 개념보다는 코드베이스에 특화된 상세 정보
 
-## Usage
+## 사용법
 
-Once installed, the plugin activates automatically at the start of every session. No additional configuration is needed.
+설치되면 플러그인은 매 세션 시작 시 자동으로 활성화됩니다. 추가 설정은 필요하지 않습니다.
 
-## Migration from Output Styles
+## 출력 스타일에서의 마이그레이션
 
-This plugin combines the unshipped "Learning" output style with the deprecated "Explanatory" output style. It provides an interactive learning experience where you actively contribute code at meaningful decision points, while also receiving educational insights about implementation choices.
+이 플러그인은 미출시된 "Learning" 출력 스타일과 더 이상 사용되지 않는 "Explanatory" 출력 스타일을 결합한 것입니다. 구현 선택에 대한 교육적 인사이트를 제공하는 동시에, 의미 있는 의사 결정 시점에 사용자가 직접 코드를 기여할 수 있는 인터랙티브한 학습 경험을 제공합니다.
 
-If you previously used the explanatory-output-style plugin, this learning plugin includes all of that functionality plus interactive learning features.
+이전에 explanatory-output-style 플러그인을 사용했다면, 이 Learning 플러그인은 해당 기능을 모두 포함하고 있으며 인터랙티브 학습 기능이 추가된 형태입니다.
 
-This SessionStart hook pattern is roughly equivalent to CLAUDE.md, but it is more flexible and allows for distribution through plugins.
+이 SessionStart 훅 패턴은 CLAUDE.md와 대략적으로 비슷하지만, 더 유연하며 플러그인을 통해 배포할 수 있다는 장점이 있습니다.
 
-## Managing changes
+## 변경 사항 관리
 
-- Disable the plugin - keep the code installed on your device
-- Uninstall the plugin - remove the code from your device
-- Update the plugin - create a local copy of this plugin to personalize it
-  - Hint: Ask Claude to read https://docs.claude.com/en/docs/claude-code/plugins.md and set it up for you!
+- 플러그인 비활성화 - 코드는 기기에 설치된 상태로 유지
+- 플러그인 삭제 - 기기에서 코드 삭제
+- 플러그인 업데이트 - 이 플러그인의 로컬 사본을 생성하여 개인화 가능
+  - 힌트: Claude에게 https://docs.claude.com/en/docs/claude-code/plugins.md 페이지를 읽고 설정해 달라고 요청해 보세요!
 
-## Philosophy
+## 철학
 
-Learning by doing is more effective than passive observation. This plugin transforms your interaction with Claude from "watch and learn" to "build and understand," ensuring you develop practical skills through hands-on coding of meaningful logic.
+직접 해보는 것이 눈으로만 보는 것보다 훨씬 더 효과적인 학습 방법입니다. 이 플러그인은 Claude와의 상호작용을 "지켜보며 배우는 것"에서 "구축하며 이해하는 것"으로 바꾸어 주며, 의미 있는 로직을 직접 코딩하면서 실무 기술을 확실히 습득할 수 있도록 돕습니다.

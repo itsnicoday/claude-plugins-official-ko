@@ -1,46 +1,45 @@
-# Code Map Template
+# 코드 맵 템플릿 (Code Map Template)
 
-Use this template when the playground is about visualizing codebase architecture: component relationships, data flow, layer diagrams, system architecture with interactive commenting for feedback.
+컴포넌트 관계, 데이터 흐름, 계층 다이어그램, 시스템 아키텍처 등 코드베이스 아키텍처를 시각화하고 피드백을 위해 대화형으로 댓글을 달 수 있는 플레이그라운드를 빌드할 때 이 템플릿을 사용하십시오.
 
-## Layout
+## 레이아웃
 
 ```
 +-------------------+----------------------------------+
 |                   |                                  |
-|  Controls:        |  SVG Canvas                      |
-|  • View presets   |  (nodes + connections)           |
-|  • Layer toggles  |  with zoom controls              |
-|  • Connection     |                                  |
-|    type filters   |  Legend (bottom-left)            |
-|                   |                                  |
-|  Comments (n):    +----------------------------------+
-|  • List of user   |  Prompt output                   |
-|    comments with  |  [ Copy Prompt ]                 |
-|    delete buttons |                                  |
+|  컨트롤 영역:     |  SVG 캔버스                      |
+|  • 뷰 프리셋      |  (노드 + 연결선)                 |
+|  • 계층 토글      |  줌 컨트롤 포함                  |
+|  • 연결 유형 필터 |                                  |
+|                   |  범례 (좌측 하단)                |
+|  댓글 목록 (n):   |                                  |
+|  • 삭제 버튼이    +----------------------------------+
+|    포함된 사용자  |  프롬프트 출력                   |
+|    댓글 목록      |  [ 프롬프트 복사 ]               |
 +-------------------+----------------------------------+
 ```
 
-Code map playgrounds use an SVG canvas for the architecture diagram. Users click components to add comments, which become part of the generated prompt. Layer and connection filters let users focus on specific parts of the system.
+코드 맵 플레이그라운드는 아키텍처 다이어그램을 표시하기 위해 SVG 캔버스를 사용합니다. 사용자가 컴포넌트를 클릭하여 댓글을 추가하면 생성된 프롬프트의 일부가 됩니다. 사용자는 계층 및 연결 유형 필터를 통해 시스템의 특정 부분에 집중할 수 있습니다.
 
-## Control types for code maps
+## 코드 맵용 컨트롤 유형
 
-| Decision | Control | Example |
+| 결정 사항 | 컨트롤 유형 | 예시 |
 |---|---|---|
-| System view | Preset buttons | Full System, Chat Flow, Data Flow, Agent System |
-| Visible layers | Checkboxes | Client, Server, SDK, Data, External |
-| Connection types | Checkboxes with color indicators | Data Flow (blue), Tool Calls (green), Events (red) |
-| Component feedback | Click-to-comment modal | Opens modal with textarea for feedback |
-| Zoom level | +/−/reset buttons | Scale SVG for detail |
+| 시스템 뷰 | 프리셋 버튼 | Full System, Chat Flow, Data Flow, Agent System |
+| 노출할 계층 | 체크박스 | Client, Server, SDK, Data, External |
+| 연결 유형 | 색상 표시기가 있는 체크박스 | Data Flow (청색), Tool Calls (녹색), Events (적색) |
+| 컴포넌트 피드백 | 클릭-댓글 입력 모달 | 피드백 작성을 위한 텍스트 영역(textarea)이 포함된 모달 노출 |
+| 줌 배율 | +/−/초기화 버튼 | 세부 조정을 위한 SVG 크기 조절 |
 
-## Canvas rendering
+## 캔버스 렌더링
 
-Use an `<svg>` element with dynamically generated nodes and paths. Key patterns:
+동적으로 생성되는 노드와 경로가 포함된 `<svg>` 요소를 사용합니다. 주요 패턴:
 
-- **Nodes:** Rounded rectangles with title and subtitle (file path)
-- **Connections:** Curved paths (bezier) with arrow markers, styled by type
-- **Layer organization:** Group nodes by Y-position bands (e.g., y: 30-80 = Client, y: 130-180 = Server)
-- **Click-to-comment:** Click node → open modal → save comment → node gets visual indicator
-- **Filtering:** Toggle visibility of nodes by layer, connections by type
+- **노드(Nodes):** 제목과 부제목(파일 경로)이 포함된 둥근 모서리 사각형
+- **연결선(Connections):** 화살표 마커가 있고 유형별로 스타일링된 곡선 경로 (베지에 곡선)
+- **계층 구조화:** Y좌표 범위를 기준으로 노드 그룹화 (예: y: 30-80 = Client 계층, y: 130-180 = Server 계층)
+- **클릭-댓글 작성:** 노드 클릭 → 모달 열기 → 댓글 저장 → 노드에 시각적 표시기 반영
+- **필터링:** 계층별 노드 노출 토글, 유형별 연결선 노출 토글
 
 ```javascript
 const nodes = [
@@ -63,19 +62,19 @@ function renderDiagram() {
 }
 ```
 
-## Connection types and styling
+## 연결 유형 및 스타일링
 
-Define 3-5 connection types with distinct visual styles:
+3~5가지 연결 유형에 대해 고유한 시각적 스타일을 정의합니다:
 
-| Type | Color | Style | Use for |
+| 유형 | 색상 | 스타일 | 용도 |
 |---|---|---|---|
-| `data-flow` | Blue (#3b82f6) | Solid line | Request/response, data passing |
-| `tool-call` | Green (#10b981) | Dashed (6,3) | Function calls, API invocations |
-| `event` | Red (#ef4444) | Short dash (4,4) | Async events, pub/sub |
-| `skill-invoke` | Orange (#f97316) | Long dash (8,4) | Plugin/skill activation |
-| `dependency` | Gray (#6b7280) | Dotted | Import/require relationships |
+| `data-flow` | 청색 (#3b82f6) | 실선 | 요청/응답, 데이터 전달 |
+| `tool-call` | 녹색 (#10b981) | 파선 (6,3) | 함수 호출, API 호출 |
+| `event` | 적색 (#ef4444) | 점선 (4,4) | 비동기 이벤트, 발행/구독(pub/sub) |
+| `skill-invoke` | 주황색 (#f97316) | 점선 (8,4) | 플러그인/스킬 활성화 |
+| `dependency` | 회색 (#6b7280) | 점선 (Dotted) | 임포트(import)/요구(require) 관계 |
 
-Use SVG markers for arrowheads:
+화살표 머리를 그리기 위해 SVG 마커를 사용합니다:
 
 ```html
 <marker id="arrowhead-blue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
@@ -83,16 +82,16 @@ Use SVG markers for arrowheads:
 </marker>
 ```
 
-## Comment system
+## 댓글 시스템
 
-The key differentiator for code maps is click-to-comment functionality:
+코드 맵의 핵심적인 차별점은 클릭-댓글 작성 기능입니다:
 
-1. **Click node** → Open modal with component name, file path, textarea
-2. **Save comment** → Add to comments list, mark node with visual indicator (colored border)
-3. **View comments** → Sidebar list with component name, comment preview, delete button
-4. **Delete comment** → Remove from list, update node visual, regenerate prompt
+1. **노드 클릭** → 컴포넌트 이름, 파일 경로, 텍스트 입력 영역이 포함된 모달 노출
+2. **댓글 저장** → 댓글 목록에 추가하고, 해당 노드에 시각적 표시(색상 테두리)를 반영
+3. **댓글 보기** → 사이드바 목록에 컴포넌트 이름, 댓글 미리보기, 삭제 버튼 노출
+4. **댓글 삭제** → 목록에서 제거하고, 노드의 시각적 표시 업데이트 및 프롬프트 재생성
 
-Comments should include the component context:
+댓글에는 컴포넌트 컨텍스트가 포함되어야 합니다:
 
 ```javascript
 state.comments.push({
@@ -104,55 +103,55 @@ state.comments.push({
 });
 ```
 
-## Prompt output for code maps
+## 코드 맵용 프롬프트 출력
 
-The prompt combines system context with user comments:
+프롬프트는 시스템 컨텍스트와 사용자의 댓글을 결합합니다:
 
 ```
-This is the [PROJECT NAME] architecture, focusing on the [visible layers].
+[visible layers] 계층에 집중한 [PROJECT NAME] 아키텍처입니다.
 
-Feedback on specific components:
+특정 컴포넌트에 대한 피드백:
 
 **API Client** (src/api/client.ts):
-I want to add retry logic with exponential backoff here.
+여기 지수 백오프를 사용하는 재시도 로직을 추가하고 싶습니다.
 
 **Database Manager** (src/db/manager.ts):
-Can we add connection pooling? Current implementation creates new connections per request.
+커넥션 풀링을 추가할 수 있을까요? 현재 구현에서는 요청당 새로운 커넥션을 생성합니다.
 
 **Auth Middleware** (src/middleware/auth.ts):
-This should validate JWT tokens and extract user context.
+JWT 토큰을 검증하고 사용자 컨텍스트를 추출해야 합니다.
 ```
 
-Only include comments the user added. Mention which layers are visible if not showing the full system.
+사용자가 직접 추가한 댓글만 포함시키십시오. 전체 시스템을 표시하지 않는 경우 어떤 계층이 노출되어 있는지 언급하십시오.
 
-## Pre-populating with real data
+## 실제 데이터 채우기
 
-For a specific codebase, pre-populate with:
+특정 코드베이스를 다루는 경우 다음을 미리 채워둡니다:
 
-- **Nodes:** 15-25 key components with real file paths
-- **Connections:** 20-40 relationships based on actual imports/calls
-- **Layers:** Logical groupings (UI, API, Business Logic, Data, External)
-- **Presets:** "Full System", "Frontend Only", "Backend Only", "Data Flow"
+- **노드:** 실제 파일 경로가 포함된 15~25개의 핵심 컴포넌트
+- **연결선:** 실제 임포트/호출에 기반한 20~40개의 관계
+- **계층:** 논리적 그룹화 (UI, API, 비즈니스 로직, 데이터, 외부)
+- **프리셋:** "Full System", "Frontend Only", "Backend Only", "Data Flow"
 
-Organize nodes in horizontal bands by layer, with consistent spacing.
+노드를 계층별로 가로 밴드 형태로 일정하게 배치하십시오.
 
-## Layer color palette (light theme)
+## 계층 색상 팔레트 (라이트 테마)
 
-| Layer | Node fill | Description |
+| 계층 | 노드 채우기 색상 | 설명 |
 |---|---|---|
-| Client/UI | #dbeafe (blue-100) | React components, hooks, pages |
-| Server/API | #fef3c7 (amber-100) | Express routes, middleware, handlers |
-| SDK/Core | #f3e8ff (purple-100) | Core libraries, SDK wrappers |
-| Agent/Logic | #dcfce7 (green-100) | Business logic, agents, processors |
-| Data | #fce7f3 (pink-100) | Database, cache, storage |
-| External | #fbcfe8 (pink-200) | Third-party services, APIs |
+| Client/UI | #dbeafe (blue-100) | React 컴포넌트, 훅, 페이지 |
+| Server/API | #fef3c7 (amber-100) | Express 라우트, 미들웨어, 핸들러 |
+| SDK/Core | #f3e8ff (purple-100) | 핵심 라이브러리, SDK 래퍼 |
+| Agent/Logic | #dcfce7 (green-100) | 비즈니스 로직, 에이전트, 프로세서 |
+| Data | #fce7f3 (pink-100) | 데이터베이스, 캐시, 스토리지 |
+| External | #fbcfe8 (pink-200) | 서드파티 서비스, API |
 
-## Example topics
+## 예시 주제
 
-- Codebase architecture explorer (modules, imports, data flow)
-- Microservices map (services, queues, databases, API gateways)
-- React component tree (components, hooks, context, state)
-- API architecture (routes, middleware, controllers, models)
-- Agent system (prompts, tools, skills, subagents)
-- Data pipeline (sources, transforms, sinks, scheduling)
-- Plugin/extension architecture (core, plugins, hooks, events)
+- 코드베이스 아키텍처 탐색기 (모듈, 임포트, 데이터 흐름)
+- 마이크로서비스 맵 (서비스, 큐, 데이터베이스, API 게이트웨이)
+- React 컴포넌트 트리 (컴포넌트, 훅, 컨텍스트, 상태)
+- API 아키텍처 (라우트, 미들웨어, 컨트롤러, 모델)
+- 에이전트 시스템 (프롬프트, 도구, 스킬, 서브에이전트)
+- 데이터 파이프라인 (소스, 변환, 싱크, 스케줄링)
+- 플러그인/확장 아키텍처 (코어, 플러그인, 훅, 이벤트)

@@ -1,109 +1,109 @@
-# Plugin Structure Skill
+# 플러그인 구조 스킬 (Plugin Structure Skill)
 
-Comprehensive guidance on Claude Code plugin architecture, directory layout, and best practices.
+Claude Code 플러그인 아키텍처, 디렉토리 레이아웃 및 권장 사항에 대한 종합 가이드.
 
-## Overview
+## 개요 (Overview)
 
-This skill provides detailed knowledge about:
-- Plugin directory structure and organization
-- `plugin.json` manifest configuration
-- Component organization (commands, agents, skills, hooks)
-- Auto-discovery mechanisms
-- Portable path references with `${CLAUDE_PLUGIN_ROOT}`
-- File naming conventions
+이 스킬은 다음 사항들에 대한 세부 지식을 제공합니다:
+- 플러그인 디렉토리 구조 및 구성 방식
+- `plugin.json` 매니페스트 구성
+- 컴포넌트 구성 (명령어, 에이전트, 스킬, 훅)
+- 자동 감지(auto-discovery) 메커니즘
+- `${CLAUDE_PLUGIN_ROOT}`를 사용한 이식 가능한 경로 참조
+- 파일 명명 규칙
 
-## Skill Structure
+## 스킬 구조 (Skill Structure)
 
-### SKILL.md (1,619 words)
+### SKILL.md (1,619 단어)
 
-Core skill content covering:
-- Directory structure overview
-- Plugin manifest (plugin.json) fields
-- Component organization patterns
-- ${CLAUDE_PLUGIN_ROOT} usage
-- File naming conventions
-- Auto-discovery mechanism
-- Best practices
-- Common patterns
-- Troubleshooting
+핵심 스킬 콘텐츠는 다음을 다룹니다:
+- 디렉토리 구조 개요
+- 플러그인 매니페스트 (plugin.json) 필드
+- 컴포넌트 구성 패턴
+- `${CLAUDE_PLUGIN_ROOT}` 사용법
+- 파일 명명 규칙
+- 자동 감지 메커니즘
+- 권장 사항
+- 공통 패턴
+- 문제 해결 방법
 
-### References
+### 참조 자료 (References)
 
-Detailed documentation for deep dives:
+세부 학습을 위한 심층 문서:
 
-- **manifest-reference.md**: Complete `plugin.json` field reference
-  - All field descriptions and examples
-  - Path resolution rules
-  - Validation guidelines
-  - Minimal vs. complete manifest examples
+- **manifest-reference.md**: `plugin.json` 필드 전체 참조 가이드
+  - 모든 필드에 대한 설명 및 예시
+  - 경로 해석 규칙
+  - 검증 지침
+  - 최소 구성 vs. 전체 구성 매니페스트 예시
 
-- **component-patterns.md**: Advanced organization patterns
-  - Component lifecycle (discovery, activation)
-  - Command organization patterns
-  - Agent organization patterns
-  - Skill organization patterns
-  - Hook organization patterns
-  - Script organization patterns
-  - Cross-component patterns
-  - Best practices for scalability
+- **component-patterns.md**: 고급 구성 패턴
+  - 컴포넌트 생명 주기 (감지, 활성화)
+  - 명령어 구성 패턴
+  - 에이전트 구성 패턴
+  - 스킬 구성 패턴
+  - 훅 구성 패턴
+  - 스크립트 구성 패턴
+  - 크로스 컴포넌트 패턴
+  - 확장성을 위한 권장 사항
 
-### Examples
+### 예시 (Examples)
 
-Three complete plugin examples:
+세 가지의 완전한 플러그인 구성 예시:
 
-- **minimal-plugin.md**: Simplest possible plugin
-  - Single command
-  - Minimal manifest
-  - When to use this pattern
+- **minimal-plugin.md**: 구현 가능한 가장 단순한 형태의 플러그인
+  - 단일 명령어 포함
+  - 최소 구성을 갖춘 매니페스트
+  - 이 패턴의 사용 시기
 
-- **standard-plugin.md**: Well-structured production plugin
-  - Multiple components (commands, agents, skills, hooks)
-  - Complete manifest with metadata
-  - Rich skill structure
-  - Integration between components
+- **standard-plugin.md**: 구조가 잘 정돈된 프로덕션용 플러그인
+  - 여러 컴포넌트 포함 (명령어, 에이전트, 스킬, 훅)
+  - 메타데이터가 완비된 전체 매니페스트
+  - 풍부한 스킬 구조
+  - 컴포넌트 간 통합 방식
 
-- **advanced-plugin.md**: Enterprise-grade plugin
-  - Multi-level organization
-  - MCP server integration
-  - Shared libraries
-  - Configuration management
-  - Security automation
-  - Monitoring integration
+- **advanced-plugin.md**: 엔터프라이즈급 플러그인
+  - 다단계 계층형 구성
+  - MCP 서버 통합
+  - 공유 라이브러리 활용
+  - 구성 정보 관리
+  - 보안 자동화
+  - 모니터링 통합
 
-## When This Skill Triggers
+## 이 스킬이 트리거되는 시기 (When This Skill Triggers)
 
-Claude Code activates this skill when users:
-- Ask to "create a plugin" or "scaffold a plugin"
-- Need to "understand plugin structure"
-- Want to "organize plugin components"
-- Need to "set up plugin.json"
-- Ask about "${CLAUDE_PLUGIN_ROOT}" usage
-- Want to "add commands/agents/skills/hooks"
-- Need "configure auto-discovery" help
-- Ask about plugin architecture or best practices
+Claude Code는 사용자가 다음 요청을 할 때 이 스킬을 활성화합니다:
+- "플러그인 생성" 또는 "플러그인 스캐폴딩"을 요청할 때
+- "플러그인 구조 이해"가 필요할 때
+- "플러그인 컴포넌트 구성"을 원할 때
+- "plugin.json 설정"이 필요할 때
+- "${CLAUDE_PLUGIN_ROOT}" 사용에 대해 물어볼 때
+- "명령어/에이전트/스킬/훅 추가"를 원할 때
+- "자동 감지 구성"에 도움이 필요할 때
+- 플러그인 아키텍처나 권장 사항에 대해 질문할 때
 
-## Progressive Disclosure
+## 점진적 공개 (Progressive Disclosure)
 
-The skill uses progressive disclosure to manage context:
+이 스킬은 컨텍스트 창 관리를 위해 점진적 공개 방식을 사용합니다:
 
-1. **SKILL.md** (~1600 words): Core concepts and workflows
-2. **References** (~6000 words): Detailed field references and patterns
-3. **Examples** (~8000 words): Complete working examples
+1. **SKILL.md** (~1600 단어): 핵심 개념 및 워크플로우
+2. **References** (~6000 단어): 세부 필드 참조 및 패턴
+3. **Examples** (~8000 단어): 실제 작동 가능한 전체 예시
 
-Claude loads references and examples only as needed based on the task.
+Claude는 당장 수행해야 하는 작업에 기초하여 필요한 경우에만 참조 자료와 예시를 로드합니다.
 
-## Related Skills
+## 관련 스킬 (Related Skills)
 
-This skill works well with:
-- **hook-development**: For creating plugin hooks
-- **mcp-integration**: For integrating MCP servers (when available)
-- **marketplace-publishing**: For publishing plugins (when available)
+이 스킬은 다음 스킬들과 함께 사용하면 효과적입니다:
+- **hook-development**: 플러그인 훅 생성용
+- **mcp-integration**: MCP 서버 통합용 (가용 시)
+- **marketplace-publishing**: 플러그인 배포 및 게시용 (가용 시)
 
-## Maintenance
+## 유지보수 (Maintenance)
 
-To update this skill:
-1. Keep SKILL.md lean and focused on core concepts
-2. Move detailed information to references/
-3. Add new examples/ for common patterns
-4. Update version in SKILL.md frontmatter
-5. Ensure all documentation uses imperative/infinitive form
+이 스킬을 업데이트하는 방법:
+1. SKILL.md는 핵심 개념에 초점을 맞춰 간결하게 유지합니다.
+2. 상세 정보는 references/ 디렉토리로 이동합니다.
+3. 공통 패턴에 대한 새로운 examples/를 추가합니다.
+4. SKILL.md 프론트매터의 버전을 업데이트합니다.
+5. 모든 문서는 명령형/부정사형으로 기술합니다.

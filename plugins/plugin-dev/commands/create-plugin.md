@@ -1,6 +1,6 @@
 ---
-description: Guided end-to-end plugin creation workflow with component design, implementation, and validation
-argument-hint: Optional plugin description
+description: 구성 요소 설계, 구현 및 검증을 포함하는 가이드 제공형 엔드투엔드 플러그인 생성 워크플로우
+argument-hint: 선택적인 플러그인 설명
 allowed-tools:
   [
     "Read",
@@ -15,435 +15,432 @@ allowed-tools:
   ]
 ---
 
-# Plugin Creation Workflow
+# 플러그인 생성 워크플로우 (Plugin Creation Workflow)
 
-Guide the user through creating a complete, high-quality Claude Code plugin from initial concept to tested implementation. Follow a systematic approach: understand requirements, design components, clarify details, implement following best practices, validate, and test.
+초기 개념 설계부터 테스트 완료된 구현에 이르기까지 완전하고 고품질의 Claude Code 플러그인을 생성하는 과정을 가이드합니다. 체계적인 접근 방식을 따르세요: 요구 사항 파악, 구성 요소 설계, 세부 사항 조율, 베스트 프랙티스를 준수한 구현, 검증 및 테스트.
 
-## Core Principles
+## 핵심 원칙
 
-- **Ask clarifying questions**: Identify all ambiguities about plugin purpose, triggering, scope, and components. Ask specific, concrete questions rather than making assumptions. Wait for user answers before proceeding with implementation.
-- **Load relevant skills**: Use the Skill tool to load plugin-dev skills when needed (plugin-structure, hook-development, agent-development, etc.)
-- **Use specialized agents**: Leverage agent-creator, plugin-validator, and skill-reviewer agents for AI-assisted development
-- **Follow best practices**: Apply patterns from plugin-dev's own implementation
-- **Progressive disclosure**: Create lean skills with references/examples
-- **Use TodoWrite**: Track all progress throughout all phases
+- **명확히 하기 위한 질문 제시**: 플러그인의 목적, 트리거 시점, 범위 및 구성 요소에 대한 모든 모호성을 식별합니다. 가정을 바탕으로 진행하기보다 구체적이고 명확한 질문을 하세요. 구현을 진행하기 전에 사용자의 답변을 기다립니다.
+- **관련 스킬 로드**: 필요한 경우 Skill 도구를 사용하여 plugin-dev 스킬(plugin-structure, hook-development, agent-development 등)을 로드합니다.
+- **전문 에이전트 활용**: AI 지원 개발을 위해 agent-creator, plugin-validator, skill-reviewer 에이전트를 적절히 활용합니다.
+- **베스트 프랙티스 준수**: plugin-dev 자체 구현에 포함된 패턴을 적용합니다.
+- **점진적 공개**: 참조 자료 및 예시를 동반한 간결한 스킬을 생성합니다.
+- **TodoWrite 사용**: 모든 단계에서 진행 상황을 추적합니다.
 
-**Initial request:** $ARGUMENTS
-
----
-
-## Phase 1: Discovery
-
-**Goal**: Understand what plugin needs to be built and what problem it solves
-
-**Actions**:
-
-1. Create todo list with all 7 phases
-2. If plugin purpose is clear from arguments:
-   - Summarize understanding
-   - Identify plugin type (integration, workflow, analysis, toolkit, etc.)
-3. If plugin purpose is unclear, ask user:
-   - What problem does this plugin solve?
-   - Who will use it and when?
-   - What should it do?
-   - Any similar plugins to reference?
-4. Summarize understanding and confirm with user before proceeding
-
-**Output**: Clear statement of plugin purpose and target users
+초기 요청: $ARGUMENTS
 
 ---
 
-## Phase 2: Component Planning
+## 1단계: 발견 (Discovery)
 
-**Goal**: Determine what plugin components are needed
+**목표**: 어떤 플러그인을 구축해야 하는지, 그리고 그것이 해결하고자 하는 문제가 무엇인지 파악합니다.
 
-**MUST load plugin-structure skill** using Skill tool before this phase.
+**행동 지침**:
 
-**Actions**:
+1. 모든 7단계를 포함하는 할 일 목록(todo list)을 생성합니다.
+2. 인자(arguments)를 통해 플러그인의 목적이 명확한 경우:
+   - 파악한 내용을 요약합니다.
+   - 플러그인 타입(통합, 워크플로우, 분석, 툴킷 등)을 식별합니다.
+3. 플러그인의 목적이 불분명한 경우 사용자에게 질문합니다:
+   - 이 플러그인은 어떤 문제를 해결하나요?
+   - 누가 언제 이 플러그인을 사용하나요?
+   - 이 플러그인은 무엇을 해야 하나요?
+   - 참고할 만한 유사한 플러그인이 있나요?
+4. 파악한 내용을 요약하고 다음 단계로 진행하기 전에 사용자의 확인을 받습니다.
 
-1. Load plugin-structure skill to understand component types
-2. Analyze plugin requirements and determine needed components:
-   - **Skills**: Specialized knowledge OR user-initiated actions (deploy, configure, analyze). Skills are the preferred format for both — see note below.
-   - **Agents**: Autonomous tasks? (validation, generation, analysis)
-   - **Hooks**: Event-driven automation? (validation, notifications)
-   - **MCP**: External service integration? (databases, APIs)
-   - **Settings**: User configuration? (.local.md files)
+**출력 결과**: 플러그인의 목적 및 대상 사용자에 대한 명확한 진술
 
-   > **Note:** The `commands/` directory is a legacy format. For new plugins, user-invoked slash commands should be created as skills in `skills/<name>/SKILL.md`. Both are loaded identically — the only difference is file layout. `commands/` remains an acceptable legacy alternative.
+---
 
-3. For each component type needed, identify:
-   - How many of each type
-   - What each one does
-   - Rough triggering/usage patterns
-4. Present component plan to user as table:
+## 2단계: 구성 요소 계획 (Component Planning)
+
+**목표**: 어떤 플러그인 구성 요소가 필요한지 결정합니다.
+
+**이 단계 전에 반드시 Skill 도구를 사용하여 plugin-structure 스킬을 로드해야 합니다.**
+
+**행동 지침**:
+
+1. 구성 요소 타입을 이해하기 위해 plugin-structure 스킬을 로드합니다.
+2. 플러그인 요구 사항을 분석하고 필요한 구성 요소를 결정합니다:
+   - **Skills**: 전문 지식 또는 사용자가 시작하는 행동 (배포, 설정, 분석). 두 형태 모두 스킬(skills) 형식을 권장합니다. 아래 참고 사항을 확인하세요.
+   - **Agents**: 자율적인 작업이 필요한가요? (검증, 생성, 분석)
+   - **Hooks**: 이벤트 기반 자동화가 필요한가요? (검증, 알림)
+   - **MCP**: 외부 서비스 통합이 필요한가요? (데이터베이스, API)
+   - **Settings**: 사용자 설정이 필요한가요? (.local.md 파일)
+
+   > **참고:** `commands/` 디렉터리는 레거시 형식입니다. 새로운 플러그인의 경우 사용자가 호출하는 슬래시 명령어는 `skills/<name>/SKILL.md` 디렉터리에 스킬로 생성되어야 합니다. 두 형식 모두 동일하게 로드되며, 유일한 차이점은 파일 레이아웃입니다. `commands/`는 수용 가능한 레거시 대안으로 유지됩니다.
+
+3. 필요한 각 구성 요소 타입별로 다음 사항을 식별합니다:
+   - 각 타입별 개수
+   - 각각의 역할
+   - 대략적인 트리거/사용 패턴
+4. 구성 요소 계획을 다음과 같은 표 형식으로 사용자에게 제시합니다:
    ```
-   | Component Type | Count | Purpose |
-   |----------------|-------|---------|
-   | Skills         | 5     | Hook patterns, MCP usage, deploy, configure, validate |
-   | Agents         | 1     | Autonomous validation |
-   | Hooks          | 0     | Not needed |
-   | MCP            | 1     | Database integration |
+   | 구성 요소 타입 | 개수 | 목적 |
+   |----------------|------|------|
+   | Skills         | 5    | 훅 패턴, MCP 사용법, 배포, 설정, 검증 |
+   | Agents         | 1    | 자율 검증 |
+   | Hooks          | 0    | 불필요 |
+   | MCP            | 1    | 데이터베이스 통합 |
    ```
-5. Get user confirmation or adjustments
+5. 사용자의 확인 또는 조정 사항을 반영합니다.
 
-**Output**: Confirmed list of components to create
-
----
-
-## Phase 3: Detailed Design & Clarifying Questions
-
-**Goal**: Specify each component in detail and resolve all ambiguities
-
-**CRITICAL**: This is one of the most important phases. DO NOT SKIP.
-
-**Actions**:
-
-1. For each component in the plan, identify underspecified aspects:
-   - **Skills**: What triggers them? What knowledge do they provide? How detailed? For user-invoked skills: what arguments, what tools, interactive or automated?
-   - **Agents**: When to trigger (proactive/reactive)? What tools? Output format?
-   - **Hooks**: Which events? Prompt or command based? Validation criteria?
-   - **MCP**: What server type? Authentication? Which tools?
-   - **Settings**: What fields? Required vs optional? Defaults?
-
-2. **Present all questions to user in organized sections** (one section per component type)
-
-3. **Wait for answers before proceeding to implementation**
-
-4. If user says "whatever you think is best", provide specific recommendations and get explicit confirmation
-
-**Example questions for a skill**:
-
-- What specific user queries should trigger this skill?
-- Should it include utility scripts? What functionality?
-- How detailed should the core SKILL.md be vs references/?
-- Any real-world examples to include?
-
-**Example questions for an agent**:
-
-- Should this agent trigger proactively after certain actions, or only when explicitly requested?
-- What tools does it need (Read, Write, Bash, etc.)?
-- What should the output format be?
-- Any specific quality standards to enforce?
-
-**Output**: Detailed specification for each component
+**출력 결과**: 생성하기로 확정된 구성 요소 목록
 
 ---
 
-## Phase 4: Plugin Structure Creation
+## 3단계: 상세 설계 및 명확화 질문 (Detailed Design & Clarifying Questions)
 
-**Goal**: Create plugin directory structure and manifest
+**목표**: 각 구성 요소를 상세히 명시하고 모든 모호성을 해결합니다.
 
-**Actions**:
+**중요**: 가장 중요한 단계 중 하나입니다. 절대 건너뛰지 마십시오.
 
-1. Determine plugin name (kebab-case, descriptive)
-2. Choose plugin location:
-   - Ask user: "Where should I create the plugin?"
-   - Offer options: current directory, ../new-plugin-name, custom path
-3. Create directory structure using bash:
+**행동 지침**:
+
+1. 계획에 포함된 각 구성 요소에서 아직 덜 정의된 부분을 식별합니다:
+   - **Skills**: 무엇이 스킬을 트리거하나요? 스킬이 제공하는 지식은 무엇이며 얼마나 상세한가요? 사용자가 호출하는 스킬의 경우 어떤 인자(argument)와 도구(tools)가 필요한지, 인터랙티브하게 작동하는지 아니면 자동화되어 작동하는지 확인합니다.
+   - **Agents**: 언제 트리거하나요(선제적/반응적)? 어떤 도구가 필요한가요? 출력 형식은 무엇인가요?
+   - **Hooks**: 어떤 이벤트에 동작하나요? 프롬프트 기반인가요 아니면 명령어 기반인가요? 검증 기준은 무엇인가요?
+   - **MCP**: 어떤 서버 타입인가요? 인증 방식은 무엇인가요? 어떤 도구를 사용하나요?
+   - **Settings**: 어떤 필드가 포함되나요? 필수 필드와 선택 필드는 무엇이며 기본값(defaults)은 무엇인가요?
+
+2. **모든 질문을 정리된 섹션별로 사용자에게 제시**합니다 (구성 요소 타입별로 섹션 구분).
+
+3. **구현을 진행하기 전에 반드시 답변을 기다리십시오.**
+
+4. 사용자가 "가장 적합한 대로 해달라"고 하는 경우, 구체적인 권장 사항을 제시하고 명시적인 확인을 받으십시오.
+
+**스킬 관련 질문 예시**:
+
+- 사용자의 어떤 구체적인 쿼리가 이 스킬을 트리거해야 하나요?
+- 유틸리티 스크립트가 포함되어야 하나요? 어떤 기능이 필요한가요?
+- 핵심 SKILL.md 파일과 references/ 디렉터리 문서의 상세도 비율을 어떻게 구성해야 하나요?
+- 포함해야 할 실제 사례가 있나요?
+
+**에이전트 관련 질문 예시**:
+
+- 이 에이전트가 특정 작업 이후에 선제적으로 트리거되어야 하나요, 아니면 명시적인 요청 시에만 작동해야 하나요?
+- 어떤 도구(Read, Write, Bash 등)가 필요한가요?
+- 출력 형식은 어떻게 작성해야 하나요?
+- 적용해야 할 특별한 품질 표준이 있나요?
+
+**출력 결과**: 각 구성 요소별 상세 사양 정의
+
+---
+
+## 4단계: 플러그인 구조 생성
+
+**목표**: 플러그인 디렉터리 구조 및 매니페스트 파일을 생성합니다.
+
+**행동 지침**:
+
+1. 플러그인 이름을 결정합니다 (kebab-case 형식의 설명적인 이름).
+2. 플러그인을 생성할 위치를 정합니다:
+   - 사용자에게 묻습니다: "플러그인을 어디에 생성할까요?"
+   - 다음 옵션을 제시합니다: 현재 디렉터리, ../새-플러그인-이름, 사용자 정의 경로
+3. bash 명령어를 사용하여 디렉터리 구조를 생성합니다:
    ```bash
    mkdir -p plugin-name/.claude-plugin
-   mkdir -p plugin-name/skills/<skill-name>   # one dir per skill, each with a SKILL.md
-   mkdir -p plugin-name/agents                # if needed
-   mkdir -p plugin-name/hooks                 # if needed
-   # Note: plugin-name/commands/ is a legacy alternative to skills/ — prefer skills/
+   mkdir -p plugin-name/skills/<skill-name>   # 스킬별 디렉터리 생성, 각각의 내부에 SKILL.md 포함
+   mkdir -p plugin-name/agents                # 필요한 경우
+   mkdir -p plugin-name/hooks                 # 필요한 경우
+   # 참고: plugin-name/commands/는 skills/의 레거시 대안입니다. skills/를 지향하십시오.
    ```
-4. Create plugin.json manifest using Write tool:
+4. Write 도구를 사용하여 plugin.json 매니페스트를 생성합니다:
    ```json
    {
      "name": "plugin-name",
      "version": "0.1.0",
-     "description": "[brief description]",
+     "description": "[간략한 설명]",
      "author": {
-       "name": "[author from user or default]",
-       "email": "[email or default]"
+       "name": "[사용자 작성자 이름 혹은 기본값]",
+       "email": "[이메일 혹은 기본값]"
      }
    }
    ```
-5. Create README.md template
-6. Create .gitignore if needed (for .claude/\*.local.md, etc.)
-7. Initialize git repo if creating new directory
+5. README.md 템플릿을 생성합니다.
+6. 필요한 경우 .gitignore를 생성합니다 (.claude/*.local.md 등 제외 설정용).
+7. 새 디렉터리를 생성하는 경우 git 리포지토리를 초기화합니다.
 
-**Output**: Plugin directory structure created and ready for components
+**출력 결과**: 구성 요소 개발 준비가 완료된 플러그인 디렉터리 구조
 
 ---
 
-## Phase 5: Component Implementation
+## 5단계: 구성 요소 구현
 
-**Goal**: Create each component following best practices
+**목표**: 베스트 프랙티스를 준수하며 각 구성 요소를 생성합니다.
 
-**LOAD RELEVANT SKILLS** before implementing each component type:
+**각 구성 요소 타입을 구현하기 전에 관련 스킬을 반드시 로드하십시오**:
 
-- Skills: Load skill-development skill
-- Legacy `commands/` format (only if user explicitly requests): Load command-development skill
-- Agents: Load agent-development skill
-- Hooks: Load hook-development skill
-- MCP: Load mcp-integration skill
-- Settings: Load plugin-settings skill
+- Skills: skill-development 스킬 로드
+- 레거시 `commands/` 형식 (사용자가 명시적으로 요구하는 경우에만): command-development 스킬 로드
+- Agents: agent-development 스킬 로드
+- Hooks: hook-development 스킬 로드
+- MCP: mcp-integration 스킬 로드
+- Settings: plugin-settings 스킬 로드
 
-**Actions for each component**:
+**각 구성 요소별 행동 지침**:
 
 ### For Skills:
 
-1. Load skill-development skill using Skill tool
-2. For each skill:
-   - Ask user for concrete usage examples (or use from Phase 3)
-   - Plan resources (scripts/, references/, examples/)
-   - Create skill directory: `skills/<skill-name>/`
-   - Write `SKILL.md` with:
-     - Third-person description with specific trigger phrases
-     - Lean body (1,500-2,000 words) in imperative form
-     - References to supporting files
-   - For user-invoked skills (slash commands): include `description`, `argument-hint`, and `allowed-tools` frontmatter; write instructions FOR Claude (not TO user)
-   - Create reference files for detailed content
-   - Create example files for working code
-   - Create utility scripts if needed
-3. Use skill-reviewer agent to validate each skill
+1. Skill 도구를 사용하여 skill-development 스킬을 로드합니다.
+2. 각 스킬별 처리:
+   - 사용자에게 구체적인 사용 예시를 요청합니다 (또는 3단계 데이터 활용).
+   - 리소스(scripts/, references/, examples/) 구성을 계획합니다.
+   - 스킬 디렉터리 생성: `skills/<skill-name>/`
+   - 다음 내용을 포함하여 `SKILL.md`를 작성합니다:
+     - 구체적인 트리거 문구가 포함된 3인칭 시점의 설명
+     - 명령조로 작성된 간결한 본문 (1,500~2,000 단어)
+     - 지원 파일들에 대한 참조
+   - 사용자가 호출하는 스킬 (슬래시 명령어): `description`, `argument-hint`, `allowed-tools` 프론트매터를 포함합니다. 지침은 사용자가 아닌 Claude를 위해 작성하십시오.
+   - 상세 내용 작성을 위해 참조 파일을 생성합니다.
+   - 작동하는 코드를 포함한 예시 파일을 생성합니다.
+   - 필요한 경우 유틸리티 스크립트를 생성합니다.
+3. 각 스킬을 검증하기 위해 skill-reviewer 에이전트를 사용합니다.
 
-### For legacy `commands/` format (only if user explicitly requests):
+### For legacy `commands/` format (사용자가 명시적으로 요구하는 경우에만):
 
-> Prefer `skills/<name>/SKILL.md` for new plugins. Use `commands/` only when maintaining an existing plugin that already uses this layout.
+> 새 플러그인의 경우 `skills/<name>/SKILL.md` 형식을 권장합니다. `commands/`는 기존 레이아웃을 이미 사용 중인 플러그인을 유지관리할 때만 사용하세요.
 
-1. Load command-development skill using Skill tool
-2. For each command:
-   - Write command markdown with frontmatter
-   - Include clear description and argument-hint
-   - Specify allowed-tools (minimal necessary)
-   - Write instructions FOR Claude (not TO user)
-   - Provide usage examples and tips
-   - Reference relevant skills if applicable
+1. Skill 도구를 사용하여 command-development 스킬을 로드합니다.
+2. 각 명령어별 처리:
+   - 프론트매터가 포함된 명령어 마크다운 파일을 작성합니다.
+   - 명확한 설명과 argument-hint를 포함합니다.
+   - 허용된 도구 (최소한의 필요 사항만)를 지정합니다.
+   - 지침은 사용자가 아닌 Claude를 위해 작성하십시오.
+   - 사용 예시와 팁을 제공합니다.
+   - 해당하는 경우 관련 스킬을 참조합니다.
 
 ### For Agents:
 
-1. Load agent-development skill using Skill tool
-2. For each agent, use agent-creator agent:
-   - Provide description of what agent should do
-   - Agent-creator generates: identifier, whenToUse with examples, systemPrompt
-   - Create agent markdown file with frontmatter and system prompt
-   - Add appropriate model, color, and tools
-   - Validate with validate-agent.sh script
+1. Skill 도구를 사용하여 agent-development 스킬을 로드합니다.
+2. 각 에이전트 개발을 위해 agent-creator 에이전트를 구동합니다:
+   - 에이전트가 수행해야 할 작업 설명을 제공합니다.
+   - agent-creator가 식별자, 예시가 포함된 trigger 조건(whenToUse), 시스템 프롬프트(systemPrompt)를 생성합니다.
+   - 프론트매터와 시스템 프롬프트가 포함된 에이전트 마크다운 파일을 생성합니다.
+   - 적절한 모델, 색상, 도구를 추가합니다.
+   - validate-agent.sh 스크립트로 검증합니다.
 
 ### For Hooks:
 
-1. Load hook-development skill using Skill tool
-2. For each hook:
-   - Create hooks/hooks.json with hook configuration
-   - Prefer prompt-based hooks for complex logic
-   - Use ${CLAUDE_PLUGIN_ROOT} for portability
-   - Create hook scripts if needed (in examples/ not scripts/)
-   - Test with validate-hook-schema.sh and test-hook.sh utilities
+1. Skill 도구를 사용하여 hook-development 스킬을 로드합니다.
+2. 각 훅별 처리:
+   - 훅 설정을 정의하는 `hooks/hooks.json` 파일을 생성합니다.
+   - 복잡한 로직의 경우 프롬프트 기반 훅을 권장합니다.
+   - 이식성을 위해 ${CLAUDE_PLUGIN_ROOT}를 사용합니다.
+   - 필요한 경우 훅 스크립트를 생성합니다 (scripts/가 아닌 examples/ 하위에 생성).
+   - validate-hook-schema.sh 및 test-hook.sh 유틸리티로 테스트를 실행합니다.
 
 ### For MCP:
 
-1. Load mcp-integration skill using Skill tool
-2. Create .mcp.json configuration with:
-   - Server type (stdio for local, SSE for hosted)
-   - Command and args (with ${CLAUDE_PLUGIN_ROOT})
-   - extensionToLanguage mapping if LSP
-   - Environment variables as needed
-3. Document required env vars in README
-4. Provide setup instructions
+1. Skill 도구를 사용하여 mcp-integration 스킬을 로드합니다.
+2. 다음 설정을 담아 `.mcp.json` 파일을 생성합니다:
+   - 서버 타입 (로컬의 경우 stdio, 호스팅의 경우 SSE)
+   - 명령어 및 인자 (${CLAUDE_PLUGIN_ROOT} 활용)
+   - LSP인 경우 extensionToLanguage 매핑
+   - 필요에 따른 환경 변수 설정
+3. 필요한 환경 변수를 README에 문서화합니다.
+4. 설치 및 설정 안내를 작성합니다.
 
 ### For Settings:
 
-1. Load plugin-settings skill using Skill tool
-2. Create settings template in README
-3. Create example .claude/plugin-name.local.md file (as documentation)
-4. Implement settings reading in hooks/commands as needed
-5. Add to .gitignore: `.claude/*.local.md`
+1. Skill 도구를 사용하여 plugin-settings 스킬을 로드합니다.
+2. README에 설정 파일 템플릿을 추가합니다.
+3. 문서화 목적으로 예시 `.local.md` 파일을 생성합니다.
+4. 필요한 경우 훅/명령어 내에서 설정을 읽어오는 과정을 구현합니다.
+5. `.gitignore`에 `.local.md`를 추가합니다.
 
-**Progress tracking**: Update todos as each component is completed
+**진행 상황 추적**: 각 구성 요소가 완료될 때마다 할 일 목록을 갱신합니다.
 
-**Output**: All plugin components implemented
-
----
-
-## Phase 6: Validation & Quality Check
-
-**Goal**: Ensure plugin meets quality standards and works correctly
-
-**Actions**:
-
-1. **Run plugin-validator agent**:
-   - Use plugin-validator agent to comprehensively validate plugin
-   - Check: manifest, structure, naming, components, security
-   - Review validation report
-
-2. **Fix critical issues**:
-   - Address any critical errors from validation
-   - Fix any warnings that indicate real problems
-
-3. **Review with skill-reviewer** (if plugin has skills):
-   - For each skill, use skill-reviewer agent
-   - Check description quality, progressive disclosure, writing style
-   - Apply recommendations
-
-4. **Test agent triggering** (if plugin has agents):
-   - For each agent, verify <example> blocks are clear
-   - Check triggering conditions are specific
-   - Run validate-agent.sh on agent files
-
-5. **Test hook configuration** (if plugin has hooks):
-   - Run validate-hook-schema.sh on hooks/hooks.json
-   - Test hook scripts with test-hook.sh
-   - Verify ${CLAUDE_PLUGIN_ROOT} usage
-
-6. **Present findings**:
-   - Summary of validation results
-   - Any remaining issues
-   - Overall quality assessment
-
-7. **Ask user**: "Validation complete. Issues found: [count critical], [count warnings]. Would you like me to fix them now, or proceed to testing?"
-
-**Output**: Plugin validated and ready for testing
+**출력 결과**: 모든 플러그인 구성 요소 구현 완료
 
 ---
 
-## Phase 7: Testing & Verification
+## 6단계: 검증 및 품질 검사
 
-**Goal**: Test that plugin works correctly in Claude Code
+**목표**: 플러그인이 품질 표준을 충족하고 정상적으로 작동하는지 확인합니다.
 
-**Actions**:
+**행동 지침**:
 
-1. **Installation instructions**:
-   - Show user how to test locally:
+1. **plugin-validator 에이전트 실행**:
+   - 플러그인의 종합적인 검증을 위해 plugin-validator 에이전트를 구동합니다.
+   - 검사 항목: 매니페스트, 구조, 명명 규칙, 구성 요소, 보안
+   - 검증 보고서를 검토합니다.
+
+2. **치명적인 이슈 수정**:
+   - 검증 보고서에서 지적된 모든 치명적인 에러를 해결합니다.
+   - 실질적인 문제를 수반하는 모든 경고 사항을 수정합니다.
+
+3. **skill-reviewer를 사용한 검토** (플러그인에 스킬이 포함된 경우):
+   - 각 스킬마다 skill-reviewer 에이전트를 적용하여 검토합니다.
+   - 설명 품질, 점진적 공개 여부, 작성 스타일을 검사합니다.
+   - 권장 피드백 사항을 적용합니다.
+
+4. **에이전트 트리거 테스트** (플러그인에 에이전트가 포함된 경우):
+   - 각 에이전트별로 `<example>` 블록이 명확하게 작성되었는지 검증합니다.
+   - 트리거 조건이 충분히 구체적인지 확인합니다.
+   - 에이전트 파일에 대해 validate-agent.sh를 실행합니다.
+
+5. **훅 설정 테스트** (플러그인에 훅이 포함된 경우):
+   - `hooks/hooks.json` 파일에 대해 validate-hook-schema.sh를 실행합니다.
+   - test-hook.sh로 훅 스크립트를 테스트합니다.
+   - ${CLAUDE_PLUGIN_ROOT}의 올바른 사용 여부를 검증합니다.
+
+6. **결과 공유**:
+   - 검증 결과 요약
+   - 잔존하는 이슈 정리
+   - 종합적인 품질 평가
+
+7. **사용자에게 질문**: "검증이 완료되었습니다. 발견된 문제: 치명적 에러 [수]개, 경고 [수]개. 지금 수정 작업을 진행할까요, 아니면 테스트 단계로 넘어갈까요?"
+
+**출력 결과**: 검증을 완료하고 테스트 준비를 마친 플러그인
+
+---
+
+## 7단계: 테스트 및 검증
+
+**목표**: 플러그인이 Claude Code 내에서 정상 작동하는지 테스트합니다.
+
+**행동 지침**:
+
+1. **설치 지침 안내**:
+   - 로컬에서 테스트하는 방법을 사용자에게 안내합니다:
      ```bash
      cc --plugin-dir /path/to/plugin-name
      ```
-   - Or copy to `.claude-plugin/` for project testing
+   - 또는 프로젝트 단위 테스트를 위해 `.claude-plugin/`에 복사합니다.
 
-2. **Verification checklist** for user to perform:
-   - [ ] Skills load when triggered (ask questions with trigger phrases)
-   - [ ] User-invoked skills appear in `/help` and execute correctly
-   - [ ] Agents trigger on appropriate scenarios
-   - [ ] Hooks activate on events (if applicable)
-   - [ ] MCP servers connect (if applicable)
-   - [ ] Settings files work (if applicable)
+2. **사용자가 수행해야 할 검증 체크리스트**:
+   - [ ] 트리거 시 스킬이 로드되는지 여부 (트리거 문구를 포함하여 질문해보기)
+   - [ ] 사용자가 호출하는 스킬이 `/help`에 표시되고 올바르게 실행되는지 여부
+   - [ ] 에이전트가 적절한 시나리오 상황에서 잘 트리거되는지 여부
+   - [ ] 훅이 이벤트에 맞춰 정상 활성화되는지 여부 (해당하는 경우)
+   - [ ] MCP 서버가 올바르게 연결되는지 여부 (해당하는 경우)
+   - [ ] 설정 파일이 정상 작동하는지 여부 (해당하는 경우)
 
-3. **Testing recommendations**:
-   - For skills: Ask questions using trigger phrases from descriptions
-   - For user-invoked skills: Run `/plugin-name:skill-name` with various arguments
-   - For agents: Create scenarios matching agent examples
-   - For hooks: Use `claude --debug` to see hook execution
-   - For MCP: Use `/mcp` to verify servers and tools
+3. **권장 테스트 방식**:
+   - 스킬 검사: 설명 필드에 기재된 트리거 문구를 사용하여 질문을 던져봅니다.
+   - 사용자 호출형 스킬 검사: 다양한 인자와 함께 `/plugin-name:skill-name`을 실행해 봅니다.
+   - 에이전트 검사: 에이전트 예시와 일치하는 시나리오 환경을 조성해 봅니다.
+   - 훅 검사: 훅의 실행 과정을 모니터링하기 위해 `claude --debug` 명령어를 사용합니다.
+   - MCP 검사: 서버 및 도구 작동 여부를 확인하기 위해 `/mcp`를 입력합니다.
 
-4. **Ask user**: "I've prepared the plugin for testing. Would you like me to guide you through testing each component, or do you want to test it yourself?"
+4. **사용자에게 질문**: "플러그인 테스트를 위한 모든 준비가 완료되었습니다. 각 구성 요소의 테스트 과정을 가이드해 드릴까요, 아니면 직접 진행하시겠습니까?"
 
-5. **If user wants guidance**, walk through testing each component with specific test cases
+5. **사용자가 가이드를 원하는 경우**, 구체적인 테스트 케이스를 가지고 각 구성 요소를 테스트하는 단계를 하나씩 안내합니다.
 
-**Output**: Plugin tested and verified working
-
----
-
-## Phase 8: Documentation & Next Steps
-
-**Goal**: Ensure plugin is well-documented and ready for distribution
-
-**Actions**:
-
-1. **Verify README completeness**:
-   - Check README has: overview, features, installation, prerequisites, usage
-   - For MCP plugins: Document required environment variables
-   - For hook plugins: Explain hook activation
-   - For settings: Provide configuration templates
-
-2. **Add marketplace entry** (if publishing):
-   - Show user how to add to marketplace.json
-   - Help draft marketplace description
-   - Suggest category and tags
-
-3. **Create summary**:
-   - Mark all todos complete
-   - List what was created:
-     - Plugin name and purpose
-     - Components created (X skills, Y agents, etc.)
-     - Key files and their purposes
-     - Total file count and structure
-   - Next steps:
-     - Testing recommendations
-     - Publishing to marketplace (if desired)
-     - Iteration based on usage
-
-4. **Suggest improvements** (optional):
-   - Additional components that could enhance plugin
-   - Integration opportunities
-   - Testing strategies
-
-**Output**: Complete, documented plugin ready for use or publication
+**출력 결과**: 테스트를 마치고 정상 작동을 검증한 플러그인
 
 ---
 
-## Important Notes
+## 8단계: 문서화 및 다음 단계
 
-### Throughout All Phases
+**목표**: 플러그인이 잘 문서화되어 즉시 배포할 수 있는 상태로 완성합니다.
 
-- **Use TodoWrite** to track progress at every phase
-- **Load skills with Skill tool** when working on specific component types
-- **Use specialized agents** (agent-creator, plugin-validator, skill-reviewer)
-- **Ask for user confirmation** at key decision points
-- **Follow plugin-dev's own patterns** as reference examples
-- **Apply best practices**:
-  - Third-person descriptions for skills
-  - Imperative form in skill bodies
-  - Skill instructions written FOR Claude (not TO user)
-  - Strong trigger phrases
-  - ${CLAUDE_PLUGIN_ROOT} for portability
-  - Progressive disclosure
-  - Security-first (HTTPS, no hardcoded credentials)
+**행동 지침**:
 
-### Key Decision Points (Wait for User)
+1. **README 완성도 검증**:
+   - README가 개요(overview), 기능(features), 설치법(installation), 요구 사양(prerequisites), 사용법(usage)을 담고 있는지 검사합니다.
+   - MCP 플러그인의 경우: 필요한 환경 변수를 상세히 기록합니다.
+   - 훅 플러그인의 경우: 훅의 동작 방식을 설명합니다.
+   - 설정 플러그인의 경우: 설정 파일의 템플릿을 제공합니다.
 
-1. After Phase 1: Confirm plugin purpose
-2. After Phase 2: Approve component plan
-3. After Phase 3: Proceed to implementation
-4. After Phase 6: Fix issues or proceed
-5. After Phase 7: Continue to documentation
+2. **마켓플레이스 등록 정보 추가** (게시 예정인 경우):
+   - `marketplace.json`에 정보를 추가하는 방식을 사용자에게 안내합니다.
+   - 마켓플레이스 설명 문구 초안 작성을 돕습니다.
+   - 적절한 카테고리 및 태그를 제안합니다.
 
-### Skills to Load by Phase
+3. **요약 작성**:
+   - 모든 할 일 목록의 진행 완료 상태를 표시합니다.
+   - 생성된 작업 목록을 나열합니다:
+     - 플러그인 이름 및 용도
+     - 생성된 구성 요소 목록 (스킬 X개, 에이전트 Y개 등)
+     - 핵심 파일 목록 및 각 파일의 용도
+     - 전체 파일 개수 및 구조
+   - 다음 진행 단계 제안:
+     - 권장 테스트 방향
+     - 마켓플레이스 게시 안내 (원하는 경우)
+     - 사용성 피드백에 기반한 지속적 업데이트
 
-- **Phase 2**: plugin-structure
-- **Phase 5**: skill-development, agent-development, hook-development, mcp-integration, plugin-settings (as needed); command-development only for legacy `commands/` layout
-- **Phase 6**: (agents will use skills automatically)
+4. **추가 개선 사항 제안** (선택 사항):
+   - 플러그인 성능을 보강할 수 있는 추가적인 구성 요소 제안
+   - 다른 기능과의 연동 및 통합 기회 제시
+   - 효율적인 테스트 전략 추천
 
-### Quality Standards
-
-Every component must meet these standards:
-
-- ✅ Follows plugin-dev's proven patterns
-- ✅ Uses correct naming conventions
-- ✅ Has strong trigger conditions (skills/agents)
-- ✅ Includes working examples
-- ✅ Properly documented
-- ✅ Validated with utilities
-- ✅ Tested in Claude Code
+**출력 결과**: 사용 및 배포 준비가 완전히 완료되고 문서화가 끝난 플러그인
 
 ---
 
-## Example Workflow
+## 중요 참고 사항
 
-### User Request
+### 모든 단계 진행 중 공통 사항
+
+- **매 단계마다 진행 상황을 기록하기 위해 TodoWrite를 적극 활용**합니다.
+- **특정 구성 요소를 다룰 때는 반드시 Skill 도구를 사용해 해당 스킬을 로드**합니다.
+- **전문화된 에이전트** (agent-creator, plugin-validator, skill-reviewer)를 활용합니다.
+- **주요 의사 결정 시점마다 사용자 확인**을 구합니다.
+- **참조용 예시로 plugin-dev 고유의 패턴을 준수**합니다.
+- **베스트 프랙티스를 적용**합니다:
+  - 스킬 설명은 3인칭 시점으로 작성
+  - 스킬 본문에서는 명령조 형태 사용
+  - 스킬 내 지침 사항은 사용자가 아닌 Claude를 위해 작성
+  - 명확하고 확실한 트리거 문구 구성
+  - 이식성 관리를 위해 ${CLAUDE_PLUGIN_ROOT} 사용
+  - 정보의 점진적 공개 적용
+  - 보안 우선 접근 (HTTPS 통신, 하드코딩된 자격 증명 제거)
+
+### 주요 의사 결정 단계 (사용자 대기 필수)
+
+1. 1단계 완료 후: 플러그인 목적 확인
+2. 2단계 완료 후: 구성 요소 계획 승인
+3. 3단계 완료 후: 구현 단계로 진입 동의
+4. 6단계 완료 후: 문제 해결 후 진행할지 혹은 그냥 진행할지 확인
+5. 7단계 완료 후: 문서화 단계 진입 확인
+
+### 단계별로 로드해야 할 스킬
+
+- **2단계**: plugin-structure
+- **5단계**: skill-development, agent-development, hook-development, mcp-integration, plugin-settings (필요에 따라 로드); command-development 스킬은 오직 레거시 `commands/` 레이아웃에서만 사용
+
+### 품질 기준
+
+모든 구성 요소는 반드시 다음 기준을 만족해야 합니다:
+
+- ✅ plugin-dev 고유의 검증된 패턴을 준수함
+- ✅ 올바른 파일/디렉터리 명명 규칙을 따름
+- ✅ 확실한 트리거 조건(스킬/에이전트)을 가짐
+- ✅ 실제로 바로 실행 가능한 작동 예시를 포함함
+- ✅ 성실하게 문서화가 처리됨
+- ✅ 제공 유틸리티를 사용하여 사전 검증을 마침
+- ✅ Claude Code 환경에서 정상 테스트를 끝냄
+
+---
+
+## 워크플로우 실행 사례
+
+### 사용자 요청 예시
 
 "Create a plugin for managing database migrations"
 
-### Phase 1: Discovery
+### 1단계: 발견 (Discovery) 과정
 
-- Understand: Migration management, database schema versioning
-- Confirm: User wants to create, run, rollback migrations
+- 분석: 마이그레이션 관리, 데이터베이스 스키마 버전 관리
+- 확정: 사용자는 마이그레이션 생성, 실행, 롤백을 원하는 상태임
 
-### Phase 2: Component Planning
+### 2단계: 구성 요소 계획 (Component Planning) 과정
 
-- Skills: 4 (migration best practices, create-migration, run-migrations, rollback)
-- Agents: 1 (migration-validator)
-- MCP: 1 (database connection)
+- 스킬 구성: 4개 (마이그레이션 모범 사례, create-migration, run-migrations, rollback)
+- 에이전트 구성: 1개 (migration-validator)
+- MCP 구성: 1개 (데이터베이스 연결)
 
-### Phase 3: Clarifying Questions
+### 3단계: 명확화 질문 (Clarifying Questions) 과정
 
-- Which databases? (PostgreSQL, MySQL, etc.)
-- Migration file format? (SQL, code-based?)
-- Should agent validate before applying?
-- What MCP tools needed? (query, execute, schema)
+- 어떤 데이터베이스를 타겟으로 하나요? (PostgreSQL, MySQL 등)
+- 마이그레이션 파일 형식은 무엇인가요? (SQL 형태, 혹은 코드 기반?)
+- 마이그레이션을 적용하기 전에 에이전트가 사전 검증을 진행해야 하나요?
+- 필요한 MCP 도구는 무엇인가요? (query, execute, schema 등)
 
-### Phase 4-8: Implementation, Validation, Testing, Documentation
+### 4~8단계: 구현, 검증, 테스트, 문서화 과정
 
----
-
-**Begin with Phase 1: Discovery**
+**1단계: 발견 (Discovery) 과정부터 시작하십시오.**

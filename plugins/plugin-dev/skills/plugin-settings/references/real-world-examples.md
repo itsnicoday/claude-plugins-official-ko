@@ -1,10 +1,10 @@
-# Real-World Plugin Settings Examples
+# 실제 플러그인 설정 사례 (Real-World Plugin Settings Examples)
 
-Detailed analysis of how production plugins use the `.claude/plugin-name.local.md` pattern.
+프로덕션 플러그인이 `.claude/plugin-name.local.md` 패턴을 어떻게 사용하는지에 대한 세부 분석.
 
-## multi-agent-swarm Plugin
+## multi-agent-swarm 플러그인 (multi-agent-swarm Plugin)
 
-### Settings File Structure
+### 설정 파일 구조 (Settings File Structure)
 
 **.claude/multi-agent-swarm.local.md:**
 
@@ -39,13 +39,13 @@ Depends on Task 3.4 (user model).
 Report status to 'team-leader' session.
 ```
 
-### How It's Used
+### 사용 방법 (How It's Used)
 
-**File:** `hooks/agent-stop-notification.sh`
+**파일:** `hooks/agent-stop-notification.sh`
 
-**Purpose:** Send notifications to coordinator when agent becomes idle
+**목적:** 에이전트가 유휴 상태가 되었을 때 코디네이터에게 알림 전송
 
-**Implementation:**
+**구현:**
 
 ```bash
 #!/bin/bash
@@ -85,17 +85,17 @@ fi
 exit 0
 ```
 
-**Key patterns:**
-1. **Quick exit** (line 7-9): Returns immediately if file doesn't exist
-2. **Field extraction** (lines 11-17): Parses each frontmatter field
-3. **Enabled check** (lines 19-21): Respects enabled flag
-4. **Action based on settings** (lines 23-29): Uses coordinator_session to send notification
+**주요 패턴:**
+1. **빠른 종료** (7-9행): 파일이 없으면 즉시 종료
+2. **필드 추출** (11-17행): 각 프론트매터 필드 파싱
+3. **활성화 검사** (19-21행): enabled 플래그 존중
+4. **설정 기준 작업** (23-29행): coordinator_session을 사용하여 알림 전송
 
-### Creation
+### 생성 (Creation)
 
-**File:** `commands/launch-swarm.md`
+**파일:** `commands/launch-swarm.md`
 
-Settings files are created during swarm launch with:
+설정 파일은 스웜이 시작될 때 다음과 같이 생성됩니다:
 
 ```bash
 cat > "$WORKTREE_PATH/.claude/multi-agent-swarm.local.md" <<EOF
@@ -115,9 +115,9 @@ $TASK_DETAILS
 EOF
 ```
 
-### Updates
+### 업데이트 (Updates)
 
-PR number updated after PR creation:
+PR 생성 후 업데이트된 PR 번호:
 
 ```bash
 # Update pr_number field
@@ -126,9 +126,9 @@ sed "s/^pr_number: .*/pr_number: $PR_NUM/" \
 mv temp.md ".claude/multi-agent-swarm.local.md"
 ```
 
-## ralph-loop Plugin
+## ralph-loop 플러그인 (ralph-loop Plugin)
 
-### Settings File Structure
+### 설정 파일 구조 (Settings File Structure)
 
 **.claude/ralph-loop.local.md:**
 
@@ -145,13 +145,13 @@ Make sure tests pass after each fix.
 Document any changes needed in CLAUDE.md.
 ```
 
-### How It's Used
+### 사용 방법 (How It's Used)
 
-**File:** `hooks/stop-hook.sh`
+**파일:** `hooks/stop-hook.sh`
 
-**Purpose:** Prevent session exit and loop Claude's output back as input
+**목적:** 세션 종료를 차단하고 Claude의 출력을 다시 입력으로 루프백
 
-**Implementation:**
+**구현:**
 
 ```bash
 #!/bin/bash
@@ -218,17 +218,17 @@ jq -n \
 exit 0
 ```
 
-**Key patterns:**
-1. **Quick exit** (line 7-9): Skip if not active
-2. **Iteration tracking** (lines 11-20): Count and enforce max iterations
-3. **Promise detection** (lines 25-33): Check for completion signal in output
-4. **Prompt extraction** (line 38): Read markdown body as next prompt
-5. **State update** (lines 40-43): Increment iteration atomically
-6. **Loop continuation** (lines 45-53): Block exit and feed prompt back
+**주요 패턴:**
+1. **빠른 종료** (7-9행): 루프가 활성화되어 있지 않으면 건너뜀
+2. **반복 추적** (11-20행): 횟수를 계산하고 최대 반복 횟수를 강제함
+3. **완료 약속 감지** (25-33행): 출력에서 완료 신호가 감지되는지 검사
+4. **프롬프트 추출** (38행): 마크다운 본문을 다음 프롬프트로 읽음
+5. **상태 업데이트** (40-43행): 반복 횟수를 원자적으로 증가시킴
+6. **루프 지속** (45-53행): 종료를 차단하고 프롬프트를 다시 제공
 
-### Creation
+### 생성 (Creation)
 
-**File:** `scripts/setup-ralph-loop.sh`
+**파일:** `scripts/setup-ralph-loop.sh`
 
 ```bash
 #!/bin/bash
@@ -251,45 +251,45 @@ EOF
 echo "Ralph loop initialized: .claude/ralph-loop.local.md"
 ```
 
-## Pattern Comparison
+## 패턴 비교 (Pattern Comparison)
 
-| Feature | multi-agent-swarm | ralph-loop |
+| 기능 (Feature) | multi-agent-swarm | ralph-loop |
 |---------|-------------------|--------------|
-| **File** | `.claude/multi-agent-swarm.local.md` | `.claude/ralph-loop.local.md` |
-| **Purpose** | Agent coordination state | Loop iteration state |
-| **Frontmatter** | Agent metadata | Loop configuration |
-| **Body** | Task assignment | Prompt to loop |
-| **Updates** | PR number, status | Iteration counter |
-| **Deletion** | Manual or on completion | On loop exit |
-| **Hook** | Stop (notifications) | Stop (loop control) |
+| **파일** | `.claude/multi-agent-swarm.local.md` | `.claude/ralph-loop.local.md` |
+| **목적** | 에이전트 조정 상태 | 루프 반복 상태 |
+| **프론트매터** | 에이전트 메타데이터 | 루프 구성 |
+| **본문** | 작업 할당 | 루프백할 프롬프트 |
+| **업데이트** | PR 번호, 상태 | 반복 횟수 카운터 |
+| **삭제** | 수동 또는 완료 시 | 루프 종료 시 |
+| **훅** | Stop (알림 용도) | Stop (루프 제어 용도) |
 
-## Best Practices from Real Plugins
+## 실제 플러그인의 권장 사항 (Best Practices from Real Plugins)
 
-### 1. Quick Exit Pattern
+### 1. 빠른 종료 패턴 (1. Quick Exit Pattern)
 
-Both plugins check file existence first:
+두 플러그인 모두 파일 존재 여부를 먼저 확인합니다:
 
 ```bash
 if [[ ! -f "$STATE_FILE" ]]; then
-  exit 0  # Not active
+  exit 0  # 활성화되지 않음
 fi
 ```
 
-**Why:** Avoids errors when plugin isn't configured and performs fast.
+**이유:** 플러그인이 구성되지 않았을 때 발생할 수 있는 오류를 방지하고 신속하게 처리됩니다.
 
-### 2. Enabled Flag
+### 2. Enabled 플래그 (2. Enabled Flag)
 
-Both use an `enabled` field for explicit control:
+두 플러그인 모두 명시적 제어를 위해 `enabled` 필드를 사용합니다:
 
 ```yaml
 enabled: true
 ```
 
-**Why:** Allows temporary deactivation without deleting file.
+**이유:** 파일을 삭제하지 않고도 일시적으로 비활성화할 수 있습니다.
 
-### 3. Atomic Updates
+### 3. 원자적 업데이트 (3. Atomic Updates)
 
-Both use temp file + atomic move:
+두 플러그인 모두 임시 파일과 원자적 이동(move)을 사용합니다:
 
 ```bash
 TEMP_FILE="${FILE}.tmp.$$"
@@ -297,99 +297,99 @@ sed "s/^field: .*/field: $NEW_VALUE/" "$FILE" > "$TEMP_FILE"
 mv "$TEMP_FILE" "$FILE"
 ```
 
-**Why:** Prevents corruption if process is interrupted.
+**이유:** 프로세스가 중간에 중단되더라도 파일이 손상되는 것을 방지합니다.
 
-### 4. Quote Handling
+### 4. 따옴표 처리 (4. Quote Handling)
 
-Both strip surrounding quotes from YAML values:
+두 플러그인 모두 YAML 값에서 감싸고 있는 따옴표를 제거합니다:
 
 ```bash
 sed 's/^"\(.*\)"$/\1/'
 ```
 
-**Why:** YAML allows both `field: value` and `field: "value"`.
+**이유:** YAML은 `field: value`와 `field: "value"` 형식을 모두 허용하기 때문입니다.
 
-### 5. Error Handling
+### 5. 에러 처리 (5. Error Handling)
 
-Both handle missing/corrupt files gracefully:
+두 플러그인 모두 누락되거나 손상된 파일을 정상적으로 처리합니다:
 
 ```bash
 if [[ ! -f "$FILE" ]]; then
-  exit 0  # No error, just not configured
+  exit 0  # 에러 없음, 단지 구성되지 않음
 fi
 
 if [[ -z "$CRITICAL_FIELD" ]]; then
   echo "Settings file corrupt" >&2
-  rm "$FILE"  # Clean up
+  rm "$FILE"  # 정리
   exit 0
 fi
 ```
 
-**Why:** Fails gracefully instead of crashing.
+**이유:** 크래시를 내는 대신 오류 상황을 안전하게 복구합니다.
 
-## Anti-Patterns to Avoid
+## 피해야 할 안티 패턴 (Anti-Patterns to Avoid)
 
-### ❌ Hardcoded Paths
+### ❌ 하드코딩된 경로 (Hardcoded Paths)
 
 ```bash
-# BAD
+# 나쁨 (BAD)
 FILE="/Users/alice/.claude/my-plugin.local.md"
 
-# GOOD
+# 좋음 (GOOD)
 FILE=".claude/my-plugin.local.md"
 ```
 
-### ❌ Unquoted Variables
+### ❌ 따옴표로 감싸지 않은 변수 (Unquoted Variables)
 
 ```bash
-# BAD
+# 나쁨 (BAD)
 echo $VALUE
 
-# GOOD
+# 좋음 (GOOD)
 echo "$VALUE"
 ```
 
-### ❌ Non-Atomic Updates
+### ❌ 비원자적 업데이트 (Non-Atomic Updates)
 
 ```bash
-# BAD: Can corrupt file if interrupted
+# 나쁨 (BAD): 도중에 중단되면 파일이 손상될 수 있음
 sed -i "s/field: .*/field: $VALUE/" "$FILE"
 
-# GOOD: Atomic
+# 좋음 (GOOD): 원자적
 TEMP_FILE="${FILE}.tmp.$$"
 sed "s/field: .*/field: $VALUE/" "$FILE" > "$TEMP_FILE"
 mv "$TEMP_FILE" "$FILE"
 ```
 
-### ❌ No Default Values
+### ❌ 기본값 누락 (No Default Values)
 
 ```bash
-# BAD: Fails if field missing
+# 나쁨 (BAD): 필드가 누락된 경우 실패함
 if [[ $MAX -gt 100 ]]; then
-  # MAX might be empty!
+  # MAX가 비어있을 수 있음!
 fi
 
-# GOOD: Provide default
+# 좋음 (GOOD): 기본값 제공
 MAX=${MAX:-10}
 ```
 
-### ❌ Ignoring Edge Cases
+### ❌ 예외 상황 무시 (Ignoring Edge Cases)
 
 ```bash
-# BAD: Assumes exactly 2 --- markers
+# 나쁨 (BAD): 정확히 2개의 --- 마커가 있다고 가정함
 sed -n '/^---$/,/^---$/{ /^---$/d; p; }'
 
-# GOOD: Handles --- in body
-awk '/^---$/{i++; next} i>=2'  # For body
+# 좋음 (GOOD): 본문 내에 ---가 있는 경우도 처리함
+awk '/^---$/{i++; next} i>=2'  # 본문 추출
 ```
 
-## Conclusion
+## 결론 (Conclusion)
 
-The `.claude/plugin-name.local.md` pattern provides:
-- Simple, human-readable configuration
-- Version-control friendly (gitignored)
-- Per-project settings
-- Easy parsing with standard bash tools
-- Supports both structured config (YAML) and freeform content (markdown)
+`.claude/plugin-name.local.md` 패턴은 다음을 제공합니다:
+- 간단하고 가독성 높은 구성
+- 버전 관리 친화적 (gitignored)
+- 프로젝트별 설정 지원
+- 표준 bash 도구로 손쉬운 파싱 가능
+- 구조화된 구성(YAML)과 자유 형식 콘텐츠(마크다운) 모두 지원
 
-Use this pattern for any plugin that needs user-configurable behavior or state persistence.
+사용자가 구성해야 할 동작이나 지속성 있는 상태 관리가 필요한 모든 플러그인에 이 패턴을 사용하십시오.

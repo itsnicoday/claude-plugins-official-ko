@@ -1,28 +1,28 @@
-# Playground Plugin
+# 플레이그라운드 플러그인 (Playground Plugin)
 
-Creates interactive HTML playgrounds — self-contained single-file explorers that let users configure something visually through controls, see a live preview, and copy out a prompt.
+대화형 HTML 플레이그라운드를 생성합니다. 이는 사용자가 컨트롤을 통해 시각적으로 무언가를 설정하고 실시간 미리보기를 확인하며 프롬프트를 복사할 수 있는 독립형 단일 파일 탐색기입니다.
 
-## What is a Playground?
+## 플레이그라운드(Playground)란 무엇인가요?
 
-A playground is a self-contained HTML file with:
-- Interactive controls on one side
-- A live preview on the other
-- A prompt output at the bottom with a copy button
+플레이그라운드는 다음과 같은 구성 요소를 가진 독립형 HTML 파일입니다:
+- 한쪽에 위치한 대화형 컨트롤
+- 다른 한쪽에 위치한 실시간 미리보기
+- 하단에 복사 버튼이 포함된 프롬프트 출력 영역
 
-The user adjusts controls, explores visually, then copies the generated prompt back into Claude.
+사용자는 컨트롤을 조정하고 시각적으로 탐색한 뒤, 생성된 프롬프트를 복사하여 Claude에 다시 입력할 수 있습니다.
 
-## When to Use
+## 사용 시점
 
-Use this plugin when the user asks for an interactive playground, explorer, or visual tool for a topic — especially when the input space is large, visual, or structural and hard to express as plain text.
+사용자가 특정 주제에 대해 대화형 플레이그라운드, 탐색기 또는 시각적 도구를 요구할 때 이 플러그인을 사용하십시오. 특히 입력 공간이 방대하고 시각적이거나 구조적이어서 단순 텍스트로 표현하기 어려운 경우에 유용합니다.
 
-## Templates
+## 템플릿
 
-The skill includes templates for common playground types:
-- **design-playground** — Visual design decisions (components, layouts, spacing, color, typography)
-- **data-explorer** — Data and query building (SQL, APIs, pipelines, regex)
-- **concept-map** — Learning and exploration (concept maps, knowledge gaps, scope mapping)
-- **document-critique** — Document review (suggestions with approve/reject/comment workflow)
+이 스킬에는 일반적인 플레이그라운드 유형을 위한 템플릿들이 포함되어 있습니다:
+- **design-playground** — 시각적 디자인 결정 (컴포넌트, 레이아웃, 여백, 색상, 타이포그래피)
+- **data-explorer** — 데이터 및 쿼리 빌딩 (SQL, API, 파이프라인, 정규표현식)
+- **concept-map** — 학습 및 탐색 (개념 맵, 지식 격차, 범위 매핑)
+- **document-critique** — 문서 검토 (승인/거부/의견 작성 워크플로우를 포함한 제안 사항)
 
-## Installation
+## 설치
 
-Add this plugin to your Claude Code configuration to enable the playground skill.
+이 플러그인을 Claude Code 설정에 추가하여 플레이그라운드 스킬을 활성화하십시오.

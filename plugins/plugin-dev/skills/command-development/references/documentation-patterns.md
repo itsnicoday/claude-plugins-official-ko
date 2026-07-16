@@ -1,14 +1,14 @@
-# Command Documentation Patterns
+# 명령어 문서화 패턴 (Command Documentation Patterns)
 
-Strategies for creating self-documenting, maintainable commands with excellent user experience.
+우수한 사용자 경험(UX)을 주면서 동시에 자체 문서화(self-documenting)가 가능하고 유지보수하기 쉬운 명령어를 작성하기 위한 전략입니다.
 
-## Overview
+## 개요
 
-Well-documented commands are easier to use, maintain, and distribute. Documentation should be embedded in the command itself, making it immediately accessible to users and maintainers.
+문서화가 잘된 명령어는 사용, 유지보수 및 배포가 훨씬 더 수월합니다. 문서는 명령어 자체 내에 내장되어 있어야 하며, 이를 통해 사용자와 유지관리자가 즉시 접근할 수 있도록 해야 합니다.
 
-## Self-Documenting Command Structure
+## 자체 문서화 명령어 구조
 
-### Complete Command Template
+### 종합 명령어 템플릿
 
 ```markdown
 ---
@@ -70,52 +70,52 @@ CHANGELOG:
 [Provide clear output...]
 ```
 
-### Documentation Comment Sections
+### 문서화 주석 섹션
 
-**PURPOSE**: Why the command exists
-- Problem it solves
-- Use cases
-- When to use vs when not to use
+**PURPOSE**: 명령어가 존재하는 이유
+- 해결하고자 하는 문제
+- 사용 사례
+- 사용 권장 상황 대 피해야 할 상황
 
-**USAGE**: Basic syntax
-- Command invocation pattern
-- Required vs optional arguments
-- Default values
+**USAGE**: 기본 구문
+- 명령어 호출 패턴
+- 필수 인자 대 선택적 인자
+- 기본값
 
-**ARGUMENTS**: Detailed argument documentation
-- Each argument described
-- Type information
-- Valid values/ranges
-- Defaults
+**ARGUMENTS**: 상세 인자 문서화
+- 각 인자별 상세 설명
+- 타입 정보
+- 유효한 값/범위
+- 기본값
 
-**EXAMPLES**: Concrete usage examples
-- Common use cases
-- Edge cases
-- Expected outputs
+**EXAMPLES**: 구체적인 사용 예시
+- 일반적인 사용 사례
+- 예외 상황
+- 예상 출력 결과
 
-**REQUIREMENTS**: Prerequisites
-- Dependencies
-- Permissions
-- Environmental setup
+**REQUIREMENTS**: 필수 요건
+- 종속성
+- 권한
+- 환경 설정
 
-**RELATED COMMANDS**: Connections
-- Similar commands
-- Complementary commands
-- Alternative approaches
+**RELATED COMMANDS**: 연관 명령어
+- 유사한 명령어
+- 보완적 명령어
+- 대안적 접근 방식
 
-**TROUBLESHOOTING**: Common issues
-- Known problems
-- Solutions
-- Workarounds
+**TROUBLESHOOTING**: 일반적인 문제 해결
+- 알려진 문제
+- 해결책
+- 우회 방법
 
-**CHANGELOG**: Version history
-- What changed when
-- Breaking changes highlighted
-- Migration guidance
+**CHANGELOG**: 버전 이력
+- 시기별 변경 내용
+- 중요 변경 사항(breaking changes) 강조
+- 마이그레이션 안내
 
-## In-Line Documentation Patterns
+## 인라인 문서화 패턴 (In-Line Documentation Patterns)
 
-### Commented Sections
+### 주석 처리된 섹션
 
 ```markdown
 ---
@@ -144,7 +144,7 @@ Based on analysis, recommend:
 <!-- END: Next steps for user -->
 ```
 
-### Inline Explanations
+### 인라인 설명
 
 ```markdown
 ---
@@ -167,7 +167,7 @@ fi
 <!-- Test status ensures we don't deploy broken code -->
 Running tests: !`npm test`
 
-✓ All checks passed
+  ✓ All checks passed
 
 ## Deployment
 
@@ -190,7 +190,7 @@ Deployment complete!
 3. Notify team: /notify-deployment $1
 ```
 
-### Decision Point Documentation
+### 의사 결정 시점 문서화
 
 ```markdown
 ---
@@ -224,11 +224,9 @@ Review the above configuration.
 Proceeding with deployment...
 ```
 
-## Help Text Patterns
+## 도움말 텍스트 패턴 (Help Text Patterns)
 
-### Built-in Help Command
-
-Create a help subcommand for complex commands:
+### 내장 도움말 명령어
 
 ```markdown
 ---
@@ -266,9 +264,7 @@ fi
 [Regular command processing...]
 ```
 
-### Contextual Help
-
-Provide help based on context:
+### 콘텍스트 기반 도움말
 
 ```markdown
 ---
@@ -301,9 +297,9 @@ fi
 [Command continues if operation provided...]
 ```
 
-## Error Message Documentation
+## 에러 메시지 문서화
 
-### Helpful Error Messages
+### 도움이 되는 에러 메시지
 
 ```markdown
 ---
@@ -349,7 +345,7 @@ fi
 [Command continues if validation passes...]
 ```
 
-### Error Recovery Guidance
+### 에러 복구 안내
 
 ```markdown
 ---
@@ -390,9 +386,9 @@ if [ $? -ne 0 ]; then
 fi
 ```
 
-## Usage Example Documentation
+## 사용 예시 문서화
 
-### Embedded Examples
+### 내장된 예시
 
 ```markdown
 ---
@@ -449,7 +445,7 @@ Now processing your request...
 [Command implementation...]
 ```
 
-### Example-Driven Documentation
+### 예시 중심 문서화
 
 ```markdown
 ---
@@ -507,9 +503,9 @@ Format: $2
 [Perform transformation...]
 ```
 
-## Maintenance Documentation
+## 유지보수용 문서화
 
-### Version and Changelog
+### 버전 및 변경 이력
 
 ```markdown
 <!--
@@ -554,7 +550,7 @@ KNOWN ISSUES:
 -->
 ```
 
-### Maintenance Notes
+### 유지보수 참고 사항
 
 ```markdown
 <!--
@@ -598,9 +594,9 @@ RELATED FILES:
 -->
 ```
 
-## README Documentation
+## README 문서화
 
-Commands should have companion README files:
+기능은 동반 README 파일을 가져야 합니다:
 
 ```markdown
 # Command Name
@@ -653,7 +649,7 @@ Optional configuration file: `.claude/command-name.local.md`
 default_arg: value
 enable_feature: true
 ---
-\`\`\`
+```
 
 ## Requirements
 
@@ -686,54 +682,54 @@ MIT License - See [LICENSE](LICENSE).
 - Email: support@example.com
 ```
 
-## Best Practices
+## 베스트 프랙티스
 
-### Documentation Principles
+### 문서화 원칙:
 
-1. **Write for your future self**: Assume you'll forget details
-2. **Examples before explanations**: Show, then tell
-3. **Progressive disclosure**: Basic info first, details available
-4. **Keep it current**: Update docs when code changes
-5. **Test your docs**: Verify examples actually work
+1. **미래의 자신을 위해 작성하세요**: 세부 사항은 쉽게 잊혀진다고 가정합니다.
+2. **설명보다 예시를 먼저 제시하세요**: 먼저 동작을 보여준 후 설명합니다.
+3. **점진적 공개**: 기본 정보를 먼저 보여주고, 세부 사항을 선택적으로 제공합니다.
+4. **최신 상태 유지**: 코드가 변경되면 문서를 함께 업데이트하세요.
+5. **문서 테스트**: 예시가 실제로 정상 작동하는지 검증하세요.
 
-### Documentation Locations
+### 문서화 위치:
 
-1. **In command file**: Core usage, examples, inline explanations
-2. **README**: Installation, configuration, troubleshooting
-3. **Separate docs**: Detailed guides, tutorials, API reference
-4. **Comments**: Implementation details for maintainers
+1. **명령어 파일 내부**: 핵심 사용법, 예시, 인라인 설명
+2. **README**: 설치, 설정, 문제 해결
+3. **독립 문서**: 상세 가이드, 튜토리얼, API 참조서
+4. **주석**: 유지보수자를 위한 구현 상세 정보
 
-### Documentation Style
+### 문서화 스타일:
 
-1. **Clear and concise**: No unnecessary words
-2. **Active voice**: "Run the command" not "The command can be run"
-3. **Consistent terminology**: Use same terms throughout
-4. **Formatted well**: Use headings, lists, code blocks
-5. **Accessible**: Assume reader is beginner
+1. **명확하고 간결하게**: 불필요한 수식어는 빼고 작문합니다.
+2. **능동태 사용**: "명령어가 실행될 수 있습니다" 대신 "명령어를 실행하십시오"와 같이 기술합니다.
+3. **일관된 용어 사용**: 본문 전반에 걸쳐 동일한 용어를 사용합니다.
+4. **좋은 포맷팅**: 제목, 목록, 코드 블록을 적극 활용합니다.
+5. **친숙함**: 독자가 초보자라고 가정하고 쉽게 작성합니다.
 
-### Documentation Maintenance
+### 문서 유지보수:
 
-1. **Version everything**: Track what changed when
-2. **Deprecate gracefully**: Warn before removing features
-3. **Migration guides**: Help users upgrade
-4. **Archive old docs**: Keep old versions accessible
-5. **Review regularly**: Ensure docs match reality
+1. **모든 것을 버전화하세요**: 언제 무엇이 바뀌었는지 추적합니다.
+2. **부드러운 지원 종료**: 기능을 제거하기 전에 미리 경고를 제공합니다.
+3. **마이그레이션 가이드**: 사용자의 업그레이드를 돕습니다.
+4. **오래된 문서 아카이브**: 이전 버전 문서도 접근 가능한 상태로 유지합니다.
+5. **정기적 검토**: 문서가 현실의 코드와 일치하는지 확인합니다.
 
-## Documentation Checklist
+## 문서화 체크리스트
 
-Before releasing a command:
+명령어 배포 전 체크리스트:
 
-- [ ] Description in frontmatter is clear
-- [ ] argument-hint documents all arguments
-- [ ] Usage examples in comments
-- [ ] Common use cases shown
-- [ ] Error messages are helpful
-- [ ] Requirements documented
-- [ ] Related commands listed
-- [ ] Changelog maintained
-- [ ] Version number updated
-- [ ] README created/updated
-- [ ] Examples actually work
-- [ ] Troubleshooting section complete
+- [ ] 프론트매터의 description 필드가 명확함
+- [ ] argument-hint가 모든 인자를 잘 설명함
+- [ ] 주석 내에 사용 예시가 기술되어 있음
+- [ ] 일반적인 사용 사례들이 포함되어 있음
+- [ ] 에러 메시지가 도움이 되도록 작성됨
+- [ ] 요구 사항(requirements)이 성실히 기록됨
+- [ ] 연관 명령어가 나열되어 있음
+- [ ] 변경 이력(changelog)이 관리됨
+- [ ] 버전 번호가 올바르게 업데이트됨
+- [ ] README 파일이 새로 작성되거나 업데이트됨
+- [ ] 예시 코드들이 실제로 잘 작동함
+- [ ] 문제 해결(troubleshooting) 섹션이 완성됨
 
-With good documentation, commands become self-service, reducing support burden and improving user experience.
+좋은 문서를 작성하면 명령어가 사용자 친화적인 도구로 완성되어, 지원 요청은 줄어들고 사용자 경험은 비약적으로 향상됩니다.

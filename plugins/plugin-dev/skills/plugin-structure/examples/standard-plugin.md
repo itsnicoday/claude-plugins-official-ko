@@ -1,8 +1,8 @@
-# Standard Plugin Example
+# 표준 플러그인 예시 (Standard Plugin Example)
 
-A well-structured plugin with commands, agents, and skills.
+명령어, 에이전트, 스킬이 유기적으로 통합된 잘 구성된 표준 플러그인 예시.
 
-## Directory Structure
+## 디렉토리 구조 (Directory Structure)
 
 ```
 code-quality/
@@ -34,7 +34,7 @@ code-quality/
     └── generate-report.py
 ```
 
-## File Contents
+## 파일 내용 (File Contents)
 
 ### .claude-plugin/plugin.json
 
@@ -77,9 +77,9 @@ Run comprehensive linting checks on the project codebase.
 
 Execute the linting script:
 
-\`\`\`bash
+```bash
 bash ${CLAUDE_PLUGIN_ROOT}/scripts/run-linter.sh
-\`\`\`
+```
 
 Parse the output and present issues organized by:
 - Critical issues (must fix)
@@ -290,7 +290,7 @@ Every module must include:
 
 ### Example Pattern
 
-\`\`\`javascript
+```javascript
 async function processData(data) {
   try {
     const result = await transform(data)
@@ -304,7 +304,7 @@ async function processData(data) {
     throw new DataProcessingError('Failed to process data', { cause: error })
   }
 }
-\`\`\`
+```
 
 ## Security Practices
 
@@ -333,20 +333,20 @@ Detailed style guidelines for all supported languages.
 
 Use `const` by default, `let` when reassignment needed, never `var`:
 
-\`\`\`javascript
+```javascript
 // Good
 const MAX_RETRIES = 3
 let currentTry = 0
 
 // Bad
 var MAX_RETRIES = 3
-\`\`\`
+```
 
 ### Function Declarations
 
 Use function expressions for consistency:
 
-\`\`\`javascript
+```javascript
 // Good
 const calculateTotal = (items) => {
   return items.reduce((sum, item) => sum + item.price, 0)
@@ -356,13 +356,13 @@ const calculateTotal = (items) => {
 function calculateTotal(items) {
   return items.reduce((sum, item) => sum + item.price, 0)
 }
-\`\`\`
+```
 
 ### Async/Await
 
 Prefer async/await over promise chains:
 
-\`\`\`javascript
+```javascript
 // Good
 async function fetchUserData(userId) {
   const user = await db.getUser(userId)
@@ -376,7 +376,7 @@ function fetchUserData(userId) {
     .then(user => db.getOrders(user.id)
       .then(orders => ({ user, orders })))
 }
-\`\`\`
+```
 
 ## Python
 
@@ -384,7 +384,7 @@ function fetchUserData(userId) {
 
 Order imports: standard library, third-party, local:
 
-\`\`\`python
+```python
 # Good
 import os
 import sys
@@ -399,13 +399,13 @@ from app.utils import helper
 from app.models import User
 import numpy as np
 import os
-\`\`\`
+```
 
 ### Type Hints
 
 Use type hints for all function signatures:
 
-\`\`\`python
+```python
 # Good
 def calculate_average(numbers: list[float]) -> float:
     return sum(numbers) / len(numbers)
@@ -413,7 +413,7 @@ def calculate_average(numbers: list[float]) -> float:
 # Bad
 def calculate_average(numbers):
     return sum(numbers) / len(numbers)
-\`\`\`
+```
 
 ## Additional Languages
 
@@ -503,9 +503,9 @@ echo '{"systemMessage": "Code quality checks passed. Ready to commit."}'
 exit 0
 ```
 
-## Usage Examples
+## 사용 예시 (Usage Examples)
 
-### Running Commands
+### 명령어 실행 (Running Commands)
 
 ```
 $ claude
@@ -544,7 +544,7 @@ Failed Tests:
   ...
 ```
 
-### Using Agents
+### 에이전트 사용 (Using Agents)
 
 ```
 > Review the changes in src/api/users.js
@@ -571,17 +571,17 @@ Suggestions:
      - Priority: MEDIUM
 ```
 
-## Key Points
+## 주요 특징 (Key Points)
 
-1. **Complete manifest**: All recommended metadata fields
-2. **Multiple components**: Commands, agents, skills, hooks
-3. **Rich skills**: References and examples for detailed information
-4. **Automation**: Hooks enforce standards automatically
-5. **Integration**: Components work together cohesively
+1. **완전한 매니페스트**: 모든 권장 메타데이터 필드 포함
+2. **다중 컴포넌트**: 명령어, 에이전트, 스킬, 훅 탑재
+3. **풍부한 스킬 구성**: 세부 정보 조회를 위한 레퍼런스 및 예시 제공
+4. **자동화**: 훅을 통해 자동으로 기준과 정책을 강제
+5. **통합**: 여러 컴포넌트가 유기적으로 긴밀히 협업
 
-## When to Use This Pattern
+## 이 패턴의 사용 시기 (When to Use This Pattern)
 
-- Production plugins for distribution
-- Team collaboration tools
-- Plugins requiring consistency enforcement
-- Complex workflows with multiple entry points
+- 배포 및 공유를 지향하는 프로덕션용 플러그인
+- 팀 협업을 위한 도구 설계
+- 코드 품질 및 스타일 가이드를 자동으로 강제해야 하는 플러그인
+- 여러 진입점이 포함된 복잡한 워크플로우를 구성할 때

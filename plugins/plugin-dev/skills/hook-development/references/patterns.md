@@ -1,10 +1,10 @@
-# Common Hook Patterns
+# 공통 훅 패턴 (Common Hook Patterns)
 
-This reference provides common, proven patterns for implementing Claude Code hooks. Use these patterns as starting points for typical hook use cases.
+이 참조 문서는 Claude Code 훅 구현을 위해 널리 검증된 공통 패턴들을 제공합니다. 일반적인 훅 사용 사례에 맞게 이 패턴들을 시작점으로 활용하십시오.
 
-## Pattern 1: Security Validation
+## 패턴 1: 보안 검증 (Pattern 1: Security Validation)
 
-Block dangerous file writes using prompt-based hooks:
+프롬프트 기반 훅을 사용하여 위험한 파일 쓰기를 차단합니다:
 
 ```json
 {
@@ -22,11 +22,11 @@ Block dangerous file writes using prompt-based hooks:
 }
 ```
 
-**Use for:** Preventing writes to sensitive files or system directories.
+**용도:** 민감한 파일이나 시스템 디렉토리에 대한 쓰기 작업을 방지합니다.
 
-## Pattern 2: Test Enforcement
+## 패턴 2: 테스트 강제 적용 (Pattern 2: Test Enforcement)
 
-Ensure tests run before stopping:
+종료(Stop)하기 전에 테스트가 정상 실행되었는지 확인합니다:
 
 ```json
 {
@@ -44,11 +44,11 @@ Ensure tests run before stopping:
 }
 ```
 
-**Use for:** Enforcing quality standards and preventing incomplete work.
+**용도:** 코드 품질 기준을 강제하고 완료되지 않은 불완전한 작업 처리를 방지합니다.
 
-## Pattern 3: Context Loading
+## 패턴 3: 컨텍스트 로딩 (Pattern 3: Context Loading)
 
-Load project-specific context at session start:
+세션이 시작될 때 프로젝트 맞춤형 컨텍스트를 로드합니다:
 
 ```json
 {
@@ -66,7 +66,7 @@ Load project-specific context at session start:
 }
 ```
 
-**Example script (load-context.sh):**
+**예시 스크립트 (load-context.sh):**
 ```bash
 #!/bin/bash
 cd "$CLAUDE_PROJECT_DIR" || exit 1
@@ -81,11 +81,11 @@ elif [ -f "Cargo.toml" ]; then
 fi
 ```
 
-**Use for:** Automatically detecting and configuring project-specific settings.
+**용도:** 프로젝트 전용 설정을 자동으로 감지하고 구성합니다.
 
-## Pattern 4: Notification Logging
+## 패턴 4: 알림 로깅 (Pattern 4: Notification Logging)
 
-Log all notifications for audit or analysis:
+감사(audit)나 분석을 위해 모든 알림을 로깅합니다:
 
 ```json
 {
@@ -103,11 +103,11 @@ Log all notifications for audit or analysis:
 }
 ```
 
-**Use for:** Tracking user notifications or integration with external logging systems.
+**용도:** 사용자 대상 알림을 추적하거나 외부 로깅 시스템과 통합하는 데 사용합니다.
 
-## Pattern 5: MCP Tool Monitoring
+## 패턴 5: MCP 도구 모니터링 (Pattern 5: MCP Tool Monitoring)
 
-Monitor and validate MCP tool usage:
+MCP 도구의 사용을 모니터링하고 검증합니다:
 
 ```json
 {
@@ -125,11 +125,11 @@ Monitor and validate MCP tool usage:
 }
 ```
 
-**Use for:** Protecting against destructive MCP operations.
+**용도:** 파괴적으로 동작하는 MCP 작업의 무단 실행을 방지합니다.
 
-## Pattern 6: Build Verification
+## 패턴 6: 빌드 검증 (Pattern 6: Build Verification)
 
-Ensure project builds after code changes:
+코드를 변경한 후 빌드가 정상 완료되는지 보장합니다:
 
 ```json
 {
@@ -147,11 +147,11 @@ Ensure project builds after code changes:
 }
 ```
 
-**Use for:** Catching build errors before committing or stopping work.
+**용도:** 작업을 커밋하거나 완료하기 전에 빌드 오류를 사전에 감지합니다.
 
-## Pattern 7: Permission Confirmation
+## 패턴 7: 권한 승인 (Pattern 7: Permission Confirmation)
 
-Ask user before dangerous operations:
+위험한 작업을 실행하기 전에 사용자에게 승인을 요청합니다:
 
 ```json
 {
@@ -169,11 +169,11 @@ Ask user before dangerous operations:
 }
 ```
 
-**Use for:** User confirmation on potentially destructive commands.
+**용도:** 잠재적으로 파괴적인 명령어가 실행되기 전에 사용자의 명시적인 확인을 거치도록 합니다.
 
-## Pattern 8: Code Quality Checks
+## 패턴 8: 코드 품질 검사 (Pattern 8: Code Quality Checks)
 
-Run linters or formatters on file edits:
+파일을 수정한 후 린터나 포맷터를 자동으로 실행합니다:
 
 ```json
 {
@@ -191,7 +191,7 @@ Run linters or formatters on file edits:
 }
 ```
 
-**Example script (check-quality.sh):**
+**예시 스크립트 (check-quality.sh):**
 ```bash
 #!/bin/bash
 input=$(cat)
@@ -203,11 +203,11 @@ if [[ "$file_path" == *.js ]] || [[ "$file_path" == *.ts ]]; then
 fi
 ```
 
-**Use for:** Automatic code quality enforcement.
+**용도:** 코드 품질 표준을 자동으로 준수하도록 강제합니다.
 
-## Pattern Combinations
+## 패턴 조합 (Pattern Combinations)
 
-Combine multiple patterns for comprehensive protection:
+여러 패턴을 결합하여 다중 레이어 보안 및 자동화를 구축합니다:
 
 ```json
 {
@@ -256,11 +256,11 @@ Combine multiple patterns for comprehensive protection:
 }
 ```
 
-This provides multi-layered protection and automation.
+이를 통해 다중 보안 레이어 구축 및 프로세스 자동화를 수행할 수 있습니다.
 
-## Pattern 9: Temporarily Active Hooks
+## 패턴 9: 일시적으로 활성화되는 훅 (Pattern 9: Temporarily Active Hooks)
 
-Create hooks that only run when explicitly enabled via flag files:
+플래그 파일이 명시적으로 존재할 때만 작동하는 훅을 설계합니다:
 
 ```bash
 #!/bin/bash
@@ -280,7 +280,7 @@ file_path=$(echo "$input" | jq -r '.tool_input.file_path')
 security-scanner "$file_path"
 ```
 
-**Activation:**
+**활성화 절차:**
 ```bash
 # Enable the hook
 touch .enable-security-scan
@@ -289,17 +289,17 @@ touch .enable-security-scan
 rm .enable-security-scan
 ```
 
-**Use for:**
-- Temporary debugging hooks
-- Feature flags for development
-- Project-specific validation that's opt-in
-- Performance-intensive checks only when needed
+**용도:**
+- 일시적으로 훅의 동작을 디버깅할 때
+- 개발용 기능 플래그(Feature Flags)로 활용
+- 프로젝트별 검증 절차에 대해 옵트인(Opt-in) 방식으로 구성하고자 할 때
+- 필요할 때만 성능 집약적인 무거운 검증 단계를 수행할 때
 
-**Note:** Must restart Claude Code after creating/removing flag files for hooks to recognize changes.
+**주의:** 훅이 플래그 파일의 변경 사항을 인식하도록 하려면 플래그 생성/제거 후에 반드시 Claude Code를 재시작해야 합니다.
 
-## Pattern 10: Configuration-Driven Hooks
+## 패턴 10: 구성 구동형 훅 (Pattern 10: Configuration-Driven Hooks)
 
-Use JSON configuration to control hook behavior:
+JSON 구성 정보를 읽어와서 훅의 세부 동작을 제어합니다:
 
 ```bash
 #!/bin/bash
@@ -330,7 +330,7 @@ if [ "$file_size" -gt "$max_file_size" ]; then
 fi
 ```
 
-**Configuration file (.claude/my-plugin.local.json):**
+**구성 파일 (.claude/my-plugin.local.json):**
 ```json
 {
   "strictMode": true,
@@ -339,8 +339,8 @@ fi
 }
 ```
 
-**Use for:**
-- User-configurable hook behavior
-- Per-project settings
-- Team-specific rules
-- Dynamic validation criteria
+**용도:**
+- 사용자 정의에 기반하여 훅의 세부 동작을 조율할 때
+- 프로젝트별 개별 설정 지원
+- 팀 또는 부서별 고유 정책 적용
+- 동적인 검증 조건 기준 적용

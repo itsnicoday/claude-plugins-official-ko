@@ -1,82 +1,82 @@
 ---
-description: List all configured hookify rules
+description: 설정된 모든 hookify 규칙 목록 표시
 allowed-tools: ["Glob", "Read", "Skill"]
 ---
 
-# List Hookify Rules
+# Hookify 규칙 목록
 
-**Load hookify:writing-rules skill first** to understand rule format.
+규칙 형식을 이해하기 위해 **먼저 hookify:writing-rules 스킬을 로드**하세요.
 
-Show all configured hookify rules in the project.
+프로젝트에 설정된 모든 hookify 규칙을 표시합니다.
 
-## Steps
+## 단계
 
-1. Use Glob tool to find all hookify rule files:
+1. Glob 도구를 사용하여 모든 hookify 규칙 파일을 찾습니다:
    ```
    pattern: ".claude/hookify.*.local.md"
    ```
 
-2. For each file found:
-   - Use Read tool to read the file
-   - Extract frontmatter fields: name, enabled, event, pattern
-   - Extract message preview (first 100 chars)
+2. 발견된 각 파일에 대해:
+   - Read 도구를 사용하여 파일을 읽습니다
+   - 프론트매터(frontmatter) 필드 추출: name, enabled, event, pattern
+   - 메시지 미리보기 추출 (처음 100자)
 
-3. Present results in a table:
+3. 결과를 표로 제시합니다:
 
 ```
-## Configured Hookify Rules
+## 설정된 Hookify 규칙
 
-| Name | Enabled | Event | Pattern | File |
+| 이름 | 활성화됨 | 이벤트 | 패턴 | 파일 |
 |------|---------|-------|---------|------|
-| warn-dangerous-rm | ✅ Yes | bash | rm\s+-rf | hookify.dangerous-rm.local.md |
-| warn-console-log | ✅ Yes | file | console\.log\( | hookify.console-log.local.md |
-| check-tests | ❌ No | stop | .* | hookify.require-tests.local.md |
+| warn-dangerous-rm | ✅ 예 | bash | rm\s+-rf | hookify.dangerous-rm.local.md |
+| warn-console-log | ✅ 예 | file | console\.log\( | hookify.console-log.local.md |
+| check-tests | ❌ 아니오 | stop | .* | hookify.require-tests.local.md |
 
-**Total**: 3 rules (2 enabled, 1 disabled)
+**합계**: 규칙 3개 (활성화됨 2개, 비활성화됨 1개)
 ```
 
-4. For each rule, show a brief preview:
+4. 각 규칙에 대해 간단한 미리보기를 보여줍니다:
 ```
 ### warn-dangerous-rm
-**Event**: bash
-**Pattern**: `rm\s+-rf`
-**Message**: "⚠️ **Dangerous rm command detected!** This command could delete..."
+**이벤트**: bash
+**패턴**: `rm\s+-rf`
+**메시지**: "⚠️ **위험한 rm 명령어가 감지되었습니다!** 이 명령어는 삭제할 수 있습니다..."
 
-**Status**: ✅ Active
-**File**: .claude/hookify.dangerous-rm.local.md
+**상태**: ✅ 활성
+**파일**: .claude/hookify.dangerous-rm.local.md
 ```
 
-5. Add helpful footer:
+5. 유용한 바닥글을 추가합니다:
 ```
 ---
 
-To modify a rule: Edit the .local.md file directly
-To disable a rule: Set `enabled: false` in frontmatter
-To enable a rule: Set `enabled: true` in frontmatter
-To delete a rule: Remove the .local.md file
-To create a rule: Use `/hookify` command
+규칙을 수정하려면: .local.md 파일을 직접 편집하세요
+규칙을 비활성화하려면: 프론트매터에서 `enabled: false`로 설정하세요
+규칙을 활성화하려면: 프론트매터에서 `enabled: true`로 설정하세요
+규칙을 삭제하려면: .local.md 파일을 제거하세요
+규칙을 생성하려면: `/hookify` 명령어를 사용하세요
 
-**Remember**: Changes take effect immediately - no restart needed
+**기억해 두세요**: 변경 사항은 즉시 반영되며, 재시작이 필요하지 않습니다
 ```
 
-## If No Rules Found
+## 규칙을 찾을 수 없는 경우
 
-If no hookify rules exist:
+hookify 규칙이 존재하지 않는 경우:
 
 ```
-## No Hookify Rules Configured
+## 설정된 Hookify 규칙 없음
 
-You haven't created any hookify rules yet.
+아직 생성된 hookify 규칙이 없습니다.
 
-To get started:
-1. Use `/hookify` to analyze conversation and create rules
-2. Or manually create `.claude/hookify.my-rule.local.md` files
-3. See `/hookify:help` for documentation
+시작하려면 다음을 수행하세요:
+1. `/hookify`를 사용하여 대화를 분석하고 규칙을 만듭니다
+2. 또는 `.claude/hookify.my-rule.local.md` 파일을 수동으로 생성합니다
+3. 문서에 대해서는 `/hookify:help`를 참조하세요
 
-Example:
+예시:
 ```
 /hookify Warn me when I use console.log
 ```
 
-Check `${CLAUDE_PLUGIN_ROOT}/examples/` for example rule files.
+예시 규칙 파일은 `${CLAUDE_PLUGIN_ROOT}/examples/`를 확인하세요.
 ```

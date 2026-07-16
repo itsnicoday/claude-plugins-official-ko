@@ -1,27 +1,27 @@
-# Plugin Command Examples
+# 플러그인 명령어 예시 (Plugin Command Examples)
 
-Practical examples of commands designed for Claude Code plugins, demonstrating plugin-specific patterns and features.
+Claude Code 플러그인용으로 설계된 명령어의 실용적인 예시로, 플러그인 전용 패턴과 기능들을 보여줍니다.
 
-## Table of Contents
+## 목차 (Table of Contents)
 
-1. [Simple Plugin Command](#1-simple-plugin-command)
-2. [Script-Based Analysis](#2-script-based-analysis)
-3. [Template-Based Generation](#3-template-based-generation)
-4. [Multi-Script Workflow](#4-multi-script-workflow)
-5. [Configuration-Driven Deployment](#5-configuration-driven-deployment)
-6. [Agent Integration](#6-agent-integration)
-7. [Skill Integration](#7-skill-integration)
-8. [Multi-Component Workflow](#8-multi-component-workflow)
-9. [Validated Input Command](#9-validated-input-command)
-10. [Environment-Aware Command](#10-environment-aware-command)
+1. [단순 플러그인 명령어](#1-simple-plugin-command)
+2. [스크립트 기반 분석](#2-script-based-analysis)
+3. [템플릿 기반 생성](#3-template-based-generation)
+4. [다중 스크립트 워크플로우](#4-multi-script-workflow)
+5. [설정 기반 배포](#5-configuration-driven-deployment)
+6. [에이전트 통합](#6-agent-integration)
+7. [스킬 통합](#7-skill-integration)
+8. [다중 컴포넌트 워크플로우](#8-multi-component-workflow)
+9. [입력 검증 명령어](#9-validated-input-command)
+10. [환경 감지 명령어](#10-environment-aware-command)
 
 ---
 
-## 1. Simple Plugin Command
+## 1. 단순 플러그인 명령어 (Simple Plugin Command)
 
-**Use case:** Basic command that uses plugin script
+**사용 사례:** 플러그인 스크립트를 사용하는 기본적인 명령어
 
-**File:** `commands/analyze.md`
+**파일:** `commands/analyze.md`
 
 ```markdown
 ---
@@ -41,18 +41,18 @@ Review the analysis output and provide:
 4. Code quality score interpretation
 ```
 
-**Key features:**
-- Uses `${CLAUDE_PLUGIN_ROOT}` for portable path
-- Combines file reference with script execution
-- Simple single-purpose command
+**주요 특징:**
+- 이식 가능한 경로를 위해 `${CLAUDE_PLUGIN_ROOT}` 사용
+- 파일 참조와 스크립트 실행을 결합
+- 단순한 단일 목적 명령어
 
 ---
 
-## 2. Script-Based Analysis
+## 2. 스크립트 기반 분석 (Script-Based Analysis)
 
-**Use case:** Run comprehensive analysis using multiple plugin scripts
+**사용 사례:** 여러 플러그인 스크립트를 사용하여 종합적인 분석 실행
 
-**File:** `commands/full-audit.md`
+**파일:** `commands/full-audit.md`
 
 ```markdown
 ---
@@ -80,19 +80,19 @@ Analyze all results and create comprehensive report including:
 - Overall health score and recommendations
 ```
 
-**Key features:**
-- Multiple script executions
-- Organized output sections
-- Comprehensive workflow
-- Clear reporting structure
+**주요 특징:**
+- 여러 스크립트 실행
+- 정리된 출력 섹션
+- 종합적인 워크플로우
+- 명확한 보고 구조
 
 ---
 
-## 3. Template-Based Generation
+## 3. 템플릿 기반 생성 (Template-Based Generation)
 
-**Use case:** Generate documentation following plugin template
+**사용 사례:** 플러그인 템플릿을 따른 문서 생성
 
-**File:** `commands/gen-api-docs.md`
+**파일:** `commands/gen-api-docs.md`
 
 ```markdown
 ---
@@ -117,19 +117,19 @@ Ensure documentation includes:
 Format output as markdown suitable for README or docs site.
 ```
 
-**Key features:**
-- Uses plugin template
-- Combines template with source file
-- Standardized output format
-- Clear documentation structure
+**주요 특징:**
+- 플러그인 템플릿 사용
+- 템플릿과 소스 파일 결합
+- 표준화된 출력 형식
+- 명확한 문서 구조
 
 ---
 
-## 4. Multi-Script Workflow
+## 4. 다중 스크립트 워크플로우 (Multi-Script Workflow)
 
-**Use case:** Orchestrate build, test, and deploy workflow
+**사용 사례:** 빌드, 테스트 및 배포 워크플로우 조율
 
-**File:** `commands/release.md`
+**파일:** `commands/release.md`
 
 ```markdown
 ---
@@ -160,19 +160,19 @@ Review all step outputs and report:
 5. Rollback plan if needed
 ```
 
-**Key features:**
-- Multi-step workflow
-- Sequential script execution
-- Clear step numbering
-- Comprehensive reporting
+**주요 특징:**
+- 다단계 워크플로우
+- 순차적인 스크립트 실행
+- 명확한 단계 번호 지정
+- 종합적인 보고
 
 ---
 
-## 5. Configuration-Driven Deployment
+## 5. 설정 기반 배포 (Configuration-Driven Deployment)
 
-**Use case:** Deploy using environment-specific plugin configuration
+**사용 사례:** 환경별 플러그인 설정을 사용하여 배포
 
-**File:** `commands/deploy.md`
+**파일:** `commands/deploy.md`
 
 ```markdown
 ---
@@ -201,19 +201,19 @@ Deployment checklist:
 Report deployment status and any issues encountered.
 ```
 
-**Key features:**
-- Environment-specific configuration
-- Dynamic config file loading
-- Pre-deployment validation
-- Structured checklist
+**주요 특징:**
+- 환경별 설정
+- 동적 설정 파일 로딩
+- 배포 전 검증
+- 구조화된 체크리스트
 
 ---
 
-## 6. Agent Integration
+## 6. 에이전트 통합 (Agent Integration)
 
-**Use case:** Command that launches plugin agent for complex task
+**사용 사례:** 복잡한 작업을 위해 플러그인 에이전트를 실행하는 명령어
 
-**File:** `commands/deep-review.md`
+**파일:** `commands/deep-review.md`
 
 ```markdown
 ---
@@ -238,19 +238,19 @@ The agent has access to:
 Note: This uses the Task tool to launch the plugin's code-reviewer agent for thorough analysis.
 ```
 
-**Key features:**
-- Delegates to plugin agent
-- Documents agent capabilities
-- References plugin resources
-- Clear scope definition
+**주요 특징:**
+- 플러그인 에이전트에 위임
+- 에이전트 기능 문서화
+- 플러그인 자원 참조
+- 명확한 범위 정의
 
 ---
 
-## 7. Skill Integration
+## 7. 스킬 통합 (Skill Integration)
 
-**Use case:** Command that leverages plugin skill for specialized knowledge
+**사용 사례:** 전문 지식을 위해 플러그인 스킬을 활용하는 명령어
 
-**File:** `commands/document-api.md`
+**파일:** `commands/document-api.md`
 
 ```markdown
 ---
@@ -278,19 +278,19 @@ The skill provides:
 Generate production-ready API documentation.
 ```
 
-**Key features:**
-- Invokes plugin skill by name
-- Documents skill purpose
-- Clear expectations
-- Leverages skill knowledge
+**주요 특징:**
+- 이름으로 플러그인 스킬 호출
+- 스킬 목적 문서화
+- 명확한 기대치
+- 스킬 지식 활용
 
 ---
 
-## 8. Multi-Component Workflow
+## 8. 다중 컴포넌트 워크플로우 (Multi-Component Workflow)
 
-**Use case:** Complex workflow using agents, skills, and scripts
+**사용 사례:** 에이전트, 스킬, 스크립트를 사용하는 복잡한 워크플로우
 
-**File:** `commands/complete-review.md`
+**파일:** `commands/complete-review.md`
 
 ```markdown
 ---
@@ -335,19 +335,19 @@ Generate prioritized action items:
 Include specific file locations and suggested changes for each item.
 ```
 
-**Key features:**
-- Multi-phase workflow
-- Combines scripts, agents, skills
-- Template-based reporting
-- Prioritized outputs
+**주요 특징:**
+- 다단계 워크플로우
+- 스크립트, 에이전트, 스킬 결합
+- 템플릿 기반 보고
+- 우선순위가 지정된 출력
 
 ---
 
-## 9. Validated Input Command
+## 9. 입력 검증 명령어 (Validated Input Command)
 
-**Use case:** Command with input validation and error handling
+**사용 사례:** 입력 검증 및 에러 처리가 포함된 명령어
 
-**File:** `commands/build-env.md`
+**파일:** `commands/build-env.md`
 
 ```markdown
 ---
@@ -379,20 +379,20 @@ If validations fail:
 - Document troubleshooting steps
 ```
 
-**Key features:**
-- Input validation
-- Resource existence checks
-- Error handling
-- Helpful error messages
-- Graceful failure handling
+**주요 특징:**
+- 입력 검증
+- 자원 존재 여부 확인
+- 에러 처리
+- 유용한 에러 메시지
+- 부드러운 실패 처리
 
 ---
 
-## 10. Environment-Aware Command
+## 10. 환경 감지 명령어 (Environment-Aware Command)
 
-**Use case:** Command that adapts behavior based on environment
+**사용 사례:** 환경에 따라 동작이 달라지는 명령어
 
-**File:** `commands/run-checks.md`
+**파일:** `commands/run-checks.md`
 
 ```markdown
 ---
@@ -426,132 +426,132 @@ Analyze results based on environment requirements:
 Report status and recommend proceed/block decision.
 ```
 
-**Key features:**
-- Environment-aware logic
-- Conditional execution
-- Different validation levels
-- Appropriate reporting per environment
+**주요 특징:**
+- 환경 감지 로직
+- 조건부 실행
+- 다양한 검증 수준
+- 환경별 적절한 보고
 
 ---
 
-## Common Patterns Summary
+## 공통 패턴 요약 (Common Patterns Summary)
 
-### Pattern: Plugin Script Execution
+### 패턴: 플러그인 스크립트 실행 (Plugin Script Execution)
 ```markdown
 !`node ${CLAUDE_PLUGIN_ROOT}/scripts/script-name.js $1`
 ```
-Use for: Running plugin-provided Node.js scripts
+용도: 플러그인에서 제공하는 Node.js 스크립트 실행
 
-### Pattern: Plugin Configuration Loading
+### 패턴: 플러그인 설정 로드 (Plugin Configuration Loading)
 ```markdown
 @${CLAUDE_PLUGIN_ROOT}/config/config-name.json
 ```
-Use for: Loading plugin configuration files
+용도: 플러그인 설정 파일 로드
 
-### Pattern: Plugin Template Usage
+### 패턴: 플러그인 템플릿 사용 (Plugin Template Usage)
 ```markdown
 @${CLAUDE_PLUGIN_ROOT}/templates/template-name.md
 ```
-Use for: Using plugin templates for generation
+용도: 생성을 위해 플러그인 템플릿 사용
 
-### Pattern: Agent Invocation
+### 패턴: 에이전트 호출 (Agent Invocation)
 ```markdown
 Launch the [agent-name] agent for [task description].
 ```
-Use for: Delegating complex tasks to plugin agents
+용도: 복잡한 작업을 플러그인 에이전트에 위임
 
-### Pattern: Skill Reference
+### 패턴: 스킬 참조 (Skill Reference)
 ```markdown
 Use the [skill-name] skill to ensure [requirements].
 ```
-Use for: Leveraging plugin skills for specialized knowledge
+용도: 전문 지식을 위해 플러그인 스킬 활용
 
-### Pattern: Input Validation
+### 패턴: 입력 검증 (Input Validation)
 ```markdown
 Validate input: !`echo "$1" | grep -E "^pattern$" && echo "OK" || echo "ERROR"`
 ```
-Use for: Validating command arguments
+용도: 명령어 인수 검증
 
-### Pattern: Resource Validation
+### 패턴: 자원 검증 (Resource Validation)
 ```markdown
 Check exists: !`test -f ${CLAUDE_PLUGIN_ROOT}/path/file && echo "YES" || echo "NO"`
 ```
-Use for: Verifying required plugin files exist
+용도: 필수 플러그인 파일이 존재하는지 확인
 
 ---
 
-## Development Tips
+## 개발 팁 (Development Tips)
 
-### Testing Plugin Commands
+### 플러그인 명령어 테스트 (Testing Plugin Commands)
 
-1. **Test with plugin installed:**
+1. **플러그인이 설치된 상태로 테스트:**
    ```bash
    cd /path/to/plugin
    claude /command-name args
    ```
 
-2. **Verify ${CLAUDE_PLUGIN_ROOT} expansion:**
+2. **${CLAUDE_PLUGIN_ROOT} 확장 확인:**
    ```bash
-   # Add debug output to command
+   # 명령어에 디버그 출력 추가
    !`echo "Plugin root: ${CLAUDE_PLUGIN_ROOT}"`
    ```
 
-3. **Test across different working directories:**
+3. **다양한 작업 디렉토리에서 테스트:**
    ```bash
    cd /tmp && claude /command-name
    cd /other/project && claude /command-name
    ```
 
-4. **Validate resource availability:**
+4. **자원 가용성 검증:**
    ```bash
-   # Check all plugin resources exist
+   # 모든 플러그인 자원이 존재하는지 확인
    !`ls -la ${CLAUDE_PLUGIN_ROOT}/scripts/`
    !`ls -la ${CLAUDE_PLUGIN_ROOT}/config/`
    ```
 
-### Common Mistakes to Avoid
+### 피해야 할 일반적인 실수 (Common Mistakes to Avoid)
 
-1. **Using relative paths instead of ${CLAUDE_PLUGIN_ROOT}:**
+1. **${CLAUDE_PLUGIN_ROOT} 대신 상대 경로 사용:**
    ```markdown
-   # Wrong
+   # 잘못된 예시
    !`node ./scripts/analyze.js`
 
-   # Correct
+   # 올바른 예시
    !`node ${CLAUDE_PLUGIN_ROOT}/scripts/analyze.js`
    ```
 
-2. **Forgetting to allow required tools:**
+2. **필수 도구 허용 누락:**
    ```markdown
-   # Missing allowed-tools
-   !`bash script.sh`  # Will fail without Bash permission
+   # allowed-tools 누락
+   !`bash script.sh`  # Bash 권한 없이 실패함
 
-   # Correct
+   # 올바른 예시
    ---
    allowed-tools: Bash(*)
    ---
    !`bash ${CLAUDE_PLUGIN_ROOT}/scripts/script.sh`
    ```
 
-3. **Not validating inputs:**
+3. **입력 검증 누락:**
    ```markdown
-   # Risky - no validation
+   # 위험함 - 검증 없음
    Deploy to $1 environment
 
-   # Better - with validation
+   # 권장 - 검증 포함
    Validate: !`echo "$1" | grep -E "^(dev|staging|prod)$" || echo "INVALID"`
    Deploy to $1 environment (if valid)
    ```
 
-4. **Hardcoding plugin paths:**
+4. **플러그인 경로 하드코딩:**
    ```markdown
-   # Wrong - breaks on different installations
+   # 잘못된 예시 - 다른 설치 환경에서 깨짐
    @/home/user/.claude/plugins/my-plugin/config.json
 
-   # Correct - works everywhere
+   # 올바른 예시 - 어디서나 작동함
    @${CLAUDE_PLUGIN_ROOT}/config.json
    ```
 
 ---
 
-For detailed plugin-specific features, see `references/plugin-features-reference.md`.
-For general command development, see main `SKILL.md`.
+자세한 플러그인 전용 기능은 `references/plugin-features-reference.md`를 참고하세요.
+일반적인 명령어 개발은 메인 `SKILL.md`를 참고하세요.

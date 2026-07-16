@@ -1,54 +1,54 @@
 ---
-description: Update CLAUDE.md with learnings from this session
+description: 이번 세션에서 학습한 내용으로 CLAUDE.md 업데이트
 allowed-tools: Read, Edit, Glob
 ---
 
-Review this session for learnings about working with Claude Code in this codebase. Update CLAUDE.md with context that would help future Claude sessions be more effective.
+이 코드베이스에서 Claude Code와 함께 작업하며 얻은 학습 내용을 검토합니다. 향후 Claude 세션이 더 효율적으로 작동할 수 있도록 돕는 컨텍스트로 CLAUDE.md를 업데이트하십시오.
 
-## Step 1: Reflect
+## 1단계: 반성 및 회고 (Reflect)
 
-What context was missing that would have helped Claude work more effectively?
-- Bash commands that were used or discovered
-- Code style patterns followed
-- Testing approaches that worked
-- Environment/configuration quirks
-- Warnings or gotchas encountered
+Claude가 더 효율적으로 작업하는 데 누락되었던 컨텍스트는 무엇인가요?
+- 사용했거나 새로 발견한 Bash 명령어
+- 준수한 코드 스타일 패턴
+- 유효했던 테스트 접근 방식
+- 환경/설정상의 특이 사항
+- 마주친 경고나 주의 사항(gotchas)
 
-## Step 2: Find CLAUDE.md Files
+## 2단계: CLAUDE.md 파일 찾기
 
 ```bash
 find . -name "CLAUDE.md" -o -name ".claude.local.md" 2>/dev/null | head -20
 ```
 
-Decide where each addition belongs:
-- `CLAUDE.md` - Team-shared (checked into git)
-- `.claude.local.md` - Personal/local only (gitignored)
+추가할 내용을 어디에 배치할지 결정합니다:
+- `CLAUDE.md` - 팀 공유용 (git에 커밋됨)
+- `.claude.local.md` - 개인/로컬 전용 (gitignored)
 
-## Step 3: Draft Additions
+## 3단계: 추가 항목 작성
 
-**Keep it concise** - one line per concept. CLAUDE.md is part of the prompt, so brevity matters.
+**간결하게 유지하십시오** - 개념당 한 줄씩 작성합니다. CLAUDE.md는 프롬프트의 일부로 들어가므로 간결함이 중요합니다.
 
-Format: `<command or pattern>` - `<brief description>`
+포맷: `<command or pattern>` - `<brief description>`
 
-Avoid:
-- Verbose explanations
-- Obvious information
-- One-off fixes unlikely to recur
+피해야 할 사항:
+- 장황한 설명
+- 너무나 당연한 정보
+- 다시 발생할 가능성이 낮은 일회성 수정 사항
 
-## Step 4: Show Proposed Changes
+## 4단계: 제안된 변경 사항 보여주기
 
-For each addition:
+추가할 각 항목에 대해:
 
 ```
 ### Update: ./CLAUDE.md
 
-**Why:** [one-line reason]
+**Why:** [한 줄로 적는 이유]
 
 \`\`\`diff
-+ [the addition - keep it brief]
++ [추가 내용 - 간결하게 작성]
 \`\`\`
 ```
 
-## Step 5: Apply with Approval
+## 5단계: 승인 후 적용
 
-Ask if the user wants to apply the changes. Only edit files they approve.
+사용자에게 변경 사항을 적용할지 묻습니다. 사용자가 승인한 파일만 수정하십시오.

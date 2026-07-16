@@ -1,10 +1,10 @@
-# Settings File Parsing Techniques
+# 설정 파일 파싱 기법 (Settings File Parsing Techniques)
 
-Complete guide to parsing `.claude/plugin-name.local.md` files in bash scripts.
+bash 스크립트에서 `.claude/plugin-name.local.md` 파일을 파싱하기 위한 전체 가이드.
 
-## File Structure
+## 파일 구조 (File Structure)
 
-Settings files use markdown with YAML frontmatter:
+설정 파일은 YAML 프론트매터가 포함된 마크다운을 사용합니다:
 
 ```markdown
 ---
@@ -21,9 +21,9 @@ This body content can be extracted separately.
 It's useful for prompts, documentation, or additional context.
 ```
 
-## Parsing Frontmatter
+## 프론트매터 파싱 (Parsing Frontmatter)
 
-### Extract Frontmatter Block
+### 프론트매터 블록 추출 (Extract Frontmatter Block)
 
 ```bash
 #!/bin/bash
@@ -33,14 +33,14 @@ FILE=".claude/my-plugin.local.md"
 FRONTMATTER=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$FILE")
 ```
 
-**How it works:**
-- `sed -n` - Suppress automatic printing
-- `/^---$/,/^---$/` - Range from first `---` to second `---`
-- `{ /^---$/d; p; }` - Delete the `---` lines, print everything else
+**작동 방식:**
+- `sed -n` - 자동 출력 생략
+- `/^---$/,/^---$/` - 첫 번째 `---`에서 두 번째 `---`까지의 범위 지정
+- `{ /^---$/d; p; }` - `---` 행은 삭제하고, 그 외의 다른 모든 행 출력
 
-### Extract Individual Fields
+### 개별 필드 추출 (Extract Individual Fields)
 
-**String fields:**
+**문자열 필드:**
 ```bash
 # Simple value
 VALUE=$(echo "$FRONTMATTER" | grep '^field_name:' | sed 's/field_name: *//')
@@ -49,7 +49,7 @@ VALUE=$(echo "$FRONTMATTER" | grep '^field_name:' | sed 's/field_name: *//')
 VALUE=$(echo "$FRONTMATTER" | grep '^field_name:' | sed 's/field_name: *//' | sed 's/^"\(.*\)"$/\1/')
 ```
 
-**Boolean fields:**
+**불리언 필드:**
 ```bash
 ENABLED=$(echo "$FRONTMATTER" | grep '^enabled:' | sed 's/enabled: *//')
 
@@ -59,7 +59,7 @@ if [[ "$ENABLED" == "true" ]]; then
 fi
 ```
 
-**Numeric fields:**
+**숫자 필드:**
 ```bash
 MAX=$(echo "$FRONTMATTER" | grep '^max_value:' | sed 's/max_value: *//')
 
@@ -72,7 +72,7 @@ if [[ "$MAX" =~ ^[0-9]+$ ]]; then
 fi
 ```
 
-**List fields (simple):**
+**리스트 필드 (단순):**
 ```bash
 # YAML: list: ["item1", "item2", "item3"]
 LIST=$(echo "$FRONTMATTER" | grep '^list:' | sed 's/list: *//')
@@ -84,7 +84,7 @@ if [[ "$LIST" == *"item1"* ]]; then
 fi
 ```
 
-**List fields (proper parsing with jq):**
+**리스트 필드 (jq를 사용한 올바른 파싱):**
 ```bash
 # For proper list handling, use yq or convert to JSON
 # This requires yq to be installed (brew install yq)
@@ -98,9 +98,9 @@ echo "$LIST" | jq -r '.[]' | while read -r item; do
 done
 ```
 
-## Parsing Markdown Body
+## 마크다운 본문 파싱 (Parsing Markdown Body)
 
-### Extract Body Content
+### 본문 내용 추출 (Extract Body Content)
 
 ```bash
 #!/bin/bash
@@ -111,14 +111,14 @@ FILE=".claude/my-plugin.local.md"
 BODY=$(awk '/^---$/{i++; next} i>=2' "$FILE")
 ```
 
-**How it works:**
-- `/^---$/` - Match `---` lines
-- `{i++; next}` - Increment counter and skip the `---` line
-- `i>=2` - Print all lines after second `---`
+**작동 방식:**
+- `/^---$/` - `---` 행 매칭
+- `{i++; next}` - 카운터를 증가시키고 `---` 행 건너뜀
+- `i>=2` - 두 번째 `---` 이후의 모든 행 출력
 
-**Handles edge case:** If `---` appears in the markdown body, it still works because we only count the first two `---` at the start.
+**예외 상황 처리:** 마크다운 본문에 `---`가 포함되어 있어도 여전히 올바르게 작동합니다. 파일의 시작 부분에서 처음 두 개의 `---`만 계산하기 때문입니다.
 
-### Use Body as Prompt
+### 본문을 프롬프트로 사용 (Use Body as Prompt)
 
 ```bash
 # Extract body
@@ -128,7 +128,7 @@ PROMPT=$(awk '/^---$/{i++; next} i>=2' "$RALPH_STATE_FILE")
 echo '{"decision": "block", "reason": "'"$PROMPT"'"}' | jq .
 ```
 
-**Important:** Use `jq -n --arg` for safer JSON construction with user content:
+**중요:** 사용자 콘텐츠가 포함된 보다 안전한 JSON 구성을 위해 `jq -n --arg`를 사용하십시오:
 
 ```bash
 PROMPT=$(awk '/^---$/{i++; next} i>=2' "$FILE")
@@ -140,9 +140,9 @@ jq -n --arg prompt "$PROMPT" '{
 }'
 ```
 
-## Common Parsing Patterns
+## 공통 파싱 패턴 (Common Parsing Patterns)
 
-### Pattern: Field with Default
+### 패턴: 기본값이 있는 필드 (Pattern: Field with Default)
 
 ```bash
 VALUE=$(echo "$FRONTMATTER" | grep '^field:' | sed 's/field: *//' | sed 's/^"\(.*\)"$/\1/')
@@ -153,7 +153,7 @@ if [[ -z "$VALUE" ]]; then
 fi
 ```
 
-### Pattern: Optional Field
+### 패턴: 선택적 필드 (Pattern: Optional Field)
 
 ```bash
 OPTIONAL=$(echo "$FRONTMATTER" | grep '^optional_field:' | sed 's/optional_field: *//' | sed 's/^"\(.*\)"$/\1/')
@@ -165,7 +165,7 @@ if [[ -n "$OPTIONAL" ]] && [[ "$OPTIONAL" != "null" ]]; then
 fi
 ```
 
-### Pattern: Multiple Fields at Once
+### 패턴: 여러 필드를 한 번에 처리 (Pattern: Multiple Fields at Once)
 
 ```bash
 # Parse all fields in one pass
@@ -187,11 +187,11 @@ while IFS=': ' read -r key value; do
 done <<< "$FRONTMATTER"
 ```
 
-## Updating Settings Files
+## 설정 파일 업데이트 (Updating Settings Files)
 
-### Atomic Updates
+### 원자적 업데이트 (Atomic Updates)
 
-Always use temp file + atomic move to prevent corruption:
+파일 손상을 방지하기 위해 항상 임시 파일 생성 및 원자적 이동을 사용하십시오:
 
 ```bash
 #!/bin/bash
@@ -208,7 +208,7 @@ sed "s/^field_name: .*/field_name: $NEW_VALUE/" "$FILE" > "$TEMP_FILE"
 mv "$TEMP_FILE" "$FILE"
 ```
 
-### Update Single Field
+### 단일 필드 업데이트 (Update Single Field)
 
 ```bash
 # Increment iteration counter
@@ -221,7 +221,7 @@ sed "s/^iteration: .*/iteration: $NEXT/" "$FILE" > "$TEMP_FILE"
 mv "$TEMP_FILE" "$FILE"
 ```
 
-### Update Multiple Fields
+### 여러 필드 업데이트 (Update Multiple Fields)
 
 ```bash
 # Update several fields at once
@@ -235,9 +235,9 @@ sed -e "s/^iteration: .*/iteration: $NEXT_ITERATION/" \
 mv "$TEMP_FILE" "$FILE"
 ```
 
-## Validation Techniques
+## 검증 기법 (Validation Techniques)
 
-### Validate File Exists and Is Readable
+### 파일 존재 여부 및 읽기 가능 여부 검증 (Validate File Exists and Is Readable)
 
 ```bash
 FILE=".claude/my-plugin.local.md"
@@ -253,7 +253,7 @@ if [[ ! -r "$FILE" ]]; then
 fi
 ```
 
-### Validate Frontmatter Structure
+### 프론트매터 구조 검증 (Validate Frontmatter Structure)
 
 ```bash
 # Count --- markers (should be exactly 2 at start)
@@ -265,7 +265,7 @@ if [[ $MARKER_COUNT -lt 2 ]]; then
 fi
 ```
 
-### Validate Field Values
+### 필드 값 검증 (Validate Field Values)
 
 ```bash
 MODE=$(echo "$FRONTMATTER" | grep '^mode:' | sed 's/mode: *//')
@@ -281,7 +281,7 @@ case "$MODE" in
 esac
 ```
 
-### Validate Numeric Ranges
+### 숫자 범위 검증 (Validate Numeric Ranges)
 
 ```bash
 MAX_SIZE=$(echo "$FRONTMATTER" | grep '^max_size:' | sed 's/max_size: *//')
@@ -297,11 +297,11 @@ if [[ $MAX_SIZE -lt 1 ]] || [[ $MAX_SIZE -gt 10000000 ]]; then
 fi
 ```
 
-## Edge Cases and Gotchas
+## 예외 상황 및 주의 사항 (Edge Cases and Gotchas)
 
-### Quotes in Values
+### 값 내부의 따옴표 (Quotes in Values)
 
-YAML allows both quoted and unquoted strings:
+YAML은 따옴표가 있는 문자열과 없는 문자열을 모두 허용합니다:
 
 ```yaml
 # These are equivalent:
@@ -310,15 +310,15 @@ field2: "value"
 field3: 'value'
 ```
 
-**Handle both:**
+**둘 다 처리하는 방법:**
 ```bash
 # Remove surrounding quotes if present
 VALUE=$(echo "$FRONTMATTER" | grep '^field:' | sed 's/field: *//' | sed 's/^"\(.*\)"$/\1/' | sed "s/^'\\(.*\\)'$/\\1/")
 ```
 
-### --- in Markdown Body
+### 마크다운 본문 내부의 --- (--- in Markdown Body)
 
-If the markdown body contains `---`, the parsing still works because we only match the first two:
+마크다운 본문에 `---`가 포함되어 있어도 처음 두 개만 일치시키기 때문에 파싱이 정상적으로 이루어집니다:
 
 ```markdown
 ---
@@ -333,11 +333,11 @@ Here's a separator:
 More content after the separator.
 ```
 
-The `awk '/^---$/{i++; next} i>=2'` pattern handles this correctly.
+`awk '/^---$/{i++; next} i>=2'` 패턴은 이를 올바르게 처리합니다.
 
-### Empty Values
+### 빈 값 (Empty Values)
 
-Handle missing or empty fields:
+누락되었거나 비어 있는 필드를 처리합니다:
 
 ```yaml
 field1:
@@ -345,7 +345,7 @@ field2: ""
 field3: null
 ```
 
-**Parsing:**
+**파싱 방식:**
 ```bash
 VALUE=$(echo "$FRONTMATTER" | grep '^field1:' | sed 's/field1: *//')
 # VALUE will be empty string
@@ -356,9 +356,9 @@ if [[ -z "$VALUE" ]] || [[ "$VALUE" == "null" ]]; then
 fi
 ```
 
-### Special Characters
+### 특수 문자 (Special Characters)
 
-Values with special characters need careful handling:
+특수 문자가 있는 값은 신중하게 처리해야 합니다:
 
 ```yaml
 message: "Error: Something went wrong!"
@@ -366,7 +366,7 @@ path: "/path/with spaces/file.txt"
 regex: "^[a-zA-Z0-9_]+$"
 ```
 
-**Safe parsing:**
+**안전한 파싱 방식:**
 ```bash
 # Always quote variables when using
 MESSAGE=$(echo "$FRONTMATTER" | grep '^message:' | sed 's/message: *//' | sed 's/^"\(.*\)"$/\1/')
@@ -374,11 +374,11 @@ MESSAGE=$(echo "$FRONTMATTER" | grep '^message:' | sed 's/message: *//' | sed 's
 echo "Message: $MESSAGE"  # Quoted!
 ```
 
-## Performance Optimization
+## 성능 최적화 (Performance Optimization)
 
-### Cache Parsed Values
+### 파싱된 값 캐싱 (Cache Parsed Values)
 
-If reading settings multiple times:
+설정을 여러 번 읽어야 하는 경우:
 
 ```bash
 # Parse once
@@ -390,11 +390,11 @@ FIELD2=$(echo "$FRONTMATTER" | grep '^field2:' | sed 's/field2: *//')
 FIELD3=$(echo "$FRONTMATTER" | grep '^field3:' | sed 's/field3: *//')
 ```
 
-**Don't:** Re-parse file for each field.
+**권장하지 않음:** 각 필드를 읽을 때마다 파일을 다시 파싱하는 방식.
 
-### Lazy Loading
+### 지연 로딩 (Lazy Loading)
 
-Only parse settings when needed:
+필요할 때만 설정을 파싱합니다:
 
 ```bash
 #!/bin/bash
@@ -413,9 +413,9 @@ if [[ -f ".claude/my-plugin.local.md" ]]; then
 fi
 ```
 
-## Debugging
+## 디버깅 (Debugging)
 
-### Print Parsed Values
+### 파싱된 값 출력 (Print Parsed Values)
 
 ```bash
 #!/bin/bash
@@ -435,7 +435,7 @@ if [[ -f "$FILE" ]]; then
 fi
 ```
 
-### Validate Parsing
+### 파싱 결과 검증 (Validate Parsing)
 
 ```bash
 # Show what was parsed
@@ -450,9 +450,9 @@ if [[ "$ENABLED" != "true" ]] && [[ "$ENABLED" != "false" ]]; then
 fi
 ```
 
-## Alternative: Using yq
+## 대안: yq 사용 (Alternative: Using yq)
 
-For complex YAML, consider using `yq`:
+복잡한 YAML의 경우 `yq` 사용을 고려해 보십시오:
 
 ```bash
 # Install: brew install yq
@@ -471,19 +471,19 @@ echo "$LIST" | jq -r '.[]' | while read -r item; do
 done
 ```
 
-**Pros:**
-- Proper YAML parsing
-- Handles complex structures
-- Better list/object support
+**장점:**
+- 올바른 YAML 파싱
+- 복잡한 구조 처리
+- 우수한 리스트/객체 지원
 
-**Cons:**
-- Requires yq installation
-- Additional dependency
-- May not be available on all systems
+**단점:**
+- yq 설치 필요
+- 추가 종속성 발생
+- 모든 시스템에서 사용하지 못할 수 있음
 
-**Recommendation:** Use sed/grep for simple fields, yq for complex structures.
+**권장 사항:** 단순한 필드는 sed/grep을 사용하고, 복잡한 구조에는 yq를 사용하십시오.
 
-## Complete Example
+## 완전한 예시 (Complete Example)
 
 ```bash
 #!/bin/bash
@@ -546,4 +546,4 @@ case "$MODE" in
 esac
 ```
 
-This provides robust settings handling with defaults, validation, and error recovery.
+이 코드는 기본값 적용, 유효성 검사 및 에러 복구 기능을 포함하여 견고한 설정 처리를 지원합니다.

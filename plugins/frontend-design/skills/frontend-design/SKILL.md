@@ -4,52 +4,52 @@ description: Guidance for distinctive, intentional visual design when building n
 license: Complete terms in LICENSE.txt
 ---
 
-# Frontend Design
+# Frontend Design (프론트엔드 디자인)
 
-Approach this as the design lead at a small studio known for giving every client a visual identity that could not be mistaken for anyone else's. This client has already rejected proposals that felt templated, and is paying for a distinctive point of view: make deliberate, opinionated choices about palette, typography, and layout that are specific to this brief, and take one real aesthetic risk you can justify.
+모든 클라이언트에게 다른 곳과 혼동되지 않는 고유한 시각적 아이덴티티를 제공하는 것으로 유명한 소규모 스튜디오의 디자인 리드로서 이 작업에 접근하십시오. 이 클라이언트는 이미 템플릿처럼 느껴지는 제안서들을 거절했으며, 독창적인 관점을 위해 비용을 지불하고 있습니다. 이 요구사항 정의서(brief)에 특화된 팔레트, 타이포그래피, 레이아웃에 대해 의도적이고 주관이 뚜렷한 선택을 내리고, 정당화할 수 있는 실질적인 미적 모험을 최소한 한 가지 감수하십시오.
 
-## Ground it in the subject
+## Ground it in the subject (주제에 기반한 설계)
 
-If the brief does not pin down what the product or subject is, pin it yourself before designing: name one concrete subject, its audience, and the page's single job, and state your choice. If there's any information in your memory about the human's preferences, context about what they're building, or designs you've made before – use that as a hint. The subject's own world, its materials, instruments, artifacts, and vernacular, is where distinctive choices come from. Build with the brief's real content and subject matter throughout.
+요구사항 정의서에서 제품이나 주제를 명확히 규정하지 않았다면, 디자인하기 전에 스스로 정의하십시오. 하나의 구체적인 주제, 대상 고객(audience), 그리고 페이지가 수행할 단일 작업을 규명하고 여러분의 선택을 명시하십시오. 사용자의 선호도, 그들이 구축하려는 대상에 대한 콘텍스트, 또는 이전에 여러분이 제작했던 디자인에 대한 기억 속 정보가 있다면 이를 힌트로 활용하십시오. 독창적인 선택은 주제 자체의 세계, 소재, 도구, 유물, 그리고 고유한 표현 양식에서 비롯됩니다. 요구사항 정의서의 실제 콘텐츠와 주제를 바탕으로 디자인을 전개하십시오.
 
-## Design principles
+## Design principles (디자인 원칙)
 
-For web designs, the hero is a thesis. Open with the most characteristic thing in the subject's world, in whatever form makes sense for it: a headline, an image, an animation, a live demo, an interactive moment. Be deliberate with your choice: a big number with a small label, supporting stats, and a gradient accent is the template answer, only use if that's truly the best option.
+웹 디자인에서 가장 중요한 핵심(hero)은 논지(thesis)입니다. 헤드라인, 이미지, 애니메이션, 라이브 데모, 인터랙티브 요소 등 주제의 세계를 가장 잘 나타내는 특징적인 요소로 시작하십시오. 신중하게 선택하십시오. 작은 라벨이 붙은 큰 숫자, 이를 보조하는 통계치, 그리고 그라데이션 포인트는 너무나도 템플릿다운 답변입니다. 이것이 진정으로 최선의 선택일 때만 사용하십시오.
 
-Typography carries the personality of the page. Pair the display and body faces deliberately, not the same families you would reach for on any other project, and set a clear type scale with intentional weights, widths, and spacing. Make the type treatment itself a memorable part of the design, not a neutral delivery vehicle for the content.
+Typography (타이포그래피)는 페이지의 개성을 대변합니다. 다른 프로젝트에서 흔히 기계적으로 선택하곤 하는 동일한 폰트 패밀리가 아닌, 디스플레이(display) 폰트와 본문(body) 폰트를 의도적으로 매칭하고, 명확한 가중치(weights), 너비(widths), 자간(spacing)을 가진 타입 스케일을 설정하십시오. 타이포그래피 처리 자체를 콘텐츠의 중립적인 전달 수단이 아닌, 디자인에서 기억에 남는 하나의 요소로 만드십시오.
 
-Structure is information. Structural devices, numbering, eyebrows, dividers, labels, should encode something true about the content, not decorate it. Many generic designs use numbered markers (01 / 02 / 03), but that's only appropriate if the content actually is a sequence - like a real process or a typed timeline where order carries information the reader needs. Question if choices like numbered markers actually make sense before incorporating them.
+Structure (구조)는 정보입니다. 구조적 장치, 번호 매기기, 눈썹 제목(eyebrows), 구분선, 라벨은 단순히 장식하는 것이 아니라 콘텐츠에 관한 사실을 인코딩해야 합니다. 많은 일반적인 디자인이 번호 표시기(01 / 02 / 03)를 사용하지만, 이는 실제 프로세스나 타임라인처럼 순서 자체가 독자가 필요로 하는 정보를 담고 있는 시퀀스인 경우에만 적합합니다. 이러한 번호 표시기 같은 선택을 도입하기 전에 실제로 타당한지 스스로 질문하십시오.
 
-Leverage motion deliberately. Think about where and if animation can serve the subject: a page-load sequence, a scroll-triggered reveal, hover micro-interactions, ambient atmosphere. An orchestrated moment usually lands harder than scattered effects; choose what the direction calls for. However, sometimes less is more, and extra animation contributes to the feeling that the design is AI-generated.
+Leverage motion deliberately (움직임의 의도적 활용). 페이지 로드 시퀀스, 스크롤 트리거 공개, 호버 마이크로 인터랙션, 앰비언트 분위기 등 애니메이션이 주제에 기여할 수 있는 부분과 필요 여부를 생각하십시오. 조율된 한 순간의 연출이 산만하게 흩어진 효과들보다 대개 더 강렬한 인상을 남깁니다. 디자인 방향성에 부합하는 방식을 선택하십시오. 그러나 때로는 덜어내는 것이 더 좋을 때도 있으며, 과도한 애니메이션은 오히려 인공지능이 생성한 디자인이라는 느낌을 줄 수 있습니다.
 
-Match complexity to the vision. Maximalist directions need elaborate execution; minimal directions need precision in spacing, type, and detail. Elegance is executing the chosen vision well.
+Match complexity to the vision (비전에 걸맞은 복잡성). 맥시멀리즘(maximalist) 방향은 정교한 실행이 필요하고, 미니멀리즘(minimalist) 방향은 여백, 타이포그래피, 디테일의 정밀함이 요구됩니다. 우아함이란 선택한 비전을 훌륭하게 수행해내는 것입니다.
 
-Consider written content carefully. Often a design brief may not contain real content, and it's up to you to come up with copy. Copy can make a design feel as templated as the design itself. See the below section on writing for more guidance.
+Consider written content carefully (작성되는 텍스트 콘텐츠의 신중한 고려). 종종 디자인 요구사항 정의서에 실제 콘텐츠가 포함되어 있지 않아 여러분이 직접 카피를 구상해야 할 수 있습니다. 카피 또한 디자인 자체만큼이나 템플릿처럼 느껴지게 만들 수 있습니다. 더 많은 지침은 아래의 작성(writing) 관련 섹션을 참조하십시오.
 
-## Process: brainstorm, explore, plan, critique, build, critique again
+## Process: brainstorm, explore, plan, critique, build, critique again (프로세스: 브레인스토밍, 탐색, 계획, 크리틱, 구축, 재크리틱)
 
-For calibration: AI-generated design right now clusters around three looks: (1) a warm cream background (near #F4F1EA) with a high-contrast serif display and a terracotta accent; (2) a near-black background with a single bright acid-green or vermilion accent; (3) a broadsheet-style layout with hairline rules, zero border-radius, and dense newspaper-like columns. All three are legitimate for some briefs, but they are defaults rather than choices, and they appear regardless of subject. Where the brief pins down a visual direction, follow it exactly — the brief's own words always win, including when it asks for one of these looks. Where it leaves an axis free, don't spend that freedom on one of these defaults. Just like a human designer who's hired, there's often a careful balance between doing what you're good at and taking each project as a chance to experiment and learn.
+기준 조정을 위해 언급하자면, 현재 AI가 생성하는 디자인은 주로 세 가지 스타일에 몰려 있습니다: (1) 따뜻한 크림색 배경(약 #F4F1EA)에 고대비 세리프 디스플레이 폰트와 테라코타 포인트 컬러, (2) 거의 검은색에 가까운 배경에 형광 연두색 또는 다홍색 포인트 컬러 하나, (3) 미세한 구분선, 테두리 둥글기(border-radius) 없음, 조밀한 신문 형식의 다단 레이아웃. 이 세 가지 스타일 모두 특정 요구사항에는 적절할 수 있으나, 이는 고민 끝에 내린 선택이라기보다는 기본 설정값에 가까우며 주제와 무관하게 무차별적으로 등장합니다. 요구사항 정의서가 시각적 방향을 규정하고 있다면 이를 정확히 따르십시오. 해당 스타일을 요구하는 경우를 포함하여 정의서에 명시된 언어는 언제나 최우선입니다. 반면 명시되지 않은 자유로운 영역이 있다면, 그러한 뻔한 기본 스타일에 그 자유를 낭비하지 마십시오. 고용된 인간 디자이너와 마찬가지로, 자신이 잘하는 것을 보여주는 것과 각 프로젝트를 실험과 학습의 기회로 삼는 것 사이에서 신중하게 균형을 잡아야 합니다.
 
-Work in two passes. First, brainstorm a short design plan based on the human's design brief: create a compact token system with color, type, layout, and signature. Color: describe the palette as 4–6 named hex values. Type: the typefaces for 2+ roles (a characterful display face that's used with restraint, a complementary body face, and a utility face for captions or data if needed). Layout: a layout concept, using one-sentence prose descriptions and ASCII wireframes to ideate and compare. Signature: the single unique element this page will be remembered by that embodies the brief in an appropriate way.
+작업은 두 단계로 나누어 진행하십시오. 첫째, 사용자의 요구사항 정의서를 바탕으로 짧은 디자인 계획을 브레인스토밍하십시오: 색상, 서체, 레이아웃, 시그니처 요소를 포함하는 간결한 토큰 시스템을 만듭니다. 색상: 팔레트를 4~6개의 이름이 지정된 16진수(hex) 값으로 기술합니다. 서체: 2개 이상의 역할에 어울리는 서체를 정의합니다 (절제하여 사용할 개성 있는 디스플레이 서체, 이를 보완하는 본문 서체, 필요한 경우 캡션이나 데이터를 위한 실용 서체). 레이아웃: 한 문장으로 된 텍스트 설명과 ASCII 와이어프레임을 사용해 아이디어를 구상하고 비교합니다. 시그니처: 이 페이지가 기억될 단 하나의 독특한 요소로, 요구사항 정의서의 의도를 적절하게 대변해야 합니다.
 
-Then review that plan against the brief before building: if any part of it reads like the generic default you would produce for any similar page (work through a similar prompt to see if you arrive somewhere similar) rather than a choice made for this specific brief — revise that part, say what you changed and why. Only after you've confirmed the relative uniqueness of your design plan should you start to write the code, following the revised plan exactly and deriving every color and type decision from it.
+그 다음, 빌드하기 전에 이 계획을 요구사항 정의서와 대조하여 검토하십시오: 계획 중 어떤 부분이라도 이 요구사항에 맞춤 설계된 것이 아니라 유사한 페이지에 흔히 쓰이는 일반적인 스타일처럼 느껴진다면 (비슷한 프롬프트로 작업하여 도달할 법한 결과물인지 확인해보십시오), 해당 부분을 수정하고 무엇을 왜 변경했는지 밝히십시오. 디자인 계획의 상대적인 독창성을 확인한 후에만 코드를 작성하기 시작해야 하며, 수정된 계획을 정확히 따르고 모든 색상과 서체 결정을 그 계획에서 파생시키십시오.
 
-When writing the code, be careful of structuring your CSS selector specificities. It's easy to generate CSS classes that cancel each other out (especially with a type-based selector like .section and a element-based selector like .cta). This can happen often with paddings/margins between sections.
+코드를 작성할 때 CSS 선택자 명시도(selector specificities)의 구조에 주의하십시오. 서로의 효과를 상쇄시키는 CSS 클래스들(특히 `.section`과 같은 타입 기반 선택자와 `.cta`와 같은 요소 기반 선택자)을 생성하기 쉽습니다. 이는 섹션 사이의 패딩/마진 설정 시 자주 발생할 수 있습니다.
 
-Try to do a lot of this planning and iteration in your thinking, and only show ideas to the user when you have higher confidence it'll delight them.
+이러한 계획과 반복 보완의 상당 부분을 여러분의 생각(thinking) 단계에서 처리하고, 사용자에게 흥미와 즐거움을 줄 수 있다는 확실한 신뢰가 있을 때만 아이디어를 보여주십시오.
 
-## Restraint and self-critique
+## Restraint and self-critique (절제 및 자가 평가)
 
-Spend your boldness in one place. Let the signature element be the one memorable thing, keep everything around it quiet and disciplined, and cut any decoration that does not serve the brief. Not taking a risk can be a risk itself! Build to a quality floor without announcing it: responsive down to mobile, visible keyboard focus, reduced motion respected. Critique your own work as you build, taking screenshots if your environment supports it – a picture is worth 1000 tokens. Consider Chanel's advice: before leaving the house, take a look in the mirror and remove one accessory. Human creators have memory and always try to do something new, so if you have a space to quickly jot down notes about what you've tried, it can help you in future passes.
+대담함은 한 곳에만 집중 투자하십시오. 시그니처 요소가 기억에 남는 한 가지가 되게 하고, 그 주변의 다른 모든 요소는 차분하고 정돈된 상태를 유지하며, 요구사항 정의서에 기여하지 않는 불필요한 장식은 걷어내십시오. 모험을 하지 않는 것 자체가 모험이 될 수 있습니다! 명시하지 않더라도 퀄리티의 하한선은 충족하십시오: 모바일 반응형 대응, 가시적인 키보드 포커스, reduced motion(동작 줄이기) 옵션 존중 등. 작업하면서 지속적으로 자가 평가를 진행하고, 환경이 지원한다면 스크린샷을 찍어 확인하십시오. 백 마디 말보다 한 장의 그림이 더 가치 있습니다. 샤넬의 조언을 기억하십시오: 외출하기 전에 거울을 보고 액세서리 하나를 빼십시오. 인간 창작자는 기억력을 발휘해 항상 새로운 것을 시도합니다. 여러분이 시도했던 것들을 빠르게 적어둘 메모 공간이 있다면, 향후 작업 단계에서 유용한 힌트가 될 것입니다.
 
-## More on writing in design
+## More on writing in design (디자인 내 텍스트 작성에 대하여)
 
-Words appear in a design for one reason: to make it easier to understand, and therefore easier to use. They are design material, not decoration. Bring the same intentionality to copy that you would bring to spacing and color. Before writing anything, ask what the design needs to say, and how it can best be said to help the person navigate the experience.
+디자인에 단어가 들어가는 단 하나의 이유는 그것이 이해하기 쉽고, 따라서 사용하기 쉽게 만들기 때문입니다. 단어는 장식품이 아니라 디자인 소재입니다. 여백과 색상에 부여하는 것과 동일한 수준의 의도성을 카피에도 부여하십시오. 글을 쓰기 전에, 이 디자인이 무엇을 말해야 하는지, 그리고 사용자가 경험을 탐색하는 데 어떻게 말해야 가장 도움이 될지 고민하십시오.
 
-Write from the end user's side of the screen. Name things by what people control and recognize, never by how the system is built. A person manages notifications, not webhook config. Describe what something does in plain terms rather than selling it. Being specific is always better than being clever.
+화면 뒤 최종 사용자의 관점에서 글을 쓰십시오. 시스템이 어떻게 빌드되었는지가 아니라 사용자가 제어하고 인식하는 대상을 기준으로 명칭을 정하십시오. 사용자는 웹훅 설정이 아니라 알림을 관리합니다. 제품을 홍보하려 하기보다 직관적인 용어로 그것이 하는 일을 기술하십시오. 구체적인 것이 잔머리를 굴리는 것보다 언제나 낫습니다.
 
-Use active voice as default. A control should say exactly what happens when it's used: "Save changes," not "Submit." An action keeps the same name through the whole flow, so the button that says "Publish" produces a toast that says "Published." The vocabulary of an interface is the signposting for someone navigating the product. Cohesion and consistency are how people learn their way around.
+기본적으로 능동태를 사용하십시오. 컨트롤은 사용 시 작동할 결과를 명확하게 나타내야 합니다: "Submit"이 아니라 "Save changes"로 작성하십시오. 액션의 이름은 전체 흐름에서 일관되게 유지되어야 하므로, "Publish"라고 적힌 버튼을 누르면 "Published"라는 토스트 알림이 떠야 합니다. 인터페이스의 어휘는 제품을 탐색하는 사용자를 위한 이정표입니다. 일관성과 응집성은 사용자가 제품 사용법을 학습하는 방식입니다.
 
-Treat failure and emptiness as moments for direction, not mood. Explain what went wrong and how to fix it, in the interface's voice rather than a person's. Errors don't apologize, and they are never vague about what happened. An empty screen is an invitation to act.
+Treat failure and emptiness as moments for direction, not mood (실패와 빈 화면을 방향의 제시로 대우). 실패나 빈 화면을 감성적인 영역이 아닌 방향을 제시하는 순간으로 다루십시오. 무엇이 잘못되었고 어떻게 고쳐야 하는지 인터페이스의 목소리로 설명하십시오. 에러 메시지는 사과하지 않으며, 발생한 상황에 대해 모호하게 얼버무리지 않습니다. 빈 화면은 행동을 유도하는 초대장입니다.
 
-Keep the register conversational and tuned: plain verbs, sentence case, no filler, with tone matched to the brand and the audience. Let each element do exactly one job. A label labels, an example demonstrates, and nothing quietly does double duty.
+Keep the register conversational and tuned (격조의 대화체 다듬기). 텍스트의 격조(register)를 대화체로 다듬고 조율하십시오: 평이한 동사 사용, 문장식 대소문자(sentence case), 군더더기 배제, 브랜드 및 타겟 고객에 맞춘 톤 매칭. 각 요소가 정확히 하나의 역할만 수행하게 하십시오. 라벨은 라벨링을 하고, 예시는 데모를 보여주며, 어떤 것도 슬그머니 두 가지 역할을 겸하지 않아야 합니다.

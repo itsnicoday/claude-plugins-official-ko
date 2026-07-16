@@ -1,84 +1,84 @@
-# Skills Recommendations
+# 스킬(Skills) 추천
 
-Skills are packaged expertise with workflows, reference materials, and best practices. Create them in `.claude/skills/<name>/SKILL.md`. Skills can be invoked by Claude automatically when relevant, or by users directly with `/skill-name`.
+스킬은 워크플로우, 참조 자료, 모범 사례 등이 패키지화된 전문 지식입니다. `.claude/skills/<name>/SKILL.md` 경로에 작성하여 생성합니다. 스킬은 관련 상황이 생겼을 때 Claude가 자동으로 호출하거나, 사용자가 직접 `/skill-name` 명령어를 통해 명시적으로 호출할 수 있습니다.
 
-Some pre-built skills are available through official plugins (install via `/plugin install`).
+일부 사전 정의된 스킬은 공식 플러그인(설치 명령어: `/plugin install`)을 통해 제공됩니다.
 
-**Note**: These are common patterns. Use web search to find skill ideas specific to the codebase's tools and frameworks.
-
----
-
-## Available from Official Plugins
-
-### Plugin Development (plugin-dev)
-
-| Skill | Best For |
-|-------|----------|
-| **skill-development** | Creating new skills with proper structure |
-| **hook-development** | Building hooks for automation |
-| **command-development** | Creating slash commands |
-| **agent-development** | Building specialized subagents |
-| **mcp-integration** | Integrating MCP servers into plugins |
-| **plugin-structure** | Understanding plugin architecture |
-
-### Git Workflows (commit-commands)
-
-| Skill | Best For |
-|-------|----------|
-| **commit** | Creating git commits with proper messages |
-| **commit-push-pr** | Full commit, push, and PR workflow |
-
-### Frontend (frontend-design)
-
-| Skill | Best For |
-|-------|----------|
-| **frontend-design** | Creating polished UI components |
-
-**Value**: Creates distinctive, high-quality UI instead of generic AI aesthetics.
-
-### Automation Rules (hookify)
-
-| Skill | Best For |
-|-------|----------|
-| **writing-rules** | Creating hookify rules for automation |
-
-### Feature Development (feature-dev)
-
-| Skill | Best For |
-|-------|----------|
-| **feature-dev** | End-to-end feature development workflow |
+**참고**: 아래는 일반적인 패턴들입니다. 코드베이스의 도구와 프레임워크에 특화된 스킬 아이디어를 얻으려면 웹 검색을 활용하십시오.
 
 ---
 
-## Quick Reference: Official Plugin Skills
+## 공식 플러그인을 통해 사용 가능한 스킬 (Available from Official Plugins)
 
-| Codebase Signal | Skill | Plugin |
+### 플러그인 개발 (plugin-dev)
+
+| 스킬 | 적합한 용도 |
+|-------|----------|
+| **skill-development** | 올바른 구조를 갖춘 새로운 스킬 생성 |
+| **hook-development** | 자동화를 위한 훅 작성 |
+| **command-development** | 슬래시(/) 명령어 생성 |
+| **agent-development** | 특화된 서브에이전트 구축 |
+| **mcp-integration** | 플러그인에 MCP 서버 연동 |
+| **plugin-structure** | 플러그인 아키텍처 이해 |
+
+### Git 워크플로우 (commit-commands)
+
+| 스킬 | 적합한 용도 |
+|-------|----------|
+| **commit** | 올바른 메시지 형식의 git 커밋 작성 |
+| **commit-push-pr** | 커밋, 푸시 및 PR 발행까지의 전체 워크플로우 |
+
+### 프론트엔드 (frontend-design)
+
+| 스킬 | 적합한 용도 |
+|-------|----------|
+| **frontend-design** | 완성도 높은 UI 컴포넌트 생성 |
+
+**효과**: 일반적인 AI 특유의 디자인에서 벗어나 개성 있고 고품질의 UI를 제작합니다.
+
+### 자동화 규칙 (hookify)
+
+| 스킬 | 적합한 용도 |
+|-------|----------|
+| **writing-rules** | 자동화를 위한 hookify 규칙 작성 |
+
+### 기능 개발 (feature-dev)
+
+| 스킬 | 적합한 용도 |
+|-------|----------|
+| **feature-dev** | 엔드투엔드 기능 개발 워크플로우 진행 |
+
+---
+
+## 빠른 참조: 공식 플러그인 스킬 (Quick Reference: Official Plugin Skills)
+
+| 코드베이스 신호 | 추천 스킬 | 플러그인 |
 |-----------------|-------|--------|
-| Building plugins | skill-development | plugin-dev |
-| Git commits | commit | commit-commands |
-| React/Vue/Angular | frontend-design | frontend-design |
-| Automation rules | writing-rules | hookify |
-| Feature planning | feature-dev | feature-dev |
+| 플러그인 제작 중 | skill-development | plugin-dev |
+| Git 커밋 작업 | commit | commit-commands |
+| React/Vue/Angular 사용 | frontend-design | frontend-design |
+| 자동화 규칙 필요 | writing-rules | hookify |
+| 기능 개발 계획 수립 | feature-dev | feature-dev |
 
 ---
 
-## Custom Project Skills
+## 커스텀 프로젝트 스킬 (Custom Project Skills)
 
-Create project-specific skills in `.claude/skills/<name>/SKILL.md`.
+프로젝트별 특화 스킬은 `.claude/skills/<name>/SKILL.md` 파일에 생성합니다.
 
-### Skill Structure
+### 스킬 디렉토리 구조 (Skill Structure)
 
 ```
 .claude/skills/
 └── my-skill/
-    ├── SKILL.md           # Main instructions (required)
-    ├── template.yaml      # Template to apply
+    ├── SKILL.md           # 메인 지침 파일 (필수)
+    ├── template.yaml      # 적용할 템플릿
     ├── scripts/
-    │   └── validate.sh    # Script to run
-    └── examples/          # Reference examples
+    │   └── validate.sh    # 실행할 스크립트
+    └── examples/          # 참고용 예제 코드
 ```
 
-### Frontmatter Reference
+### 프론트매터(Frontmatter) 참조 가이드
 
 ```yaml
 ---
@@ -92,21 +92,21 @@ agent: Explore                  # Which agent type when forked
 ---
 ```
 
-### Invocation Control
+### 호출 제어 설정 (Invocation Control)
 
-| Setting | User | Claude | Use for |
+| 설정 값 | 사용자 호출 | Claude 호출 | 주요 사용 목적 |
 |---------|------|--------|---------|
-| (default) | ✓ | ✓ | General-purpose skills |
-| `disable-model-invocation: true` | ✓ | ✗ | Side effects (deploy, send) |
-| `user-invocable: false` | ✗ | ✓ | Background knowledge |
+| (기본값) | ✓ | ✓ | 일반 목적의 스킬 |
+| `disable-model-invocation: true` | ✓ | ✗ | 사이드 이펙트 발생 작업 (배포, 전송 등) |
+| `user-invocable: false` | ✗ | ✓ | 백그라운드 지식 제공 |
 
 ---
 
-## Custom Skill Examples
+## 커스텀 스킬 작성 예시 (Custom Skill Examples)
 
-### API Documentation with OpenAPI Template
+### OpenAPI 템플릿을 활용한 API 문서화
 
-Apply a YAML template to generate consistent API docs:
+YAML 템플릿을 적용하여 일관된 형태의 API 문서를 생성합니다:
 
 ```
 .claude/skills/api-doc/
@@ -153,9 +153,9 @@ paths:
 
 ---
 
-### Database Migration Generator with Script
+### 스크립트를 동반한 데이터베이스 마이그레이션 생성기
 
-Generate and validate migrations using a bundled script:
+함께 번들링된 스크립트를 사용하여 마이그레이션 코드를 생성하고 검증합니다:
 
 ```
 .claude/skills/create-migration/
@@ -190,9 +190,9 @@ npx prisma validate 2>&1 || echo "Validation failed"
 
 ---
 
-### Test Generator with Examples
+### 예제 기반 테스트 생성기
 
-Generate tests following project patterns:
+프로젝트의 패턴을 준수하는 테스트 코드를 생성합니다:
 
 ```
 .claude/skills/gen-test/
@@ -224,9 +224,9 @@ Reference these examples for the expected patterns:
 
 ---
 
-### Component Generator with Template
+### 템플릿 기반 컴포넌트 생성기
 
-Scaffold new components from a template:
+템플릿으로부터 새로운 컴포넌트의 기본 구조를 생성합니다:
 
 ```
 .claude/skills/new-component/
@@ -258,9 +258,9 @@ Replace {{component-name}} with the kebab-case name.
 
 ---
 
-### PR Review with Checklist
+### 체크리스트 기반 PR 리뷰
 
-Review PRs against a project-specific checklist:
+프로젝트 전용 체크리스트를 기준으로 PR 내용을 검토합니다:
 
 ```
 .claude/skills/pr-check/
@@ -299,9 +299,9 @@ For each item, mark ✅ or ❌ with explanation.
 
 ---
 
-### Release Notes Generator
+### 릴리스 노트 생성기
 
-Generate release notes from git history:
+Git 이력을 파악하여 릴리스 노트를 생성합니다:
 
 **SKILL.md:**
 ```yaml
@@ -324,9 +324,9 @@ Generate release notes:
 
 ---
 
-### Project Conventions (Claude-only)
+### 프로젝트 컨벤션 정의 스킬 (Claude 전용)
 
-Background knowledge Claude applies automatically:
+Claude가 자동으로 적용하는 백그라운드 지식 설정 스킬입니다:
 
 **SKILL.md:**
 ```yaml
@@ -355,9 +355,9 @@ user-invocable: false
 
 ---
 
-### Environment Setup
+### 환경 설정 스킬
 
-Onboard new developers with setup script:
+설정 스크립트를 사용하여 신규 개발자의 환경 구축을 돕습니다:
 
 ```
 .claude/skills/setup-dev/
@@ -387,17 +387,17 @@ Report any issues encountered.
 
 ---
 
-## Argument Patterns
+## 인자 전달 패턴 (Argument Patterns)
 
-| Pattern | Meaning | Example |
+| 패턴 | 의미 | 예시 |
 |---------|---------|---------|
-| `$ARGUMENTS` | All args as string | `/deploy staging` → "staging" |
+| `$ARGUMENTS` | 모든 인자를 문자열로 전달 | `/deploy staging` 실행 시 → "staging" |
 
-Arguments are appended as `ARGUMENTS: <value>` if `$ARGUMENTS` isn't in the skill.
+스킬 설명 파일 내에 `$ARGUMENTS`가 지정되지 않은 경우, 인자 값은 `ARGUMENTS: <값>` 형태로 덧붙여집니다.
 
-## Dynamic Context Injection
+## 동적 컨텍스트 주입 (Dynamic Context Injection)
 
-Use `!`command`` to inject live data before the skill runs:
+스킬이 실행되기 전에 `!`명령어`` 구문을 활용해 실시간 데이터를 주입할 수 있습니다:
 
 ```yaml
 ## Current State
@@ -405,4 +405,4 @@ Use `!`command`` to inject live data before the skill runs:
 - Status: !`git status --short`
 ```
 
-The command output replaces the placeholder before Claude sees the skill content.
+명령어의 실행 결과는 Claude가 스킬 내용을 확인하기 전 플레이스홀더 영역에 치환되어 반영됩니다.

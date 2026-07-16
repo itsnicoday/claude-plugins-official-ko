@@ -1,12 +1,12 @@
-# JSON Schemas
+# JSON Schemas (JSON 스키마)
 
-This document defines the JSON schemas used by skill-creator.
+이 문서는 skill-creator가 사용하는 JSON 스키마를 정의합니다.
 
 ---
 
 ## evals.json
 
-Defines the evals for a skill. Located at `evals/evals.json` within the skill directory.
+스킬에 대한 평가(evals)를 정의합니다. 스킬 디렉터리 내부의 `evals/evals.json`에 위치합니다.
 
 ```json
 {
@@ -26,19 +26,19 @@ Defines the evals for a skill. Located at `evals/evals.json` within the skill di
 }
 ```
 
-**Fields:**
-- `skill_name`: Name matching the skill's frontmatter
-- `evals[].id`: Unique integer identifier
-- `evals[].prompt`: The task to execute
-- `evals[].expected_output`: Human-readable description of success
-- `evals[].files`: Optional list of input file paths (relative to skill root)
-- `evals[].expectations`: List of verifiable statements
+**필드 설명:**
+- `skill_name`: 스킬의 frontmatter와 일치하는 이름
+- `evals[].id`: 고유한 정수 식별자
+- `evals[].prompt`: 실행할 작업(Task)
+- `evals[].expected_output`: 성공 기준에 대한 사람이 읽을 수 있는 설명
+- `evals[].files`: 선택적 입력 파일 경로 목록 (스킬 루트에 대한 상대 경로)
+- `evals[].expectations`: 검증 가능한 진술 목록
 
 ---
 
 ## history.json
 
-Tracks version progression in Improve mode. Located at workspace root.
+Improve(개선) 모드에서 버전 진행 과정을 추적합니다. 워크스페이스 루트에 위치합니다.
 
 ```json
 {
@@ -71,21 +71,21 @@ Tracks version progression in Improve mode. Located at workspace root.
 }
 ```
 
-**Fields:**
-- `started_at`: ISO timestamp of when improvement started
-- `skill_name`: Name of the skill being improved
-- `current_best`: Version identifier of the best performer
-- `iterations[].version`: Version identifier (v0, v1, ...)
-- `iterations[].parent`: Parent version this was derived from
-- `iterations[].expectation_pass_rate`: Pass rate from grading
-- `iterations[].grading_result`: "baseline", "won", "lost", or "tie"
-- `iterations[].is_current_best`: Whether this is the current best version
+**필드 설명:**
+- `started_at`: 개선 작업이 시작된 시간의 ISO 타임스탬프
+- `skill_name`: 개선 중인 스킬의 이름
+- `current_best`: 가장 성능이 좋은 버전의 식별자
+- `iterations[].version`: 버전 식별자 (v0, v1, ...)
+- `iterations[].parent`: 이 버전이 파생된 부모 버전
+- `iterations[].expectation_pass_rate`: 채점(grading) 결과의 통과율
+- `iterations[].grading_result`: "baseline", "won", "lost" 또는 "tie"
+- `iterations[].is_current_best`: 현재 가장 좋은 버전인지 여부
 
 ---
 
 ## grading.json
 
-Output from the grader agent. Located at `<run-dir>/grading.json`.
+grader 에이전트의 출력 파일입니다. `<run-dir>/grading.json`에 위치합니다.
 
 ```json
 {
@@ -149,20 +149,20 @@ Output from the grader agent. Located at `<run-dir>/grading.json`.
 }
 ```
 
-**Fields:**
-- `expectations[]`: Graded expectations with evidence
-- `summary`: Aggregate pass/fail counts
-- `execution_metrics`: Tool usage and output size (from executor's metrics.json)
-- `timing`: Wall clock timing (from timing.json)
-- `claims`: Extracted and verified claims from the output
-- `user_notes_summary`: Issues flagged by the executor
-- `eval_feedback`: (optional) Improvement suggestions for the evals, only present when the grader identifies issues worth raising
+**필드 설명:**
+- `expectations[]`: 증거(evidence)를 포함하여 채점된 기대 검증 결과
+- `summary`: 총 통과/실패 횟수 집계
+- `execution_metrics`: 도구 사용 횟수 및 출력 크기 (executor의 metrics.json에서 가져옴)
+- `timing`: 실행 소요 시간 (timing.json에서 가져옴)
+- `claims`: 출력에서 추출 및 검증된 클레임(claims) 정보
+- `user_notes_summary`: executor가 기록한 이슈 플래그
+- `eval_feedback`: (선택 사항) 평가(evals)에 대한 개선 제안이며, grader가 제기할 가치가 있다고 판단한 문제점을 발견했을 때만 존재합니다.
 
 ---
 
 ## metrics.json
 
-Output from the executor agent. Located at `<run-dir>/outputs/metrics.json`.
+executor 에이전트의 출력 파일입니다. `<run-dir>/outputs/metrics.json`에 위치합니다.
 
 ```json
 {
@@ -183,22 +183,22 @@ Output from the executor agent. Located at `<run-dir>/outputs/metrics.json`.
 }
 ```
 
-**Fields:**
-- `tool_calls`: Count per tool type
-- `total_tool_calls`: Sum of all tool calls
-- `total_steps`: Number of major execution steps
-- `files_created`: List of output files created
-- `errors_encountered`: Number of errors during execution
-- `output_chars`: Total character count of output files
-- `transcript_chars`: Character count of transcript
+**필드 설명:**
+- `tool_calls`: 도구 유형별 호출 횟수
+- `total_tool_calls`: 모든 도구 호출 횟수의 합계
+- `total_steps`: 주요 실행 단계 수
+- `files_created`: 생성된 출력 파일 목록
+- `errors_encountered`: 실행 중 발생한 에러 횟수
+- `output_chars`: 생성된 출력 파일의 총 문자 수
+- `transcript_chars`: 트랜스크립트(transcript)의 문자 수
 
 ---
 
 ## timing.json
 
-Wall clock timing for a run. Located at `<run-dir>/timing.json`.
+실행 작업의 소요 시간 정보입니다. `<run-dir>/timing.json`에 위치합니다.
 
-**How to capture:** When a subagent task completes, the task notification includes `total_tokens` and `duration_ms`. Save these immediately — they are not persisted anywhere else and cannot be recovered after the fact.
+**수집 방법:** 하위 에이전트(subagent) 작업이 완료되면 작업 알림에 `total_tokens`와 `duration_ms`가 포함됩니다. 이 값은 다른 곳에 저장되지 않으며 사후에 복구할 수 없으므로 즉시 저장해야 합니다.
 
 ```json
 {
@@ -218,7 +218,7 @@ Wall clock timing for a run. Located at `<run-dir>/timing.json`.
 
 ## benchmark.json
 
-Output from Benchmark mode. Located at `benchmarks/<timestamp>/benchmark.json`.
+Benchmark 모드의 출력 파일입니다. `benchmarks/<timestamp>/benchmark.json`에 위치합니다.
 
 ```json
 {
@@ -285,30 +285,30 @@ Output from Benchmark mode. Located at `benchmarks/<timestamp>/benchmark.json`.
 }
 ```
 
-**Fields:**
-- `metadata`: Information about the benchmark run
-  - `skill_name`: Name of the skill
-  - `timestamp`: When the benchmark was run
-  - `evals_run`: List of eval names or IDs
-  - `runs_per_configuration`: Number of runs per config (e.g. 3)
-- `runs[]`: Individual run results
-  - `eval_id`: Numeric eval identifier
-  - `eval_name`: Human-readable eval name (used as section header in the viewer)
-  - `configuration`: Must be `"with_skill"` or `"without_skill"` (the viewer uses this exact string for grouping and color coding)
-  - `run_number`: Integer run number (1, 2, 3...)
-  - `result`: Nested object with `pass_rate`, `passed`, `total`, `time_seconds`, `tokens`, `errors`
-- `run_summary`: Statistical aggregates per configuration
-  - `with_skill` / `without_skill`: Each contains `pass_rate`, `time_seconds`, `tokens` objects with `mean` and `stddev` fields
-  - `delta`: Difference strings like `"+0.50"`, `"+13.0"`, `"+1700"`
-- `notes`: Freeform observations from the analyzer
+**필드 설명:**
+- `metadata`: 벤치마크 실행 정보
+  - `skill_name`: 스킬 이름
+  - `timestamp`: 벤치마크가 실행된 시간
+  - `evals_run`: 실행된 평가(eval) 이름 또는 ID 목록
+  - `runs_per_configuration`: 구성당 실행 횟수 (예: 3)
+- `runs[]`: 개별 실행 결과
+  - `eval_id`: 숫자형 평가 식별자
+  - `eval_name`: 사람이 읽을 수 있는 평가 이름 (뷰어에서 섹션 헤더로 사용됨)
+  - `configuration`: 반드시 `"with_skill"` 또는 `"without_skill"`이어야 합니다 (뷰어에서 이 문자열을 정확히 사용하여 그룹화 및 색상 코딩을 적용함)
+  - `run_number`: 실행 번호 정수 (1, 2, 3...)
+  - `result`: `pass_rate`, `passed`, `total`, `time_seconds`, `tokens`, `errors`를 포함하는 중첩 객체
+- `run_summary`: 구성별 통계 집계 정보
+  - `with_skill` / `without_skill`: 각각 `mean`(평균) 및 `stddev`(표준편차) 필드를 갖는 `pass_rate`, `time_seconds`, `tokens` 객체를 포함합니다.
+  - `delta`: `"+0.50"`, `"+13.0"`, `"+1700"` 등 차이를 나타내는 문자열
+- `notes`: 분석기가 작성한 자유 형식의 관찰 기록
 
-**Important:** The viewer reads these field names exactly. Using `config` instead of `configuration`, or putting `pass_rate` at the top level of a run instead of nested under `result`, will cause the viewer to show empty/zero values. Always reference this schema when generating benchmark.json manually.
+**중요:** 뷰어는 이러한 필드 이름을 정확하게 읽습니다. `configuration` 대신 `config`를 사용하거나, `pass_rate`를 `result` 내부가 아닌 실행 결과의 최상위 레벨에 위치시키면 뷰어에 빈 값이나 0이 표시됩니다. manually로 `benchmark.json`을 생성할 때는 항상 이 스키마를 참고하십시오.
 
 ---
 
 ## comparison.json
 
-Output from blind comparator. Located at `<grading-dir>/comparison-N.json`.
+블라인드 비교기(blind comparator)의 출력 파일입니다. `<grading-dir>/comparison-N.json`에 위치합니다.
 
 ```json
 {
@@ -383,7 +383,7 @@ Output from blind comparator. Located at `<grading-dir>/comparison-N.json`.
 
 ## analysis.json
 
-Output from post-hoc analyzer. Located at `<grading-dir>/analysis.json`.
+사후 분석기(post-hoc analyzer)의 출력 파일입니다. `<grading-dir>/analysis.json`에 위치합니다.
 
 ```json
 {
